@@ -7,6 +7,7 @@
 	let icon = href == '/' ? 'home' : href.split('/')[1]
 	let src = `/menu_icons/${icon}.svg`
 </script>
+{#if option.includes("upBar")}
 <Tooltip class={option} tip={name}>
 	<li class={option}>
 		<a {href}>
@@ -14,6 +15,13 @@
 		</a>
 	</li>
 </Tooltip>
+{:else}
+<li class={option}>
+	<a {href}>
+		<img {src}/>
+	</a>
+</li>
+{/if}
 
 <style>
 	img {
@@ -36,6 +44,7 @@
 		width: 1.5em;
 	}
 	.sideBar {
-		margin: 0.5em 2em;
+		margin: 1em;
+		border: none;
 	}
 </style>
