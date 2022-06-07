@@ -26,25 +26,16 @@
 		padding: 0.5em;
 		border: 
 			hsl(100, 50%, 50%)
-			solid;
+			outset;
 		place-content: center;
 		display: grid;
 		margin: auto
 	}
 	.upBar {
-		float: left;
 		margin: 1em 2em;
 		width: 1.5em;
-		border-style: outset;
 	}
 	.sideBar {
 		margin: 0.5em 2em;
-		border-style: inset;
-	}
-	.cornerL {
-		place-self: left;
-	}
-	.cornerR {
-		place-self: right;
 	}
 </style>

@@ -3,18 +3,21 @@
 	import Logo from '$lib/assets/MainLogo.svelte';
 	let itemsE =
 		[
-			['Abrir OS', '/abrir_os','upBar cornerL'],
+			['Abrir OS', '/abrir_os','upBar'],
 		]
 	let itemsD = 
 		[
 			['Perfil', '/perfil', 'upBar'],
-			['Logout', '/logout', 'upBar cornerR']
+			['Logout', '/logout', 'upBar']
 		]
 	let itemsAll = [itemsE, itemsD]
 </script>
 	<ul class="upBar">
 	{#each itemsAll as items}
-		<ul class="third items">
+		<ul class="third items 
+		{itemsAll.indexOf(items)===0
+		 ? 'left'
+		 : 'right'}">
 		{#each items as [name, href, option]}
 			<Button {...{name, href, option}}/>
 		{/each}
@@ -28,25 +31,22 @@
 	</ul>
 <style>
 	ul {
-		padding: 0
+		padding: 0;
+		display: flex;
 	}
 	.logo {
 		place-content: center;
 		padding: 1em 2em;
 		display: grid;
 	}
-	.upBar {
-		display: flex;
-		margin: auto;
-	}
 	.third {
-		width: 30vw;
-		display: flex;
-		flex-flow: row
+		width: 33vw;
 	}
-	.third.items {
-		display: flex;
-		flex-flow: row
+	
+	.left {
+		justify-content: flex-start
 	}
-
+	.right {
+		justify-content: flex-end
+	}
 </style>
