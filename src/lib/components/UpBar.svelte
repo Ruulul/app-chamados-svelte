@@ -44,7 +44,6 @@
 	}
 	.third.items {
 		display: grid;
-		list-style-type: none;
 	}
 
 </style>
