@@ -16,5 +16,6 @@
 <style>
 	ul {
 		float: left;
+		padding: 0
 	}
 </style>

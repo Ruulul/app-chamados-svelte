@@ -7,8 +7,8 @@
 		]
 	let itemsD = 
 		[
-			['Logout', '/logout', 'upBar cornerR'],
-			['Perfil', '/perfil', 'upBar']
+			['Perfil', '/perfil', 'upBar'],
+			['Logout', '/logout', 'upBar cornerR']
 		]
 	let itemsAll = [itemsE, itemsD]
 </script>
@@ -41,9 +41,12 @@
 	}
 	.third {
 		width: 30vw;
+		display: flex;
+		flex-flow: row
 	}
 	.third.items {
-		display: grid;
+		display: flex;
+		flex-flow: row
 	}
 
 </style>
