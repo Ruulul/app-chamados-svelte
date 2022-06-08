@@ -1,5 +1,6 @@
 <script>
 	import Icon from '$lib/components/MenuIcon.svelte'
+	import Tooltip from '$lib/components/Tooltip.svelte'
 	import Logo from '$lib/assets/MainLogo.svelte';
 	let itemsE =
 		[
@@ -12,7 +13,7 @@
 		]
 	let itemsAll = [itemsE, itemsD]
 </script>
-	<ul class="upBar">
+	<ul>
 	{#each itemsAll as items}
 		<ul class="third 
 		{itemsAll.indexOf(items)===0
@@ -20,9 +21,11 @@
 		 : 'right'}">
 		{#each items as [name, href]}
 			<li>
+				<Tooltip tip={name}>
 				<a {href}>
 					<Icon {name} {href}/>
 				</a>
+				</Tooltip>
 			</li>
 		{/each}
 		</ul>
@@ -34,9 +37,6 @@
 	{/each}
 	</ul>
 <style>
-	.hidden {
-		visibility: none;
-	}
 	li:not(.logo) {
 		margin: 1em 2em;
 		width: 1.5em;
@@ -48,7 +48,6 @@
 		border-radius: 40% 40% 0 0;
 		place-content: center;
 		display: grid;
-		margin: auto
 	}
 	ul {
 		padding: 0;

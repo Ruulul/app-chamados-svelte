@@ -1,24 +1,28 @@
 <script>
-	import { fade } from 'svelte/transition';
-	export let tip = "tooltip"
-	let div;
-	$: rect = div?.getBoundingClientRect() || {top: undefined, left: undefined}
-	$: top = `calc(${div?.top} + 0.5em)`
-	$: left = `calc(${div?.left} + 3em)`
-	$: console.log(top, left)
+	export let tip = 'tooltip'
+	export let top = 1.2
+	export let left = -1.5
 </script>
-<div bind:this={div}>
+<div>
 	<slot/>
-	<span
-		transition:fade
-		style:top
-		style:left>
-		{tip}
-	</span>
+	<div 
+		style="
+		position: relative;
+		top:	{top}em;
+		left:	{left}em;
+		">
+		<span>
+			{tip}
+		</span>
+	</div>
 </div>
 <style>
+	* {
+		display: flex;
+	}
 	div {
 		width: fit-content;
+		flex-flow: column wrap;
 	}
 	span {
 		position: absolute;
