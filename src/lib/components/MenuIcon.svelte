@@ -1,27 +1,12 @@
 <script>
-	import Tooltip from '$lib/components/Tooltip.svelte'
-	export let name
 	export let href
-	export let option
+	export let name = ""
 	
 	let icon = href == '/' ? 'home' : href.split('/')[1]
 	let src = `/menu_icons/${icon}.svg`
 </script>
-{#if option.includes("upBar")}
-<Tooltip class={option} tip={name}>
-	<li class={option}>
-		<a {href}>
-			<img {src}/>
-		</a>
-	</li>
-</Tooltip>
-{:else}
-<li class={option}>
-	<a {href}>
-		<img {src}/>
-	</a>
-</li>
-{/if}
+
+	<img alt="{name}" {src}/>
 
 <style>
 	img {
@@ -35,6 +20,7 @@
 		border: 
 			hsl(100, 50%, 50%)
 			outset;
+		border-radius: 40% 40% 0 0;
 		place-content: center;
 		display: grid;
 		margin: auto

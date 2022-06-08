@@ -1,25 +1,29 @@
 <script>
-	import Button from '$lib/components/Buttons/XBarButton.svelte'
+	import Icon from '$lib/components/MenuIcon.svelte'
 	import Logo from '$lib/assets/MainLogo.svelte';
 	let itemsE =
 		[
-			['Abrir OS', '/abrir_os','upBar'],
+			['Abrir O\'S', '/abrir_os'],
 		]
 	let itemsD = 
 		[
-			['Perfil', '/perfil', 'upBar'],
-			['Logout', '/logout', 'upBar']
+			['Perfil', '/perfil'],
+			['Logout', '/logout']
 		]
 	let itemsAll = [itemsE, itemsD]
 </script>
 	<ul class="upBar">
 	{#each itemsAll as items}
-		<ul class="third items 
+		<ul class="third 
 		{itemsAll.indexOf(items)===0
 		 ? 'left'
 		 : 'right'}">
-		{#each items as [name, href, option]}
-			<Button {...{name, href, option}}/>
+		{#each items as [name, href]}
+			<li>
+				<a {href}>
+					<Icon {name} {href}/>
+				</a>
+			</li>
 		{/each}
 		</ul>
 		{#if itemsAll.indexOf(items)===0}
@@ -30,6 +34,22 @@
 	{/each}
 	</ul>
 <style>
+	.hidden {
+		visibility: none;
+	}
+	li:not(.logo) {
+		margin: 1em 2em;
+		width: 1.5em;
+		list-style-type: none;
+		padding: 0.5em;
+		border: 
+			hsl(100, 50%, 50%)
+			outset;
+		border-radius: 40% 40% 0 0;
+		place-content: center;
+		display: grid;
+		margin: auto
+	}
 	ul {
 		padding: 0;
 		display: flex;

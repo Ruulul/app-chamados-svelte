@@ -1,17 +1,19 @@
 <script>
-	import Button from '$lib/components/Buttons/XBarButton.svelte'
+	import Icon from '$lib/components/MenuIcon.svelte'
 	let items =
 		[
-			['Home', '/', 'sideBar'],
-			['Serviços', '/servicos', 'sideBar'],
-			['Configurações', '/config', 'sideBar']
+			['Home', '/'],
+			['Serviços', '/servicos'],
+			['Configurações', '/config']
 		]
 </script>
 <ul>
-	{#each items as [name, href, option]}
+	{#each items as [name, href]}
 	<li>
-	<span>{name}</span>
-	<Button {...{name, href, option}} />
+		<a {href} alt="Página {name}">
+			<span>{name}</span>
+			<Icon {href} />
+		</a>
 	</li>
 	{/each}
 </ul>
@@ -28,6 +30,7 @@
 	}
 	li {
 		display: flex;
+		margin: 1em;
 		width: 15vw;
 		justify-content: end;
 	}
