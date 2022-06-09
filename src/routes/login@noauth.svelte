@@ -1,8 +1,19 @@
 <script>
+	import { user } from '$lib/stores/user.js'
+	import { goto } from '$app/navigation'
 	let email;
 	let senha;
+	let error;
 	function handleLogin() {
-		console.log(`Login de ${JSON.stringify({email, senha})}`)
+		user.login({email, senha})
+			.then(async (response)=>{
+				if(response.error) {
+					return error = response.error
+				}
+				else await goto('/')
+			})
+			.then(()=>console.log('Ok'))
+			.catch(console.error)
 	}
 </script>
 <h1>
@@ -25,10 +36,14 @@ Login
 		</label>
 		<input required bind:value={senha} type='password'/>
 	</div>
+	<span>{error || ''}</span>
 	<button type='submit'>Login</button>
 </form>
 </main>
 <style>
+	body {
+		background-image: linear-gradient(270deg, red, green)
+	}
 	h1 {
 		text-align: center;
 	}
