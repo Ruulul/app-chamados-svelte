@@ -6,7 +6,7 @@
 	let src = `/menu_icons/${icon}.svg`
 </script>
 
-	<img alt="{name}" {src}/>
+	<img alt="" {src}/>
 
 <style>
 	img {

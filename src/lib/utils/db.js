@@ -1,5 +1,6 @@
 let filial = '0101'
-let api = 'https://10.0.0.5:5000/api/' + filial
+let server = 'https://10.0.0.5:5000/api/'
+let api =  () => server + filial
 
 let headers = new Headers([
 	['Content-Type', 'application/json'],
@@ -8,8 +9,9 @@ let init = {
 	headers,
 	credentials: 'include'
 }
+export const set_filial = (nova_filial) => filial = nova_filial
 export async function get_id_nova_os () {
-	return fetch(api + '/monitoring')
+	return fetch(api() + '/monitoring')
 		.then(handleResponse)
 		.then(function ({chamados}){
 			return chamados.length !== 0 ? chamados.at(-1).id + 1 : 0
@@ -24,20 +26,20 @@ export const auth = {
 	login: function login (auth) {
 		let { email, senha } = auth
 		let login = { email, senha }
-		return fetch(api + '/login', {
+		return fetch(api() + '/login', {
 			...init,
 			method: 'POST',
 			body: JSON.stringify(login)
 		}).then(handleResponse).catch(console.error)
 	},
 	logout: function logout () {
-		return fetch(api + '/logout', {
+		return fetch(api() + '/logout', {
 			...init,
 			method: 'POST'
 		}).catch(console.error)
 	},
 	getPerfil:  function getPerfil () {
-		return fetch(api + '/perfil', init)
+		return fetch(api() + '/perfil', init)
 			.then(handleResponse)
 			.catch(console.error)
 	}
@@ -46,7 +48,6 @@ export const auth = {
 async function handleResponse (response) {
 	let text = await response.text()
 	let [parsable, parse] = isParsable(text)
-	console.log({parse, parsable})
 	if (parsable)
 		return parse
 	else return text

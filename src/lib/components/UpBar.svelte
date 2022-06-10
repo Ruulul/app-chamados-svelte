@@ -4,7 +4,7 @@
 	import Logo from '$lib/assets/MainLogo.svelte';
 	let itemsE =
 		[
-			['Abrir O\'S', '/abrir_os'],
+			['Abrir O S.', '/abrir_os'],
 		]
 	let itemsD = 
 		[
@@ -21,6 +21,7 @@
 		 : 'right'}">
 		{#each items as [name, href]}
 			<li>
+				<span hidden>{name}</span>
 				<Tooltip tip={name}>
 				<a {href}>
 					<Icon {name} {href}/>
