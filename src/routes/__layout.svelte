@@ -1,4 +1,5 @@
 <script>
+import global_style from '$lib/assets/global_style.css'
 import SideBar from '$lib/components/SideBar.svelte'
 import UpBar from '$lib/components/UpBar.svelte'
 import { user } from '$lib/stores/user.js'
@@ -19,7 +20,7 @@ function auth() {
 	<h1>Loading...</h1>
 {:then}
 	{#await auth() then}
-		<a hidden href="#main">Ir para conteúdo principal</a>
+		<a href="#main">Ir para conteúdo principal</a>
 		<UpBar/>
 		<SideBar/>
 		<div id="main">
@@ -27,3 +28,21 @@ function auth() {
 		</div>
 	{/await}
 {/await}
+
+<style>
+a	{
+	transition: width 5s, height 5s;
+	position:absolute;
+	left:-10000px;
+	top:auto;
+	width:1px;
+	height:1px;
+	overflow:hidden;
+}
+ 
+a:focus {
+	width:auto;
+	height:auto;
+	left: 0
+}
+</style>

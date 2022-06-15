@@ -1,3 +1,8 @@
+<svelte:head>
+	<title>
+		Login
+	</title>
+</svelte:head>
 <script>
 	import { user } from '$lib/stores/user.js'
 	import { goto } from '$app/navigation'
@@ -25,25 +30,22 @@ Login
 </h2>
 <form on:submit|preventDefault="{handleLogin}">
 	<div>
-		<label>
+		<label for='email'>
 		Email
 		</label>
-		<input required bind:value={email} type="email"/>
+		<input id='email' required bind:value={email} type="email"/>
 	</div>
 	<div>
-		<label>
+		<label for='senha'>
 		Senha
 		</label>
-		<input required bind:value={senha} type='password'/>
+		<input id='senha' required bind:value={senha} type='password'/>
 	</div>
 	<span>{error || ''}</span>
 	<button type='submit'>Login</button>
 </form>
 </main>
 <style>
-	body {
-		background-image: linear-gradient(270deg, red, green)
-	}
 	h1 {
 		text-align: center;
 	}

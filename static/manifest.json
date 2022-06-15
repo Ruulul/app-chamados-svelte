@@ -1,0 +1,19 @@
+{
+    "name": "App de Chamados Gold Seed",
+    "short_name": "Gold Seed",
+    "lang": "pt-BR",
+    "start_url": "/",
+    "display": "standalone",
+    "icons": [
+        {
+            "src": "/favicon.png",
+            "sizes": "32x32",
+            "type": "image/png"
+        },
+        {
+            "src": "/favicon.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

@@ -4,7 +4,7 @@
 	import Logo from '$lib/assets/MainLogo.svelte';
 	let itemsE =
 		[
-			['Abrir O S.', '/abrir_os'],
+			['Abrir O.S.', '/abrir_os'],
 		]
 	let itemsD = 
 		[
@@ -13,7 +13,7 @@
 		]
 	let itemsAll = [itemsE, itemsD]
 </script>
-	<ul>
+	<ul name="Barra superior">
 	{#each itemsAll as items}
 		<ul class="third 
 		{itemsAll.indexOf(items)===0

@@ -2,20 +2,30 @@ import { writable } from 'svelte/store'
 import { auth } from '$lib/utils/db.js'
 
 function createUser() {
+	function trackable_promise() {
+		let resolve, reject;
+		const promise = new Promise((res, rej)=>{
+			resolve = res
+			reject = rej
+		})
+		return { promise, resolve, reject }
+	}
+	const { promise, resolve, reject } = trackable_promise()
 	const { subscribe, set, update } = writable(
-		new Promise(function(){}),
+		promise,
 		function start(set) {
 			try {
 				auth.getPerfil()
-					.then(function(perfil){
-						set(
-							perfil === 'Não autorizado'
-								? null
-								: perfil)
+					.then(function(data){
+						let perfil = data === 'Não autorizado'
+						? null
+						: data
+						resolve(perfil)
+						set(perfil)
 					})
 			} catch (e) {
 				console.error(e)
-				set(null)
+				reject(null)
 			}
 		}
 	);
@@ -34,7 +44,13 @@ function createUser() {
 			try {
 				let res = await auth.login(user)
 				if (!res.error)
-					set(res)
+					auth.getPerfil()
+						.then(function(perfil){
+							set(
+								perfil === 'Não autorizado'
+									? null
+									: perfil)
+						})
 				else set(null)
 				return res
 			} catch(e) {
