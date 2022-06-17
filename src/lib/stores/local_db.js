@@ -1,6 +1,5 @@
 import { readable, writable, derived } from 'svelte/store'
 import { config } from '$lib/utils/db.js'
-import { browser } from '$app/env'
 
 let idd
 idd = 0

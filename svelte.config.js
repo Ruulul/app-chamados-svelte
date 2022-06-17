@@ -5,8 +5,9 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		prerender: {
-			default: true
-		}
+			default: true,
+		},
+		trailingSlash: 'always'
 	}
 };
 

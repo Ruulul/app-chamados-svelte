@@ -24,11 +24,24 @@
 				<span hidden>{name}</span>
 				<Tooltip tip={name}>
 				<a {href}>
-					<Icon {name} {href}/>
+					<Icon {href}/>
 				</a>
 				</Tooltip>
 			</li>
 		{/each}
+		{#if itemsAll.indexOf(items)===0}
+		<li style="border: none; display: flex; outline: none;">
+			Filial: 
+			<select style="appearance: none; padding: 0 0.5em 0 0;">
+				<option>
+					0101
+				</option>
+				<option>
+					0201
+				</option>
+			</select>
+		</li>
+		{/if}
 		</ul>
 		{#if itemsAll.indexOf(items)===0}
 		<li class="logo third">
