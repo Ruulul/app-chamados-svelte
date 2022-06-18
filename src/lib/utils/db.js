@@ -1,4 +1,5 @@
 let filial = '0101'
+let filiais_validas = [filial]
 let server = 'https://10.0.0.5:5000/api/'//'https://45.177.254.161:5000/api/'
 let api =  () => server + filial
 import { browser } from '$app/env'
@@ -12,12 +13,9 @@ let init = {
 }
 
 /**
- * Configura nova filial para todas as requisições da API
- * @param {string} nova_filial 
- * @returns 
+ * Store (padrão Observer) que mantém sincronizado as informações atuais da filial,
+ * permitindo reatividade assim que ela muda, para quando há valores que dependem disso
  */
-
-
 const filial_store = {
 	observers: [],
 	subscribe: function (subscription) {
@@ -29,6 +27,8 @@ const filial_store = {
 		this.observers.forEach(subscription=>subscription(filial))
 	},
 	set: function (nova_filial) {
+		if (!filiais_validas.includes(nova_filial))
+			return;
 		filial = nova_filial;
 		this.notify();
 	}
@@ -168,6 +168,7 @@ export const auth = {
 		return requestGet('/perfil')
 				.then(async profile=>{
 					let filiais = await requestGet('/all').catch(console.error)
+					filiais_validas = Array.isArray(filiais) ? filiais.map(filial=>filial.codigo) : [filial]
 					filial = Array.isArray(filiais) ? filiais.find(filial=>filial.id===profile.filialId).codigo : filial
 					return profile
 				})

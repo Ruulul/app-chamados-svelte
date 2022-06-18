@@ -40,9 +40,9 @@
 <div>
     <Filtro 
         label='Tipo' 
-        options={$tipos_os.map(tipo=>tipo.tipo)}
+        options={$tipos_os?.map(({tipo})=>tipo) || []}
         bind:value={tipo}
-    />
+    /><button title='Limpar tipo' on:click={()=>tipo=undefined}>X</button>
     <Filtro 
         label='Status' 
         options={
@@ -53,7 +53,7 @@
             ]
         }
         bind:value={status}
-    />
+    /><button title='Limpar status' on:click={()=>status=undefined}>X</button>
     <button on:click={limpaFiltros}>Limpar filtros!</button>
 </div>
 <table>
@@ -86,9 +86,12 @@
 </table>
 
 <style>
+    div {
+        float: left;
+    }
     table {
         justify-content: space-around;
-        width: 80%;
+        width: 75%;
     }
     tr {
         text-align: center;

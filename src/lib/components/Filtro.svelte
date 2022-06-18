@@ -18,3 +18,9 @@
         {/if}
     {/each}
 </select>
+
+<style>
+    * {
+        display: flex;
+    }
+</style>

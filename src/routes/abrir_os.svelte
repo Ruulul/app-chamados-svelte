@@ -13,9 +13,8 @@
 	$: $categorias_os, setCategoria()
 	$: tipo = categoria?.tipo
 	function setCategoria () {
-		categoria = $categorias_os[0]
+		categoria = $categorias_os ? $categorias_os[0] : 'Carregando...'
 	}
-	$: console.log(categoria)
 
 	async function onSubmit() {
 		let os = {
@@ -92,9 +91,13 @@
 		<span>Departamento: {$user.dept}</span>
 		<label for="categoria">Categoria</label>
 		<select id="categoria" name="categoria" bind:value="{categoria}">
+			{#if $categorias_os}
 			{#each $categorias_os as categoria(categoria.id)}
 				<option value={categoria}>{categoria.categoria}</option>
 			{/each}
+			{:else}
+				<option>Carregando...</option>
+			{/if}
 		</select>
 		<label for="urgência">Urgência</label>
 		<select id="urgência" name="urgência" bind:value="{urgencia}">
