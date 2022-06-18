@@ -7,7 +7,7 @@
 			['Configurações', '/config']
 		]
 </script>
-<ul>
+<ul title='Barra lateral'>
 	{#each items as [name, href]}
 	<li>
 		<a {href} alt="Página {name}">

@@ -1,5 +1,5 @@
 <script>
-    import { get_servico, get_file } from '$lib/utils/db.js'
+    import { get_servico, get_file, get_user } from '$lib/utils/db.js'
     import { page } from '$app/stores'
     import { goto } from '$app/navigation'
     let servico
@@ -29,11 +29,19 @@
         </div>
         <div class='campo'>
             <h2>Atendente</h2>
-            {servico.atendenteId || 'Sem atendente'}
+            {#await get_user(servico.atendenteId)}
+                Carregando...
+            {:then {nome}}
+            {nome || 'Sem atendente'}
+            {/await}
         </div>
         <div class='campo'>
             <h2>Atendido</h2>
-            {servico.usuarioId}
+            {#await get_user(servico.usuarioId)}
+                Carregando...
+            {:then {nome}}
+            {nome || 'Sem usuário'}
+            {/await}
         </div>
         <div class='campo'>
             <h2>Categoria</h2>
@@ -52,7 +60,11 @@
             {#each servico.chat.reverse() as message}
                 <div class='campo'>
                     <h3>
-                        {message.autorId}
+                        {#await get_user(message.autorId)}
+                            Carregando...
+                        {:then {nome}}
+                        {nome || 'Sem atendente'}
+                        {/await}
                     </h3>
                     <p>
                         {message.mensagem}
@@ -63,20 +75,24 @@
     </div>
 </div>
 <div class='wrapper'>
-    <div class='campo'>
+    <div class='campo anexo'>
         <h2>Anexo</h2>
-        {#await get_file(servico.anexo)}
-        Carregando...
-        {:then anexo}
-        {#if anexo.includes('image')}
-            <img alt='' src={anexo}/>
+        {#if String(servico.anexo) !== 'undefined'}
+            {#await get_file(servico.anexo)}
+                Carregando...
+            {:then anexo}
+                {#if anexo.includes('image')}
+                    <img alt='' src={anexo}/>
+                {:else}
+                    <object title='anexo' alt='' data={anexo}>
+                        Não pudemos exibir
+                    </object>
+                    <a href={anexo} target='_blank'>Abrir anexo</a>
+                {/if}
+            {/await}
         {:else}
-            <object title='anexo' alt='' data={anexo}>
-                Não pudemos exibir
-            </object>
-            <a href={anexo} target='_blank'>Abrir anexo</a>
+            Sem anexo nesse chamado
         {/if}
-        {/await}
     </div>
     <div class='buttons'>
         <button>Adicionar Mensagem</button>
@@ -97,7 +113,17 @@
         display: flex;
         flex-flow: row;
         border: red solid;
-        border-radius: 1.5em;
+        border-top: none;
+        border-bottom: none;
+    }
+    .wrapper:first-child {
+        border-radius: 1.5em 1.5em 0 0;
+        border-top: red solid;
+    }
+    .wrapper:last-child {
+        border-radius: 0 0 1.5em 1.5em;
+        border-bottom: red solid;
+        justify-content: flex-end;
     }
     .campo {
         font-size: small;
@@ -117,10 +143,13 @@
     }
     .buttons {
         display: flex;
-        width: 100%;
         height: fit-content;
         place-content: center;
         margin-top: 3em;
+        width: 50%;
+    }
+    .campo.anexo {
+        width: 45%;
     }
     .buttons button {
         padding: 0.2em;

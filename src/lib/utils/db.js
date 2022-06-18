@@ -16,8 +16,29 @@ let init = {
  * @param {string} nova_filial 
  * @returns 
  */
-export const set_filial = (nova_filial) => filial = nova_filial
 
+
+const filial_store = {
+	observers: [],
+	subscribe: function (subscription) {
+		subscription(filial);
+		this.observers.push(subscription)
+		return ()=>this.observers.filter(sub=>sub!==subscription)
+	},
+	notify: function () {
+		this.observers.forEach(subscription=>subscription(filial))
+	},
+	set: function (nova_filial) {
+		filial = nova_filial;
+		this.notify();
+	}
+}
+
+const filial_store_obj = {
+	subscribe: filial_store.subscribe.bind(filial_store), 
+	set: filial_store.set.bind(filial_store)
+}
+export {filial_store_obj as filial}
 /**
  * Obtém o id sequencial da Ordem de Serviço a ser aberta.
  * @returns {Number} id nova filial
@@ -40,6 +61,16 @@ export async function get_id_nova_os () {
  */
 export async function get_file (filename) {
 	return requestGet('/files/' + filename)
+		.catch(console.error)
+}
+
+/**
+ * Pega da API um usuário pelo Id
+ * @param {Number} id 
+ * @returns Usuário pelo id
+ */
+export async function get_user (id) {
+	return requestGet('/usuario/' + id)
 		.catch(console.error)
 }
 

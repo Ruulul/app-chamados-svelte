@@ -4,14 +4,58 @@
     </title>
 </svelte:head>
 <script>
-    import { get_servicos } from '$lib/utils/db.js'
+    import { get_servicos, filial } from '$lib/utils/db.js'
+    import { tipos_os } from '$lib/stores/local_db.js'
+    import Filtro from '$lib/components/Filtro.svelte'
+
 
     let servicos = []
-    get_servicos().then((data)=>servicos=data.reverse())
+    let servicos_filtrados = []
+    let status = 'pendente'
+    let tipo = 'Infraestrutura'
+    $: $filial, get_servicos().then((data)=>servicos=data.reverse())
 
-    $: servicos_pendentes = servicos.filter(servico=>servico.status==='pendente')
+    $: servicos, status, tipo, filtraChamados()
+
+    function filtraChamados() {
+        if (status === 'atendimento')
+            if (tipo)    
+            return servicos_filtrados = servicos.filter(servico=>servico.status === 'pendente' && servico.tipo === tipo && servico.atendimento === 'true')
+            else return servicos_filtrados = servicos.filter(servico=>servico.status === 'pendente' && servico.atendimento === 'true')
+        if (status && tipo)
+        return servicos_filtrados = servicos.filter(servico=>servico.status === status && servico.tipo === tipo)
+        if (status)
+        return servicos_filtrados = servicos.filter(servico=>servico.status === status)
+        if (tipo)
+        return servicos_filtrados = servicos.filter(servico=>servico.tipo === tipo)
+        return servicos_filtrados = servicos
+    }
+
+    function limpaFiltros() {
+        status = undefined
+        tipo = undefined
+    }
 </script>
 
+<div>
+    <Filtro 
+        label='Tipo' 
+        options={$tipos_os.map(tipo=>tipo.tipo)}
+        bind:value={tipo}
+    />
+    <Filtro 
+        label='Status' 
+        options={
+            [
+                {value: 'pendente', label: 'Pendente'}, 
+                {value: 'atendimento', label: 'Em Atendimento'},
+                {value: 'fechado', label: 'Fechado'}
+            ]
+        }
+        bind:value={status}
+    />
+    <button on:click={limpaFiltros}>Limpar filtros!</button>
+</div>
 <table>
     <thead>
         <th>
@@ -25,7 +69,7 @@
         </th>
     </thead>
     <tbody>
-        {#each servicos_pendentes as servico}
+        {#each servicos_filtrados as servico}
             <tr>
                 <td>
                     <a href="/servico/{servico.id}"><img alt='' src='/abrir-chamado.svg'/></a>
@@ -53,5 +97,6 @@
     img {
         width: 1.5em;
         margin: 0.2em;
+        color: green;
     }
 </style>

@@ -2,6 +2,8 @@
 	import Icon from '$lib/components/MenuIcon.svelte'
 	import Tooltip from '$lib/components/Tooltip.svelte'
 	import Logo from '$lib/assets/MainLogo.svelte';
+	import Filtro from '$lib/components/Filtro.svelte';
+	import { filial } from '$lib/utils/db.js'
 	let itemsE =
 		[
 			['Abrir O.S.', '/abrir_os'],
@@ -13,7 +15,7 @@
 		]
 	let itemsAll = [itemsE, itemsD]
 </script>
-	<ul name="Barra superior">
+	<ul title='Barra superior'>
 	{#each itemsAll as items}
 		<ul class="third 
 		{itemsAll.indexOf(items)===0
@@ -21,7 +23,7 @@
 		 : 'right'}">
 		{#each items as [name, href]}
 			<li>
-				<span hidden>{name}</span>
+				<span>{name}</span>
 				<Tooltip tip={name}>
 				<a {href}>
 					<Icon {href}/>
@@ -31,15 +33,11 @@
 		{/each}
 		{#if itemsAll.indexOf(items)===0}
 		<li style="border: none; display: flex; outline: none;">
-			Filial: 
-			<select style="appearance: none; padding: 0 0.5em 0 0;">
-				<option>
-					0101
-				</option>
-				<option>
-					0201
-				</option>
-			</select>
+			<Filtro
+				label='Filial'
+				options={['0101', '0201']}
+				on:input={({target:{value}})=>filial.set(value)}
+			/>
 		</li>
 		{/if}
 		</ul>
@@ -51,6 +49,9 @@
 	{/each}
 	</ul>
 <style>
+	span {
+		font-size: 0;
+	}
 	li:not(.logo) {
 		margin: 1em 2em;
 		width: 1.5em;
