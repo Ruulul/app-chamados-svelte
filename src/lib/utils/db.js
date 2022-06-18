@@ -149,9 +149,7 @@ export const auth = {
 	 * @returns 
 	 */
 	login: function login (auth) {
-		let { email, senha } = auth
-		let login = { email, senha }
-		return requestPost('/login', login).catch(console.error)
+		return requestPost('/login', auth).catch(console.error)
 	},
 	/**
 	 * Realiza a desautenticação na API.

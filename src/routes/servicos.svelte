@@ -11,6 +11,7 @@
 
     let servicos = []
     let servicos_filtrados = []
+    let contagem = 0, contagem_total = 0
     let status = 'pendente'
     let tipo = 'Infraestrutura'
     $: $filial, get_servicos().then((data)=>servicos=data.reverse())
@@ -20,15 +21,17 @@
     function filtraChamados() {
         if (status === 'atendimento')
             if (tipo)    
-            return servicos_filtrados = servicos.filter(servico=>servico.status === 'pendente' && servico.tipo === tipo && servico.atendimento === 'true')
-            else return servicos_filtrados = servicos.filter(servico=>servico.status === 'pendente' && servico.atendimento === 'true')
-        if (status && tipo)
-        return servicos_filtrados = servicos.filter(servico=>servico.status === status && servico.tipo === tipo)
-        if (status)
-        return servicos_filtrados = servicos.filter(servico=>servico.status === status)
-        if (tipo)
-        return servicos_filtrados = servicos.filter(servico=>servico.tipo === tipo)
-        return servicos_filtrados = servicos
+            servicos_filtrados = servicos.filter(servico=>servico.status === 'pendente' && servico.tipo === tipo && servico.atendimento === 'true')
+            else servicos_filtrados = servicos.filter(servico=>servico.status === 'pendente' && servico.atendimento === 'true')
+        else if (status && tipo)
+        servicos_filtrados = servicos.filter(servico=>servico.status === status && servico.tipo === tipo)
+        else if (status)
+        servicos_filtrados = servicos.filter(servico=>servico.status === status)
+        else if (tipo)
+        servicos_filtrados = servicos.filter(servico=>servico.tipo === tipo)
+        else servicos_filtrados = servicos
+        contagem = servicos_filtrados.length
+        contagem_total = servicos.length
     }
 
     function limpaFiltros() {
@@ -37,7 +40,7 @@
     }
 </script>
 
-<div>
+<div class='filtros'>
     <Filtro 
         label='Tipo' 
         options={$tipos_os?.map(({tipo})=>tipo) || []}
@@ -55,6 +58,8 @@
         bind:value={status}
     /><button title='Limpar status' on:click={()=>status=undefined}>X</button>
     <button on:click={limpaFiltros}>Limpar filtros!</button>
+    <p>{contagem} serviços listados no momento;</p>
+    <p>{contagem_total} serviços no total.</p>
 </div>
 <table>
     <thead>
@@ -88,6 +93,11 @@
 <style>
     div {
         float: left;
+    }
+    .filtros {
+        display: flex;
+        flex-flow: column;
+        width: 7vw;
     }
     table {
         justify-content: space-around;

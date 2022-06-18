@@ -1,6 +1,5 @@
 <script>
 	import Icon from '$lib/components/MenuIcon.svelte'
-	import Tooltip from '$lib/components/Tooltip.svelte'
 	import Logo from '$lib/assets/MainLogo.svelte';
 	import Filtro from '$lib/components/Filtro.svelte';
 	import { filial } from '$lib/utils/db.js'
@@ -15,20 +14,17 @@
 		]
 	let itemsAll = [itemsE, itemsD]
 </script>
-	<ul title='Barra superior'>
+	<ul>
 	{#each itemsAll as items}
 		<ul class="third 
-		{itemsAll.indexOf(items)===0
+		{itemsAll.indexOf(items)%2===0
 		 ? 'left'
 		 : 'right'}">
 		{#each items as [name, href]}
-			<li>
-				<span>{name}</span>
-				<Tooltip tip={name}>
+			<li title={name}>
 				<a {href}>
 					<Icon {href}/>
 				</a>
-				</Tooltip>
 			</li>
 		{/each}
 		{#if itemsAll.indexOf(items)===0}
@@ -49,9 +45,6 @@
 	{/each}
 	</ul>
 <style>
-	span {
-		font-size: 0;
-	}
 	li:not(.logo) {
 		margin: 1em 2em;
 		width: 1.5em;
