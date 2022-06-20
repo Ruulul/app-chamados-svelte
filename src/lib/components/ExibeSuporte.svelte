@@ -1,11 +1,22 @@
 <script>
-    export let nome = 'Suporte'
-    export let atendendo = 0
-    export let atendido_hoje = 0
-    export let atendido_semana = 0
+    export let nome = 'Carregando...'
+    export let atendendo = '...'
+    export let id
+    export let atendido_hoje = '...'
+    export let atendido_semana = '...'
+    import { get_file } from '$lib/utils/db.js'
 </script>
 
 <div>
+    {#await get_file('ProfileIcon' + id)}
+        <p>Carregando foto de perfil...</p>
+    {:then src}
+        {#if !src || src === 'Não autorizado'}
+            <p>Sem foto de perfil</p>
+        {:else}
+            <img alt='' {src} />
+        {/if}
+    {/await}
     <h3>{nome}</h3>
     <h4>Chamados</h4>
     <p>Em atendimento: {atendendo}</p>
@@ -21,5 +32,13 @@
         width: fit-content;
         padding: 1em;
         float: left;
+    }
+
+    img {
+        width: 10em;
+        height: 10em;
+        border: thin crimson solid;
+        border-radius: 4em 4em 2em 2em;
+        padding: 0.2em;
     }
 </style>

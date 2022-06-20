@@ -64,12 +64,18 @@ let init = {
  * permitindo reatividade assim que ela muda, para quando há valores que dependem disso
  */
 const filial_store = {
+	/**@type {Array<Function>} Lista de Observers*/
 	observers: [],
+	/**Adiciona inscrição aos Observers
+	 * @param {SubscribeStore} subscription Inscrição. Executar essa função atualiza o Observer.
+	 * @returns {Function} Desfazer inscrição. Remove da lista de Observers.
+	 */
 	subscribe: function (subscription) {
 		subscription(filial);
 		this.observers.push(subscription)
 		return ()=>this.observers.filter(sub=>sub!==subscription)
 	},
+	/**Notifica todos os Observers registrado */
 	notify: function () {
 		this.observers.forEach(subscription=>subscription(filial))
 	},
@@ -105,23 +111,24 @@ export async function get_id_nova_os () {
 			})
 }
 
-export async function get_monitoring () {
+export function get_monitoring () {
 	return requestGet('/monitoring')
-		.then(function ({chamados, atendentes}) {
+		.then(async function ({chamados, atendentes}) {
 			let response = []
 			let hojeOSI = converteDateToOSI(Date())
 			let date_7daysOSI = converteDateToOSI(new Date(Date.now()-6.048e8).toString())
 			console.log(hojeOSI, date_7daysOSI)
 			for (let atendente of atendentes) {
-				let { id, nome, contatos } = atendente
+				console.log(atendente)
+				let { id, nome } = atendente
 				let chamados_atendente = chamados.filter(({atendenteId})=>atendenteId==id)
 				let chamados_pendentes = chamados_atendente.filter(({status})=>status==='pendente')
 				let atendendo = chamados_pendentes.filter(({atendimento})=>atendimento==='true').length
 				let atendido_hoje = chamados_atendente.filter(({fechado_em})=>fechado_em?.split('T')[0]===hojeOSI).length
 				let atendido_semana = chamados_atendente.filter(({fechado_em})=>fechado_em?.split('T')[0]>=date_7daysOSI).length
 				let atendente_monitoring = {
+					id,
 					nome,
-					contatos,
 					atendendo,
 					atendido_hoje,
 					atendido_semana
