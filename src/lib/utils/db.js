@@ -26,7 +26,7 @@ const filial_store = {
 	notify: function () {
 		this.observers.forEach(subscription=>subscription(filial))
 	},
-	set: function (nova_filial) {
+	setFilial: function (nova_filial) {
 		if (!filiais_validas.includes(nova_filial))
 			return;
 		filial = nova_filial;
@@ -34,11 +34,11 @@ const filial_store = {
 	}
 }
 
-const filial_store_obj = {
+const filial_store_interface = {
 	subscribe: filial_store.subscribe.bind(filial_store), 
-	set: filial_store.set.bind(filial_store)
+	set: filial_store.setFilial.bind(filial_store)
 }
-export {filial_store_obj as filial}
+export {filial_store_interface as filial}
 /**
  * Obtém o id sequencial da Ordem de Serviço a ser aberta.
  * @returns {Number} id nova filial
@@ -123,7 +123,14 @@ export async function get_servico (id) {
 export const config = {
 	/**
 	 * Obtém os tipos de O.S. da API.
-	 * @returns {Array<Object>} Lista de tipos de O.S. no sistema.
+	 * @typedef {{id: Number, autorId: Number, mensagem: string}} Mensagem
+	 * @typedef {{
+	 * 	id: Number,
+	 * 	assunto: string,
+	 * 	filialId: Number,
+	 * 	chat: Array<Mensagem>
+	 * }} OS
+	 * @returns {Array<OS>} Lista de tipos de O.S. no sistema.
 	 */
 	getTipos: function getTipos () {
 		return requestGet('/tipos')
@@ -131,7 +138,8 @@ export const config = {
 	},
 	/**
 	 * Obtém as categorias de O.S. da API.
-	 * @returns {Array<Object>} Lista de categorias de O.S. no sistema.
+	 * @typedef {{id: Number, filialId: Number, tipo: string, categoria: string}} Categoria
+	 * @returns {Array<Categoria>} Lista de categorias de O.S. no sistema.
 	 */
 	getCategorias: function getCategorias () {
 		return requestGet('/servicos/categorias')
@@ -145,7 +153,8 @@ export const config = {
 export const auth = {
 	/**
 	 * Realiza a autenticação na API.
-	 * @param {{email: string, senha: string}} auth 
+	 * @typedef {{email: string, senha: string}} AuthData
+	 * @param {AuthData} auth 
 	 * @returns 
 	 */
 	login: function login (auth) {
@@ -160,7 +169,15 @@ export const auth = {
 	},
 	/**
 	 * Obtém as informações de perfil do usuário autenticado no momento.
-	 * @returns {Object} perfil
+	 * @typedef {{
+	 * 	nome: string,
+	 * 	email: string,
+	 * 	filiais: Array<string>,
+	 * 	filialId: Number,
+	 * 	id: Number,
+	 * 	dept: Array<string>
+	 * }} PerfilData
+	 * @returns {PerfilData} perfil
 	 */
 	getPerfil:  function getPerfil () {
 		return requestGet('/perfil')
@@ -178,7 +195,7 @@ export const auth = {
  * Realiza requisições GET na API.
  * @param {string} path 
  * @param {Object} options 
- * @returns Recurso requisitado
+ * @returns {any} Recurso requisitado
  */
 function requestGet(path, options={}) {
 	return request(path, {	
@@ -191,7 +208,7 @@ function requestGet(path, options={}) {
  * Realiza requisições POST na API.
  * @param {string} path 
  * @param {Object} options 
- * @returns
+ * @returns {any}
  */
 function requestPost(path, body, options={}) {
 	return request(path, {	
@@ -202,10 +219,10 @@ function requestPost(path, body, options={}) {
 }
 
 /**
- * Realiza requisições na API.
+ * Realiza requisições na API e trata o Response.
  * @param {string} path 
  * @param {Object} options 
- * @returns Response
+ * @returns {any}
  */
 function request(path, options={}) {
 	return browser ? fetch(api() + path, {

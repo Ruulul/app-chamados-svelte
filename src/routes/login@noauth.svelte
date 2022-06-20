@@ -10,14 +10,16 @@
 	let senha;
 	let error;
 	function handleLogin() {
+		console.log('Iniciando login')
 		user.login({email, senha})
 			.then(async (response)=>{
+				console.log('response: ', response)
 				if(response.error) {
 					return error = response.error
 				}
 				else await goto('/')
 			})
-			.then(()=>console.log('Ok'))
+			.then(()=>console.log('Fim do login'))
 			.catch(console.error)
 	}
 </script>
