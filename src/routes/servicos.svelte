@@ -58,10 +58,11 @@
         bind:value={status}
     /><button title='Limpar status' on:click={()=>status=undefined}>X</button>
     <button on:click={limpaFiltros}>Limpar filtros!</button>
-    <p>{contagem} serviços listados no momento;</p>
-    <p>{contagem_total} serviços no total.</p>
+    <p>{contagem} serviço{contagem.length === 1 ? '' : 's'} listados no momento;</p>
+    <p>{contagem_total} serviço{contagem_total.length === 1 ? '' : 's'} no total.</p>
 </div>
 <table>
+    <caption>Ordens de Serviço</caption>
     <thead>
         <th>
             Abrir
@@ -105,6 +106,11 @@
     }
     tr {
         text-align: center;
+    }
+    caption {
+        caption-side: bottom;
+        text-align: left;
+        padding: 1em;
     }
 
     img {

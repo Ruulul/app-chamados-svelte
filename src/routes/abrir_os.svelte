@@ -45,9 +45,7 @@
 			digest = String.fromCharCode.apply(null, new Uint8Array(digest))	//Then we convert it to a binary string... with the help of the Uint8Array class
 			digest = btoa(digest)			
 			files = [...files, {data: base64File, digest, name: file.name}]
-			file_input.files = new FileList([])
 		}
-
 		function readFileAsBase64(file) {
 			return new Promise(
 				function PromiseReadFileAsBase64(resolve, reject) {

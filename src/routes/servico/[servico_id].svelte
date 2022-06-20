@@ -3,9 +3,6 @@
     import { page } from '$app/stores'
     import { goto } from '$app/navigation'
     let servico
-    let wrapper;
-    $: width = wrapper?.offsetWidth || 0
-    $: console.log(width)
     get_servico($page.params.servico_id).then((data)=>servico=data)
 </script>
 <svelte:head>
@@ -21,7 +18,7 @@
 {:else}
 <h1>Chamado {servico.id}</h1>
 <div class='big-wrapper'>
-<div class='wrapper' bind:this={wrapper}>
+<div class='wrapper'>
     <div class='container'>
         <div class='campo'>
             <h2>Assunto</h2>
@@ -87,8 +84,8 @@
                     <object title='anexo' alt='' data={anexo}>
                         Não pudemos exibir
                     </object>
-                    <a href={anexo} target='_blank'>Abrir anexo</a>
                 {/if}
+                <a href={anexo} target='_blank'>Exibir anexo</a>
             {/await}
         {:else}
             Sem anexo nesse chamado

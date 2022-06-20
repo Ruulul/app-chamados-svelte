@@ -1,4 +1,5 @@
 import { derived } from 'svelte/store'
+
 import { config, filial } from '$lib/utils/db.js'
 
 let idd
@@ -10,6 +11,10 @@ export const tipos_os = derived(filial, function start(_, set) {
 	return ()=>console.log('Fim dos tipos')
 })
 idd = 0
+
+/**
+ * Categorias para os chamados, derivadas da filial
+ */
 export const categorias_os = derived(filial, function start(_, set) {
 	config.getCategorias()
 		.then(set)

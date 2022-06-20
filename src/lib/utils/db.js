@@ -1,3 +1,50 @@
+/**
+ * @typedef {Object} Mensagem
+ * @property {Number} id identificação única da mensagem no banco de dados
+ * @property {Number} autorId identificação única do usuário autor da mensagem
+ * @property {string} mensagem string contendo a mensagem
+ */
+
+/** 
+ * @typedef {Object} OS
+ * @property {Number} id
+ * @property {Number} filialId
+ * @property {string} assunto
+ * @property {Array<Mensagem>} chat
+ */
+/** 
+ * @typedef {Object} Categoria
+ * @property {Number} id
+ * @property {Number} filialId
+ * @property {string} tipo
+ * @property {string} categoria
+ */
+/** 
+ * @typedef {Object} AuthData
+ * @property {string} email
+ * @property {string} senha
+ */ 
+/** 
+ * @typedef {Object} PerfilData
+ * @property {Number} id
+ * @property {Number} filialId
+ * @property {string} nome
+ * @property {string} email
+ * @property {Array<string>} filiais
+ * @property {Array<string>} dept
+ */
+
+/**
+ * @typedef {Object} Store
+ * @property {SubscribeStore} subscribe
+ * @property {Function} set
+ * @typedef {Function} SubscribeStore
+ * @param {Function} subscription
+ * @returns {Function} unsubscribe
+ */
+
+import { converteDateToOSI } from './utils.js'
+
 let filial = '0101'
 let filiais_validas = [filial]
 let server = 'https://10.0.0.5:5000/api/'//'https://45.177.254.161:5000/api/'
@@ -34,10 +81,14 @@ const filial_store = {
 	}
 }
 
+/**
+ * @type {Store}
+ */
 const filial_store_interface = {
 	subscribe: filial_store.subscribe.bind(filial_store), 
 	set: filial_store.setFilial.bind(filial_store)
 }
+
 export {filial_store_interface as filial}
 /**
  * Obtém o id sequencial da Ordem de Serviço a ser aberta.
@@ -52,6 +103,35 @@ export async function get_id_nova_os () {
 				console.error(error)
 				return 0
 			})
+}
+
+export async function get_monitoring () {
+	return requestGet('/monitoring')
+		.then(function ({chamados, atendentes}) {
+			let response = []
+			let hojeOSI = converteDateToOSI(Date())
+			let date_7daysOSI = converteDateToOSI(new Date(Date.now()-6.048e8).toString())
+			console.log(hojeOSI, date_7daysOSI)
+			for (let atendente of atendentes) {
+				let { id, nome, contatos } = atendente
+				let chamados_atendente = chamados.filter(({atendenteId})=>atendenteId==id)
+				let chamados_pendentes = chamados_atendente.filter(({status})=>status==='pendente')
+				let atendendo = chamados_pendentes.filter(({atendimento})=>atendimento==='true').length
+				let atendido_hoje = chamados_atendente.filter(({fechado_em})=>fechado_em?.split('T')[0]===hojeOSI).length
+				let atendido_semana = chamados_atendente.filter(({fechado_em})=>fechado_em?.split('T')[0]>=date_7daysOSI).length
+				let atendente_monitoring = {
+					nome,
+					contatos,
+					atendendo,
+					atendido_hoje,
+					atendido_semana
+				}
+				response.push(atendente_monitoring)
+			}
+			return response
+		})
+
+
 }
 
 /**
@@ -76,15 +156,7 @@ export async function get_user (id) {
 
 /**
  * Faz uma requisição POST para a API, para abrir uma nova O.S.
- * @param {{
- * assunto: string, 
- * anexo: {
- * 	name: string,
- * 	data: string,
- * 	descr: string,
- * },
- * anexos: Array<Object>,
- * }} os 
+ * @param {OS} os 
  */
 export async function abrir_os (os) {
 	let in_os = {...os}
@@ -99,18 +171,20 @@ export async function abrir_os (os) {
 }
 
 /**
- * Retorna um array das O.S's acessíveis para o usuário atual
- * @returns {Array<Object>}
+ * Retorna um array das {@link OS}s acessíveis para o usuário atual
+ * @returns {Array<OS>}
  */
-export async function get_servicos () {
-	return requestGet('/servicos/')
+export async function get_servicos (filtro = undefined, tipo_filtro = 'status') {
+	let path = '/servicos/'
+	if (filtro) path += tipo_filtro + '/' + filtro
+	return requestGet(path)
 			.catch(console.error)
 }
 
 /**
- * Obtém as informações de uma O.S. específica
+ * Obtém as informações de uma {@link OS} específica
  * @param {Number} id 
- * @returns Ordem de Serviço
+ * @returns {OS} Ordem de Serviço
  */
 export async function get_servico (id) {
 	return requestGet('/servico/' + id)
@@ -122,24 +196,16 @@ export async function get_servico (id) {
  */
 export const config = {
 	/**
-	 * Obtém os tipos de O.S. da API.
-	 * @typedef {{id: Number, autorId: Number, mensagem: string}} Mensagem
-	 * @typedef {{
-	 * 	id: Number,
-	 * 	assunto: string,
-	 * 	filialId: Number,
-	 * 	chat: Array<Mensagem>
-	 * }} OS
-	 * @returns {Array<OS>} Lista de tipos de O.S. no sistema.
+	 * Obtém os tipos de {@link OS} da API.
+	 * @returns {Array<OS>} Lista de tipos de {@link OS} no sistema.
 	 */
 	getTipos: function getTipos () {
 		return requestGet('/tipos')
 			.catch(console.error)
 	},
 	/**
-	 * Obtém as categorias de O.S. da API.
-	 * @typedef {{id: Number, filialId: Number, tipo: string, categoria: string}} Categoria
-	 * @returns {Array<Categoria>} Lista de categorias de O.S. no sistema.
+	 * Obtém as categorias de {@link OS} da API.
+	 * @returns {Array<Categoria>} Lista de categorias de {@link OS} no sistema.
 	 */
 	getCategorias: function getCategorias () {
 		return requestGet('/servicos/categorias')
@@ -153,7 +219,6 @@ export const config = {
 export const auth = {
 	/**
 	 * Realiza a autenticação na API.
-	 * @typedef {{email: string, senha: string}} AuthData
 	 * @param {AuthData} auth 
 	 * @returns 
 	 */
@@ -168,15 +233,7 @@ export const auth = {
 		return requestPost('/logout').catch(console.error)
 	},
 	/**
-	 * Obtém as informações de perfil do usuário autenticado no momento.
-	 * @typedef {{
-	 * 	nome: string,
-	 * 	email: string,
-	 * 	filiais: Array<string>,
-	 * 	filialId: Number,
-	 * 	id: Number,
-	 * 	dept: Array<string>
-	 * }} PerfilData
+	 * Obtém as informações de {@link PerfilData perfil} do usuário autenticado no momento.
 	 * @returns {PerfilData} perfil
 	 */
 	getPerfil:  function getPerfil () {
