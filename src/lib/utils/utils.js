@@ -1,5 +1,4 @@
-/**
- * Converte uma string de data para ISO.
+/** Converte uma string de data para ISO.
  * @param {string} date Representação em texto de uma string gerada por Date() ou date_obj.toString(), no locale pt-BR. 
  * @returns  {string} Dia da data passada, no formato ISO (AAAA-MM-DD)
  */
