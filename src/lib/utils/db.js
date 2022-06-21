@@ -27,7 +27,15 @@ import { setFiliaisValidas, setFilial } from './filial.js'
 
 export { filial } from './filial.js'
 
-export function get_monitoring () {
+export {
+	get_monitoring,
+	get_file,
+	get_user,
+	auth,
+	config
+}
+
+async function get_monitoring () {
 	return requestGet('/monitoring')
 		.then(async function ({chamados, atendentes}) {
 			let response = []
@@ -62,7 +70,7 @@ export function get_monitoring () {
  * @param {string} filename 
  * @returns {Promise<string>} base64url do arquivo
  */
-export async function get_file (filename) {
+async function get_file (filename) {
 	return requestGet('/files/' + filename)
 		.catch(console.error)
 }
@@ -72,7 +80,7 @@ export async function get_file (filename) {
  * @param {Number} id 
  * @returns {Promise} Usuário pelo id
  */
-export async function get_user (id) {
+async function get_user (id) {
 	return requestGet('/usuario/' + id)
 		.catch(console.error)
 }
@@ -81,7 +89,7 @@ export async function get_user (id) {
 /**
  * Funções de parâmetros
  */
-export const config = {
+const config = {
 	/**
 	 * Obtém os tipos de {@link OS} da API.
 	 * @returns {Promise<Array<OS>>} Lista de tipos de {@link OS} no sistema.
@@ -103,7 +111,7 @@ export const config = {
 /**
  * Funções de autenticação
  */
-export const auth = {
+const auth = {
 	/**
 	 * Realiza a autenticação na API.
 	 * @param {AuthData} auth 

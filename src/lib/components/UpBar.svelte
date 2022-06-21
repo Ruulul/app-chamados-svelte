@@ -2,7 +2,8 @@
 	import Icon from '$lib/components/MenuIcon.svelte'
 	import Logo from '$lib/assets/MainLogo.svelte';
 	import Filtro from '$lib/components/Filtro.svelte';
-	import { filial } from '$lib/utils/db.js'
+	import { auth, filial } from '$lib/utils/db.js'
+	import { goto } from '$app/navigation'
 	let itemsE =
 		[
 			['Abrir O.S.', '/abrir_os'],
@@ -10,7 +11,7 @@
 	let itemsD = 
 		[
 			['Perfil', '/perfil'],
-			['Logout', '/logout']
+			['Logout', '/logout', ()=>auth.logout().then(()=>goto('/login'))]
 		]
 	let itemsAll = [itemsE, itemsD]
 </script>
@@ -20,9 +21,9 @@
 		{itemsAll.indexOf(items)%2===0
 		 ? 'left'
 		 : 'right'}">
-		{#each items as [name, href]}
-			<li title={name}>
-				<a {href}>
+		{#each items as [name, href, action]}
+			<li title={name} on:click={action}>
+				<a href={action?'#':href}>
 					<Icon {href}/>
 				</a>
 			</li>
