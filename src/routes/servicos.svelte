@@ -4,7 +4,8 @@
     </title>
 </svelte:head>
 <script>
-    import { get_servicos, filial } from '$lib/utils/db.js'
+    import { filial } from '$lib/utils/db.js'
+    import { get_servicos } from '$lib/utils/servicos.js'
     import { tipos_os } from '$lib/stores/local_db.js'
     import Filtro from '$lib/components/Filtro.svelte'
 
@@ -65,9 +66,6 @@
     <caption>Ordens de Serviço</caption>
     <thead>
         <th>
-            Abrir
-        </th>
-        <th>
             Assunto
         </th>
         <th>
@@ -78,10 +76,7 @@
         {#each servicos_filtrados as servico}
             <tr>
                 <td>
-                    <a href="/servico/{servico.id}"><img alt='' src='/abrir-chamado.svg'/></a>
-                </td>
-                <td>
-                    {servico.assunto}
+                    <a href="/servico/{servico.id}">{servico.assunto}</a>
                 </td>
                 <td>
                     {servico.status}
@@ -111,11 +106,5 @@
         caption-side: bottom;
         text-align: left;
         padding: 1em;
-    }
-
-    img {
-        width: 1.5em;
-        margin: 0.2em;
-        color: green;
-    }
+    } 
 </style>

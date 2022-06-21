@@ -7,7 +7,7 @@
 	import { goto } from '$app/navigation';
 	import { user } from '$lib/stores/user.js'
 	import { categorias_os } from '$lib/stores/local_db.js'
-	import { abrir_os, get_id_nova_os } from '$lib/utils/db.js';
+	import { abrir_os, get_id_nova_os } from '$lib/utils/servicos.js';
 	let assunto = '', mensagem = '', categoria = '', urgencia = 1, files = [];
 	let file_input;
 	$: $categorias_os, setCategoria()

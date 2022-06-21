@@ -6,7 +6,8 @@
 
 <script>
 	import { user } from '$lib/stores/user.js'
-	import { filial, get_monitoring, get_servicos } from '$lib/utils/db.js'
+	import { filial, get_monitoring } from '$lib/utils/db.js'
+	import { get_servicos } from '$lib/utils/servicos';
 	import { converteDateToISO } from '$lib/utils/utils.js'
 	import Suporte from '$lib/components/ExibeSuporte.svelte'
 	import CardChamadosPendentes from '$lib/components/CardChamadosPendentes.svelte'

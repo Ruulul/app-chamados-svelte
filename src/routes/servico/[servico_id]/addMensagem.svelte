@@ -1,6 +1,6 @@
 <script>
     import { goto } from '$app/navigation'
-    import { update_servico } from '$lib/utils/db.js'
+    import { update_servico } from '$lib/utils/servicos.js'
     import { user } from '$lib/stores/user.js'
     let value;
 

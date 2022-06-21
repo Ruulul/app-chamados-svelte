@@ -1,6 +1,7 @@
 <script>
     import { setContext } from 'svelte';
-    import { get_servico, get_file, get_user, update_servico } from '$lib/utils/db.js'
+    import { get_file, get_user, } from '$lib/utils/db.js'
+    import { get_servico, update_servico } from '$lib/utils/servicos';
     import { converteDateToISO } from '$lib/utils/utils.js'
     import { page } from '$app/stores'
     import { goto } from '$app/navigation'
