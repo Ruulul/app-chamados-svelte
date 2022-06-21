@@ -3,6 +3,7 @@
     import { goto } from '$app/navigation'
     import { get_user } from '$lib/utils/db.js'
     import { user } from '$lib/stores/user.js'
+    import { parseMD } from '$lib/utils/utils'
 
     const servico = getContext('servico')
     function adicionaMensagem () {
@@ -29,9 +30,7 @@
                 {nome || 'Sem atendente'}
                 {/await}
             </h3>
-            <p>
-                {message.mensagem}
-            </p>
+            {@html parseMD(message.mensagem)}
         </div>
     {/each}
 </div>
