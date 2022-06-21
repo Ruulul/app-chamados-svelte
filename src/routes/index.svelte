@@ -7,7 +7,7 @@
 <script>
 	import { user } from '$lib/stores/user.js'
 	import { filial, get_monitoring, get_servicos } from '$lib/utils/db.js'
-	import { converteDateToOSI } from '$lib/utils/utils.js'
+	import { converteDateToISO } from '$lib/utils/utils.js'
 	import Suporte from '$lib/components/ExibeSuporte.svelte'
 	import CardChamadosPendentes from '$lib/components/CardChamadosPendentes.svelte'
 </script>
@@ -21,7 +21,7 @@
 		</div>
 		{:then servicos}
 			{@const pendentes = servicos.length}
-			{@const novos = servicos.filter(({createdAt})=>createdAt.split('T')===converteDateToOSI(Date())).length}
+			{@const novos = servicos.filter(({createdAt})=>createdAt.split('T')===converteDateToISO(Date())).length}
 			{@const atendimento = servicos.filter(({atendimento})=>atendimento==='true').length}
 			{@const parados = pendentes - atendimento}
 			<CardChamadosPendentes {...{pendentes, novos, atendimento, parados}} />

@@ -43,7 +43,7 @@
  * @returns {Function} unsubscribe
  */
 
-import { converteDateToOSI } from './utils.js'
+import { converteDateToISO } from './utils.js'
 
 let filial = '0101'
 let filiais_validas = [filial]
@@ -115,8 +115,8 @@ export function get_monitoring () {
 	return requestGet('/monitoring')
 		.then(async function ({chamados, atendentes}) {
 			let response = []
-			let hojeOSI = converteDateToOSI(Date())
-			let date_7daysOSI = converteDateToOSI(new Date(Date.now()-6.048e8).toString())
+			let hojeOSI = converteDateToISO(Date())
+			let date_7daysOSI = converteDateToISO(new Date(Date.now()-6.048e8).toString())
 			console.log(hojeOSI, date_7daysOSI)
 			for (let atendente of atendentes) {
 				console.log(atendente)
@@ -154,7 +154,7 @@ export async function get_file (filename) {
 /**
  * Pega da API um usuário pelo Id
  * @param {Number} id 
- * @returns Usuário pelo id
+ * @returns {Promise} Usuário pelo id
  */
 export async function get_user (id) {
 	return requestGet('/usuario/' + id)
@@ -179,7 +179,7 @@ export async function abrir_os (os) {
 
 /**
  * Retorna um array das {@link OS}s acessíveis para o usuário atual
- * @returns {Array<OS>}
+ * @returns {Promise<Array<OS>>}
  */
 export async function get_servicos (filtro = undefined, tipo_filtro = 'status') {
 	let path = '/servicos/'
@@ -191,11 +191,19 @@ export async function get_servicos (filtro = undefined, tipo_filtro = 'status') 
 /**
  * Obtém as informações de uma {@link OS} específica
  * @param {Number} id 
- * @returns {OS} Ordem de Serviço
+ * @returns {Promise<OS>} Ordem de Serviço
  */
 export async function get_servico (id) {
 	return requestGet('/servico/' + id)
 			.catch(console.error)
+}
+
+export async function update_servico (id, update) {
+	let servico = await get_servico(id)
+	for (let [key, value] of Object.entries(update))
+		servico[key] = value
+	return requestPost('/update/servico/' + id, servico)
+		.catch(console.error)
 }
 
 /**
@@ -204,7 +212,7 @@ export async function get_servico (id) {
 export const config = {
 	/**
 	 * Obtém os tipos de {@link OS} da API.
-	 * @returns {Array<OS>} Lista de tipos de {@link OS} no sistema.
+	 * @returns {Promise<Array<OS>>} Lista de tipos de {@link OS} no sistema.
 	 */
 	getTipos: function getTipos () {
 		return requestGet('/tipos')
@@ -212,7 +220,7 @@ export const config = {
 	},
 	/**
 	 * Obtém as categorias de {@link OS} da API.
-	 * @returns {Array<Categoria>} Lista de categorias de {@link OS} no sistema.
+	 * @returns {Promise<Array<Categoria>>} Lista de categorias de {@link OS} no sistema.
 	 */
 	getCategorias: function getCategorias () {
 		return requestGet('/servicos/categorias')
@@ -259,7 +267,7 @@ export const auth = {
  * Realiza requisições GET na API.
  * @param {string} path 
  * @param {Object} options 
- * @returns {any} Recurso requisitado
+ * @returns {Promise<any>} Recurso requisitado
  */
 function requestGet(path, options={}) {
 	return request(path, {	
@@ -272,7 +280,7 @@ function requestGet(path, options={}) {
  * Realiza requisições POST na API.
  * @param {string} path 
  * @param {Object} options 
- * @returns {any}
+ * @returns {Promise}
  */
 function requestPost(path, body, options={}) {
 	return request(path, {	
@@ -286,7 +294,7 @@ function requestPost(path, body, options={}) {
  * Realiza requisições na API e trata o Response.
  * @param {string} path 
  * @param {Object} options 
- * @returns {any}
+ * @returns {Promise}
  */
 function request(path, options={}) {
 	return browser ? fetch(api() + path, {
@@ -299,7 +307,7 @@ function request(path, options={}) {
  * Lida com a resposta de uma requisição Fetch, 
  * retornando o JSON se for possível, ou texto se não.
  * @param {Response} response 
- * @returns {Object | string} Response.
+ * @returns {Promise<Object | string>} Response.
  */
 async function handleResponse (response) {
 	let text = await response.text()

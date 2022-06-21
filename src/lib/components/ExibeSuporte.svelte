@@ -35,8 +35,10 @@
     }
 
     img {
-        width: 10em;
+        width: 8em;
         height: 10em;
+        display: block;
+        margin: auto;
         border: thin crimson solid;
         border-radius: 4em 4em 2em 2em;
         padding: 0.2em;

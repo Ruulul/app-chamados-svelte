@@ -2,7 +2,7 @@
  * @param {string} date Representação em texto de uma string gerada por Date() ou date_obj.toString(), no locale pt-BR. 
  * @returns  {string} Dia da data passada, no formato ISO (AAAA-MM-DD)
  */
-export function converteDateToOSI (date) {
+export function converteDateToISO (date) {
     const conversao = [
     "Jan",    "Jan",
     "Feb",    "Fev",
