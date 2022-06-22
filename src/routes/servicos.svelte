@@ -73,10 +73,10 @@
         </th>
     </thead>
     <tbody>
-        {#each servicos_filtrados as servico}
+        {#each servicos_filtrados as servico}           
             <tr>
                 <td>
-                    <a href="/servico/{servico.id}">{servico.assunto}</a>
+                    <a sveltekit:prefetch href="/servico/{servico.id}">{servico.assunto}</a>
                 </td>
                 <td>
                     {servico.status}
@@ -106,5 +106,5 @@
         caption-side: bottom;
         text-align: left;
         padding: 1em;
-    } 
+    }
 </style>

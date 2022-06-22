@@ -1,32 +1,29 @@
 /**
  * @typedef {Object} Store
- * @property {SubscribeStore} subscribe
+ * @property {Array<Function>} observers Array das funções de inscrição, que quando executa, notifica os observers com o valor passado
+ * @property {Function} notify Notifica os observers
+ * @property {SubscribeStore} subscribe Recebe uma função que é a inscrição, notifica na inscrição, cadastra na lista de observers, e retorna uma função de desinscrição.
  * @property {Function} set
  * @typedef {Function} SubscribeStore
- * @param {Function} subscription
+ * @param {Function} subscription Função da inscrição, que ao ser executada, notifica o observer com o valor passado.
  * @returns {Function} unsubscribe
  */
-
+/** Código da filial atual */
 let filial = '0101'
+/** Lista de filiais válidas para o usuário atual */
 let filiais_validas = [filial]
 
 /**
- * Store (padrão Observer) que mantém sincronizado as informações atuais da filial,
+ * @type {Store} (padrão Observer) que mantém sincronizado as informações atuais da filial,
  * permitindo reatividade assim que ela muda, para quando há valores que dependem disso
  */
 const filial_store = {
-	/**@type {Array<Function>} Lista de Observers*/
 	observers: [],
-	/**Adiciona inscrição aos Observers
-	 * @param {SubscribeStore} subscription Inscrição. Executar essa função atualiza o Observer.
-	 * @returns {Function} Desfazer inscrição. Remove da lista de Observers.
-	 */
-	subscribe: function (subscription) {
+	subscribe: function subscription (subscription) {
 		subscription(filial);
 		this.observers.push(subscription)
 		return ()=>this.observers.filter(sub=>sub!==subscription)
 	},
-	/**Notifica todos os Observers registrado */
 	notify: function () {
 		this.observers.forEach(subscription=>subscription(filial))
 	},

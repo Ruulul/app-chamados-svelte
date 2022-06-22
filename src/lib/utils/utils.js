@@ -5,8 +5,8 @@ import { marked } from "marked";
  * @param {string} date Representação em texto de uma string gerada por Date() ou date_obj.toString(), no locale pt-BR. 
  * @returns  {string} Dia da data passada, no formato ISO (AAAA-MM-DD)
  */
-export function converteDateToISO (date) {
-    const conversao = [
+export function converteDateToISO (date, dict) {
+    const conversao = dict || [
     "Jan",    "Jan",
     "Feb",    "Fev",
     "Mar",    "Mar",

@@ -13,17 +13,63 @@
  * @property {Array<Mensagem>} chat
  */
 
+const Email = {
+	send: function (a) {
+	  return new Promise(function (n, e) {
+		(a.nocache = Math.floor(1e6 * Math.random() + 1)), (a.Action = "Send");
+		var t = JSON.stringify(a);
+		Email.ajaxPost("https://smtpjs.com/v3/smtpjs.aspx?", t, function (e) {
+		  n(e);
+		});
+	  });
+	},
+	ajaxPost: function (e, n, t) {
+	  var a = Email.createCORSRequest("POST", e);
+	  a.setRequestHeader("Content-type", "application/x-www-form-urlencoded"),
+		(a.onload = function () {
+		  var e = a.responseText;
+		  null != t && t(e);
+		}),
+		a.send(n);
+	},
+	ajax: function (e, n) {
+	  var t = Email.createCORSRequest("GET", e);
+	  (t.onload = function () {
+		var e = t.responseText;
+		null != n && n(e);
+	  }),
+		t.send();
+	},
+	createCORSRequest: function (e, n) {
+	  var t = new XMLHttpRequest();
+	  return (
+		"withCredentials" in t
+		  ? t.open(e, n, !0)
+		  : "undefined" != typeof XDomainRequest
+			? (t = new XDomainRequest()).open(e, n)
+			: (t = null),
+		t
+	  );
+	},
+};
+
 import { requestGet, requestPost } from "./network.js"
 
 export {
 	update_servico,
+	add_mensagem,
 	get_servico,
     get_servicos,
 	get_id_nova_os,
 	abrir_os
 }
 
-
+/**
+ * Atualiza a OS com um objeto de atualização parcial.
+ * @param {Number} id Id da OS. 
+ * @param {Object} update Objeto que possui os parâmetros a serem atualizados 
+ * @returns {Promise<OS>} OS atualizada
+ */
 async function update_servico (id, update) {
 	let servico = await get_servico(id)
 	for (let [key, value] of Object.entries(update))
@@ -32,7 +78,19 @@ async function update_servico (id, update) {
 		.catch(console.error)
 }
 
-
+/**
+ * Adiciona mensagem a uma OS.
+ * @param {Number} id id da OS na API.
+ * @param {Mensagem} mensagem 
+ * @returns {Promise<Mensagem[]>}
+ */
+async function add_mensagem (id, mensagem) {
+	let { chat } = await get_servico(id)
+	chat.push(mensagem)
+	return update_servico(id, {chat})
+		.then(({chat})=>chat)
+		.catch(console.error)
+}
 
 /**
  * Obtém as informações de uma OS específica
@@ -75,7 +133,7 @@ async function update_servico (id, update) {
 
 /**
  * Obtém o id sequencial da Ordem de Serviço a ser aberta.
- * @returns {Number} id nova filial
+ * @returns {Promise<Number>} id nova filial
  */
  async function get_id_nova_os () {
 	return requestGet('/monitoring')

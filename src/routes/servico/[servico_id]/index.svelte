@@ -2,8 +2,25 @@
     import { getContext } from 'svelte'
     import { goto } from '$app/navigation'
     import { get_user } from '$lib/utils/db.js'
+    import { update_servico } from '$lib/utils/servicos';
     import { user } from '$lib/stores/user.js'
     import { parseMD } from '$lib/utils/utils'
+
+    /**
+     * Objeto que mapeia o label do botão de alterar status com o status em si
+     */
+    const label_por_status = {
+        pendente: 'Resolver chamado',
+        resolvido: 'Fechar chamado',
+        fechado: ''
+    }
+    /**
+     * Lista encadeada de status com status.
+     */
+    const proximo_status = {
+        pendente: 'resolvido',
+        resolvido: 'fechado'
+    }
 
     const servico = getContext('servico')
     function adicionaMensagem () {
@@ -13,7 +30,10 @@
     }
 
     function atualizaChamado () {
-
+        let novo_status = proximo_status[$servico.status]
+        if (novo_status)
+        update_servico($servico.id, {status: novo_status})
+            .then(os=>servico.set(os))
     }
 
 </script>
@@ -34,14 +54,20 @@
         </div>
     {/each}
 </div>
-<div class='buttons'>
-    <button on:click={adicionaMensagem}>Adicionar Mensagem</button>
-    {#if $servico?.status != 'fechado' && [$servico?.atendenteId, $servico?.usuarioId].includes($user.id.toString())}
-        <button on:click={atualizaChamado}>Fechar Chamado</button>
-    {/if}
-</div>
+{#if $servico?.status != 'fechado'}
+    <div class='buttons'>
+        <button on:click={adicionaMensagem}>Adicionar Mensagem</button>
+        {#if [$servico?.atendenteId, $servico?.usuarioId].includes($user.id.toString())}
+            <button on:click={atualizaChamado}>{label_por_status[$servico?.status]}</button>
+        {/if}
+    </div>
+{/if}
 
 <style>
+    .messages {
+        max-height: 55%;
+        overflow-y: scroll;
+    }
     .campo {
         font-size: small;
         border: grey solid;

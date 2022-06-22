@@ -1,6 +1,6 @@
 <script>
     import { setContext } from 'svelte';
-    import { get_file, get_user, } from '$lib/utils/db.js'
+    import { get_user, } from '$lib/utils/db.js'
     import { get_servico, update_servico } from '$lib/utils/servicos';
     import { converteDateToISO } from '$lib/utils/utils.js'
     import { page } from '$app/stores'
@@ -8,6 +8,8 @@
     import { user } from '$lib/stores/user.js'
     import { writable } from 'svelte/store';
     import { fade } from 'svelte/transition';
+    import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
+
     let servico
     let servico_store = writable()
     setContext('servico', servico_store)
@@ -70,11 +72,11 @@
                         {nome || 'Sem atendente'}
                         {/await}
                     {/if}
-                {:else if $user.tipo == 'suporte'}
+                {:else} 
                     Sem atendente<br>
-                    <button on:click={assumeChamado}>Assumir chamado?</button>
-                {:else}
-                    Sem atendente
+                    {#if $user.tipo == 'suporte'}
+                        <button on:click={assumeChamado}>Assumir chamado?</button>
+                    {/if}
                 {/if}
             </div>
             <div class='campo'>
@@ -95,22 +97,7 @@
             </div>
             <div class='campo'>
             <h2>Anexo</h2>
-            {#if String(servico.anexo) !== 'undefined'}
-                {#await get_file(servico.anexo)}
-                    Carregando...
-                {:then anexo}
-                    {#if anexo.includes('image')}
-                        <img alt='' src={anexo}/>
-                    {:else}
-                        <object title='anexo' alt='' data={anexo}>
-                            Não pudemos exibir
-                        </object>
-                    {/if}
-                    <a href={anexo} target='_blank'>Exibir anexo</a>
-                {/await}
-            {:else}
-                Sem anexo nesse chamado
-            {/if}
+                <ExibeArquivo filename={servico.anexo} />
             </div>
         </div>
         <div class='container'>
@@ -139,8 +126,5 @@
         width: 50%;
         display: flex;
         flex-flow: column;
-    }
-    img {
-        width: 100%;
     }
 </style>

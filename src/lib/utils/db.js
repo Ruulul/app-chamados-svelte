@@ -41,9 +41,7 @@ async function get_monitoring () {
 			let response = []
 			let hojeOSI = converteDateToISO(Date())
 			let date_7daysOSI = converteDateToISO(new Date(Date.now()-6.048e8).toString())
-			console.log(hojeOSI, date_7daysOSI)
 			for (let atendente of atendentes) {
-				console.log(atendente)
 				let { id, nome } = atendente
 				let chamados_atendente = chamados.filter(({atendenteId})=>atendenteId==id)
 				let chamados_pendentes = chamados_atendente.filter(({status})=>status==='pendente')
