@@ -75,7 +75,7 @@ async function get_file (filename) {
 
 /**
  * Pega da API um usuário pelo Id
- * @param {Number} id 
+ * @param {Number | string} id Id válida de usuário
  * @returns {Promise} Usuário pelo id
  */
 async function get_user (id) {

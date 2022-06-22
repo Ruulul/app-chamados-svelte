@@ -65,7 +65,7 @@
 
 <style>
     .messages {
-        max-height: 55%;
+        max-height: 30em;
         overflow-y: scroll;
     }
     .campo {

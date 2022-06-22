@@ -4,6 +4,7 @@
      */
 
     import { get_file } from "$lib/utils/db";
+    import { geraCSS } from '$lib/utils/utils'
     /**
      * Nome do arquivo na API
      */
@@ -31,13 +32,6 @@
       * CSS 
       */
     export let style = {}
-
-      function geraCSS () {
-        let css = ''
-        for (let [key, entry] of Object.entries(style))
-            css += `${key}: ${entry};`
-        return css
-      }
 </script>
 {#if String(filename) !== 'undefined'}
     {#await get_file(filename)}
@@ -45,9 +39,9 @@
     {:then arquivo}
         {#if arquivo !== 'Não autorizado'}
         {#if arquivo.includes('image')}
-            <img {alt} src={arquivo}  style={geraCSS()}/>
+            <img {alt} src={arquivo}  style={geraCSS(style)}/>
         {:else}
-            <object title='anexo' {alt} data={arquivo} style={geraCSS()}>
+            <object title='anexo' {alt} data={arquivo} style={geraCSS(style)}>
                 Não pudemos exibir
             </object>
         {/if}

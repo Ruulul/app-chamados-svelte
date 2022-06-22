@@ -9,51 +9,16 @@
  * @typedef {Object} OS
  * @property {Number} id
  * @property {Number} filialId
+ * @property {string} usuarioId
+ * @property {string} autorId
+ * @property {string} atendenteId
  * @property {string} assunto
  * @property {Array<Mensagem>} chat
  */
 
-const Email = {
-	send: function (a) {
-	  return new Promise(function (n, e) {
-		(a.nocache = Math.floor(1e6 * Math.random() + 1)), (a.Action = "Send");
-		var t = JSON.stringify(a);
-		Email.ajaxPost("https://smtpjs.com/v3/smtpjs.aspx?", t, function (e) {
-		  n(e);
-		});
-	  });
-	},
-	ajaxPost: function (e, n, t) {
-	  var a = Email.createCORSRequest("POST", e);
-	  a.setRequestHeader("Content-type", "application/x-www-form-urlencoded"),
-		(a.onload = function () {
-		  var e = a.responseText;
-		  null != t && t(e);
-		}),
-		a.send(n);
-	},
-	ajax: function (e, n) {
-	  var t = Email.createCORSRequest("GET", e);
-	  (t.onload = function () {
-		var e = t.responseText;
-		null != n && n(e);
-	  }),
-		t.send();
-	},
-	createCORSRequest: function (e, n) {
-	  var t = new XMLHttpRequest();
-	  return (
-		"withCredentials" in t
-		  ? t.open(e, n, !0)
-		  : "undefined" != typeof XDomainRequest
-			? (t = new XDomainRequest()).open(e, n)
-			: (t = null),
-		t
-	  );
-	},
-};
-
 import { requestGet, requestPost } from "./network.js"
+import { sendEmail } from './email.js'
+import { get_user } from "./db.js";
 
 export {
 	update_servico,
@@ -62,6 +27,22 @@ export {
     get_servicos,
 	get_id_nova_os,
 	abrir_os
+}
+
+/**
+ * Faz uma requisição POST para a API, para abrir uma nova O.S.
+ * @param {OS} os 
+ */
+ async function abrir_os (os) {
+	let in_os = {...os}
+	delete os.anexos
+	let created_os = await requestPost('/novo/servico', in_os)
+	for (let anexo in os.anexos)
+		try {
+			await requestPost(`/update/servico/${created_os.id}/arquivo`, {title: anexo.name, data: anexo.data})
+		} catch(e) {
+			console.error(e)
+		}
 }
 
 /**
@@ -75,6 +56,11 @@ async function update_servico (id, update) {
 	for (let [key, value] of Object.entries(update))
 		servico[key] = value
 	return requestPost('/update/servico/' + id, servico)
+		.then(/**@param {OS} os */async os=>{
+			const { nome } = await get_user(os.autorId)
+			await sendEmail({id: 4, nome})
+			return os
+		})
 		.catch(console.error)
 }
 
@@ -114,22 +100,6 @@ async function add_mensagem (id, mensagem) {
 			.catch(console.error)
 }
 
-
-/**
- * Faz uma requisição POST para a API, para abrir uma nova O.S.
- * @param {OS} os 
- */
- async function abrir_os (os) {
-	let in_os = {...os}
-	delete os.anexos
-	let created_os = await requestPost('/novo/servico', in_os)
-	for (let anexo in os.anexos)
-		try {
-			await requestPost(`/update/servico/${created_os.id}/arquivo`, {title: anexo.name, data: anexo.data})
-		} catch(e) {
-			console.error(e)
-		}
-}
 
 /**
  * Obtém o id sequencial da Ordem de Serviço a ser aberta.

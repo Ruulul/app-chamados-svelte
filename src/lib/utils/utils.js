@@ -32,3 +32,15 @@ export function converteDateToISO (date, dict) {
 export function parseMD (md) {
   return insane(marked.parse(md))
 }
+
+/**
+ * Recebe um objeto de chave-valor e cria uma string css para colocar no elemento
+ * @param {Object} style 
+ * @returns {string} CSS
+ */
+export function geraCSS (style) {
+  let css = ''
+  for (let [key, entry] of Object.entries(style))
+      css += `${key}: ${entry};`
+  return css
+}
