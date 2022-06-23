@@ -1,7 +1,7 @@
 /**
- * @typedef {('open'|'taken'|'released'|'message'|'close')} EmailTypes Tipos existentes de email
+ * @typedef {('open'|'taken'|'released'|'message'|'closed')} EmailTypes Tipos existentes de email
  */
-const EmailTypes = ['open', 'taken', 'released', 'message', 'close']
+const EmailTypes = ['open', 'taken', 'released', 'message', 'closed']
 import open from '$lib/email_templates/open.svelte'
 import message from '$lib/email_templates/message.svelte'
 import taken from '$lib/email_templates/taken.svelte'
@@ -104,7 +104,7 @@ function getBody(tipo, props) {
 			return createHTML(taken, props)
 		case 'released':
 			return createHTML(released, props)
-		case 'close':
+		case 'closed':
 			return createHTML(closed, props)
 	}
 }

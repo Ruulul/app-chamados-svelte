@@ -63,7 +63,7 @@ async function update_servico (id, update, flag) {
 		.then(/**@param {OS} os */async os=>{
 			const { email } = await get_user(os.autorId)
 			const { email : emailSuporte } = await get_user(os.suporteId)
-			if (flag) sendEmail(flag, [email, emailSuporte], {idOS: os.id})
+			if (flag) sendEmail(flag, [email, emailSuporte], {idOS: os.id, ...update})
 			return os
 		})
 		.catch(console.error)

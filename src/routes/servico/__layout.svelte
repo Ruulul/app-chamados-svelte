@@ -18,7 +18,7 @@
             atendimento: false,
             atendenteId: ''
         }
-        update_servico(servico.id, update).then(setServico)
+        update_servico(servico.id, update, 'released').then(setServico)
     }
 
     function assumeChamado () {
@@ -27,7 +27,7 @@
             atendenteId: $user.id,
             assumido_em: converteDateToISO(Date())
         }
-        update_servico(servico.id, update).then(setServico)
+        update_servico(servico.id, update, 'taken').then(setServico)
     }
 
     async function get_servico_and_clone () {
