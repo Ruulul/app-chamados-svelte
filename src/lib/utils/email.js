@@ -116,10 +116,11 @@ function getBody(tipo, props) {
  * @returns 
  */
 function createHTML (template, props) {
-    let target = document.createElement('div')
+    let div = document.createElement('div')
+	let target = div.attachShadow({mode: 'open'})
 	let el = new template({target, props})
-	let html = el.innerHTML
+	let html = target.innerHTML
 	el.$destroy()
-	target.remove()
+	div.remove()
 	return html
 }

@@ -1,11 +1,18 @@
 <script>
-    export let nome = 'Dummy'
+    export let nome
+    export let idOS
 </script>
-<h1>E aí</h1>
-<h2>{nome}</h2>
+<h1>
+    O chamado de id {idOS} acaba de ser fechado.
+</h1>
 
-{#if true}
-    <p>Valor <span style='color: red'>condicional</span></p>
-{:else}
-    <p>Isso não devia aparecer</p>
-{/if}
+<p>Obrigade pela paciência, {nome}</p>
+
+<style>
+    h1 {
+        color: purple;
+    }
+    p {
+        color: blueviolet;
+    }
+</style>

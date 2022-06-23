@@ -34,8 +34,8 @@
 		</div-->
 		<h2>Equipe de suporte</h2>
 		{#await get_monitoring()}
-			{#each [1, 2, 3] as _}
-				<Suporte/>
+			{#each [0, 0, 0] as id}
+				<Suporte {id}/>
 			{/each}
 		{:then monitoring}
 			{#each monitoring as atendente}
@@ -44,7 +44,6 @@
 		{/await}
 	</div>
 </div>
-
 <style>
     div.placeholderCard {
         width: 20%;

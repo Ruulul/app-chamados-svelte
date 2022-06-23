@@ -61,7 +61,7 @@ async function update_servico (id, update, flag) {
 		servico[key] = value
 	return requestPost('/update/servico/' + id, servico)
 		.then(/**@param {OS} os */async os=>{
-			const { email } = await get_user(os.autorId)
+			const { email } = await get_user(os.usuarioId || os.autorId)
 			const { email : emailSuporte } = await get_user(os.suporteId)
 			if (flag) sendEmail(flag, [email, emailSuporte], {idOS: os.id, ...update})
 			return os
@@ -79,10 +79,10 @@ async function add_mensagem (id, mensagem) {
 	let { chat } = await get_servico(id)
 	chat.push(mensagem)
 	return update_servico(id, { chat })
-		.then(async ({ chat, autorId, suporteId })=>{
-			const { email : emailUsuario } = await get_user(autorId)
+		.then(async ({ chat, autorId, usuarioId, suporteId })=>{
+			const { email : emailUsuario } = await get_user(usuarioId || autorId)
 			const { email : emailSuporte } = await get_user(suporteId)
-			sendEmail('message', [emailUsuario, emailSuporte])
+			sendEmail('message', [emailUsuario, emailSuporte], mensagem)
 			return chat
 		})
 		.catch(console.error)
