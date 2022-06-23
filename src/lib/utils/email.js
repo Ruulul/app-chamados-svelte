@@ -53,7 +53,7 @@ export { from_email as email_suporte }
 /**
  * Envia email
  * @param {EmailTypes} tipo Tipo do email a ser mandado
- * @param {string[]} para Array de emails que irá receber
+ * @param {string | string[]} para Array de emails que irá receber
  * @param {Object} props Lista de props para hidratar o template de email
  */
 export async function sendEmail (tipo, para, props) {
@@ -62,7 +62,7 @@ export async function sendEmail (tipo, para, props) {
 		{
 			SecureToken,
 			From: from_email,
-			To: [...from_email, ...para],
+			To: para,
 			Subject: 'Gold Seed - ' + createSubject(tipo, props),
 			Body: getBody(tipo, props)
 		}

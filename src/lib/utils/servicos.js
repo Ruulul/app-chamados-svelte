@@ -79,7 +79,7 @@ async function add_mensagem (id, mensagem) {
 	let { chat } = await get_servico(id)
 	chat.push(mensagem)
 	return update_servico(id, { chat })
-		.then(({ chat, autorId, suporteId })=>{
+		.then(async ({ chat, autorId, suporteId })=>{
 			const { email : emailUsuario } = await get_user(autorId)
 			const { email : emailSuporte } = await get_user(suporteId)
 			sendEmail('message', [emailUsuario, emailSuporte])
