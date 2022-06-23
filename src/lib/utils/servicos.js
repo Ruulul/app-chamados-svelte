@@ -17,7 +17,7 @@
  */
 
 import { requestGet, requestPost } from "./network.js"
-import { sendEmail } from './email.js'
+import { sendEmail, email_suporte } from './email.js'
 import { get_user } from "./db.js";
 
 export {
@@ -40,6 +40,10 @@ export {
 	for (let anexo in os.anexos)
 		try {
 			await requestPost(`/update/servico/${created_os.id}/arquivo`, {title: anexo.name, data: anexo.data})
+				.then(async (os) => {
+					let { email } = await get_user(os.autorId)
+					return sendEmail('open', [email, email_suporte], {idOS: os.id})
+				})
 		} catch(e) {
 			console.error(e)
 		}
@@ -51,14 +55,15 @@ export {
  * @param {Object} update Objeto que possui os parâmetros a serem atualizados 
  * @returns {Promise<OS>} OS atualizada
  */
-async function update_servico (id, update) {
+async function update_servico (id, update, flag) {
 	let servico = await get_servico(id)
 	for (let [key, value] of Object.entries(update))
 		servico[key] = value
 	return requestPost('/update/servico/' + id, servico)
 		.then(/**@param {OS} os */async os=>{
-			const { nome } = await get_user(os.autorId)
-			await sendEmail({id: 4, nome})
+			const { email } = await get_user(os.autorId)
+			const { email : emailSuporte } = await get_user(os.suporteId)
+			if (flag) sendEmail(flag, [email, emailSuporte], {idOS: os.id})
 			return os
 		})
 		.catch(console.error)
@@ -73,8 +78,13 @@ async function update_servico (id, update) {
 async function add_mensagem (id, mensagem) {
 	let { chat } = await get_servico(id)
 	chat.push(mensagem)
-	return update_servico(id, {chat})
-		.then(({chat})=>chat)
+	return update_servico(id, { chat })
+		.then(({ chat, autorId, suporteId })=>{
+			const { email : emailUsuario } = await get_user(autorId)
+			const { email : emailSuporte } = await get_user(suporteId)
+			sendEmail('message', [emailUsuario, emailSuporte])
+			return chat
+		})
 		.catch(console.error)
 }
 

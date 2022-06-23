@@ -1,4 +1,13 @@
-const SecureToken = "59fa2524-23b0-4dc1-af39-82ac290ca35c"
+/**
+ * @typedef {('open'|'taken'|'released'|'message'|'close')} EmailTypes Tipos existentes de email
+ */
+const EmailTypes = ['open', 'taken', 'released', 'message', 'close']
+import open from '$lib/email_templates/open.svelte'
+import message from '$lib/email_templates/message.svelte'
+import taken from '$lib/email_templates/taken.svelte'
+import released from '$lib/email_templates/released.svelte'
+import closed from '$lib/email_templates/closed.svelte'
+const SecureToken = "59fa2524-23b0-4dc1-af39-82ac290ca35c";
 const Email = {
 	send: function (a) {
 	  return new Promise(function (n, e) {
@@ -39,24 +48,78 @@ const Email = {
 	},
 };
 const from_email = "suporte.ti@ourobrancoagronegocios.com.br"
-import template_email from '$lib/email_templates/teste.svelte'
+export { from_email as email_suporte }
 
-export async function sendEmail ({nome, id}) {
-    console.log('Props: ', nome, id)
-    let email_div = document.createElement('div')
-    let email = new template_email({
-        target: email_div,
-        props: {
-            nome
-        }
-    })
-    //Email.send({
-    //    SecureToken,
-    //    To: from_email,
-    //    From: from_email,
-    //    Subject: 'Teste antes de load',
-    //    Body: email_div.innerHTML,
-    //})
-    email.$destroy()
-    email_div.remove()
+/**
+ * Envia email
+ * @param {EmailTypes} tipo Tipo do email a ser mandado
+ * @param {string[]} para Array de emails que irá receber
+ * @param {Object} props Lista de props para hidratar o template de email
+ */
+export async function sendEmail (tipo, para, props) {
+	if (EmailTypes.includes(tipo))
+	return Email.send(
+		{
+			SecureToken,
+			From: from_email,
+			To: [...from_email, ...para],
+			Subject: 'Gold Seed - ' + createSubject(tipo, props),
+			Body: getBody(tipo, props)
+		}
+	)
+	throw new Error('Tipo inválido')
+}
+
+/**
+ * 
+ * @param {EmailTypes} tipo 
+ * @param {Object} props 
+ */
+ function createSubject(tipo, {idOS}) {
+	switch(tipo) {
+		case 'open':
+			return `Chamado aberto com código ${idOS}`
+		case 'message':
+			return `Chamado ${idOS} - Nova mensagem`
+		case 'taken':
+			return `Chamado ${idOS} - assumido!`
+		case 'released':
+			return `Chamado ${idOS} - colocado em espera`
+		case 'close':
+			return `Chamado ${idOS} - fechado`
+	}
+}
+/**
+ * 
+ * @param {EmailTypes} tipo 
+ * @param {Object} props 
+ */
+function getBody(tipo, props) {
+	switch(tipo) {
+		case 'open':
+			return createHTML(open, props)
+		case 'message':
+			return createHTML(message, props)
+		case 'taken':
+			return createHTML(taken, props)
+		case 'released':
+			return createHTML(released, props)
+		case 'close':
+			return createHTML(closed, props)
+	}
+}
+
+/**
+ * 
+ * @param {*} template 
+ * @param {Object} props 
+ * @returns 
+ */
+function createHTML (template, props) {
+    let target = document.createElement('div')
+	let el = new template({target, props})
+	let html = el.innerHTML
+	el.$destroy()
+	target.remove()
+	return html
 }
