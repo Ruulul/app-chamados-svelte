@@ -62,7 +62,7 @@
             <div class='campo'>
                 <h2>Atendente</h2>
                 {#if servico.atendenteId && servico.atendenteId !== 'undefined'}
-                    {#if servico.atendenteId == $user.id}
+                    {#if servico.atendenteId == $user.id && servico.status!=='fechado'}
                         {$user.nome}<br>
                         <button on:click={liberaChamado}>Liberar chamado?</button>
                     {:else}

@@ -34,6 +34,7 @@
         if (novo_status)
         update_servico($servico.id, {status: novo_status}, novo_status === 'fechado' ? 'closed' : undefined)
             .then(os=>servico.set(os))
+            .then(function(){if(novo_status==='fechado')history.back()})
     }
 
 </script>

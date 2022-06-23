@@ -8,6 +8,7 @@ import taken from '$lib/email_templates/taken.svelte'
 import released from '$lib/email_templates/released.svelte'
 import closed from '$lib/email_templates/closed.svelte'
 const SecureToken = "59fa2524-23b0-4dc1-af39-82ac290ca35c";
+/** Objeto de envio de emails */
 const Email = {
 	send: function (a) {
 	  return new Promise(function (n, e) {
@@ -47,6 +48,29 @@ const Email = {
 	  );
 	},
 };
+/** Mapeamento dos templates */
+const templatesMap = {
+	open,
+	message,
+	taken,
+	released,
+	closed
+}
+/** Mapeamento dos assuntos */
+const subjectMap = {
+	message: 'nova mensagem',
+	taken: 'assumido!',
+	released: 'colocado em espera',
+	closed: 'fechado'
+}
+/** Props válidos por template */
+const propsMap = {
+	open	: ['idOS', 'assunto'],
+	message	: ['idOS', 'nome', 'nomeAutor', 'mensagem'],
+	taken	: ['idOS', 'nomeSuporte'],
+	released: ['idOS'],
+	closed	: ['idOS', 'nome']
+}
 const from_email = "suporte.ti@ourobrancoagronegocios.com.br"
 export { from_email as email_suporte }
 
@@ -76,18 +100,10 @@ export async function sendEmail (tipo, para, props) {
  * @param {Object} props 
  */
  function createSubject(tipo, {idOS}) {
-	switch(tipo) {
-		case 'open':
-			return `Chamado aberto com código ${idOS}`
-		case 'message':
-			return `Chamado ${idOS} - Nova mensagem`
-		case 'taken':
-			return `Chamado ${idOS} - assumido!`
-		case 'released':
-			return `Chamado ${idOS} - colocado em espera`
-		case 'close':
-			return `Chamado ${idOS} - fechado`
-	}
+	if (tipo === 'open')
+		return `Chamado aberto com código ${idOS}`
+	else
+		return `Chamado ${idOS} - ${subjectMap[tipo]}`
 }
 /**
  * 
@@ -95,17 +111,17 @@ export async function sendEmail (tipo, para, props) {
  * @param {Object} props 
  */
 function getBody(tipo, props) {
-	switch(tipo) {
-		case 'open':
-			return createHTML(open, props)
-		case 'message':
-			return createHTML(message, props)
-		case 'taken':
-			return createHTML(taken, props)
-		case 'released':
-			return createHTML(released, props)
-		case 'closed':
-			return createHTML(closed, props)
+	return createHTML(templatesMap[tipo], filterProps(props))
+	
+	function filterProps (props) {
+		return Object.fromEntries(
+			Object.entries(props)
+			.filter(
+				function isPropinMap(prop){
+					return propsMap[tipo].includes(prop[0])
+				}
+			)
+		)
 	}
 }
 
@@ -113,13 +129,14 @@ function getBody(tipo, props) {
  * 
  * @param {*} template 
  * @param {Object} props 
- * @returns 
+ * @returns {string} string HTML baseada em um template .svelte
  */
 function createHTML (template, props) {
     let div = document.createElement('div')
 	let target = div.attachShadow({mode: 'open'})
 	let el = new template({target, props})
 	let html = target.innerHTML
+	console.log(html)
 	el.$destroy()
 	div.remove()
 	return html

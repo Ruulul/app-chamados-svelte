@@ -7,12 +7,3 @@
 </h1>
 
 <p>Obrigade pela paciência, {nome}</p>
-
-<style>
-    h1 {
-        color: purple;
-    }
-    p {
-        color: blueviolet;
-    }
-</style>

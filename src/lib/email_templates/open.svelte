@@ -1,11 +1,5 @@
 <script>
-    export let nome = 'Dummy'
+    export let idOS
+    export let assunto
 </script>
-<h1>E aí</h1>
-<h2>{nome}</h2>
-
-{#if true}
-    <p>Valor <span style='color: red'>condicional</span></p>
-{:else}
-    <p>Isso não devia aparecer</p>
-{/if}
+    <h1>Chamado de número {idOS} foi aberto com o assunto {assunto}</h1>

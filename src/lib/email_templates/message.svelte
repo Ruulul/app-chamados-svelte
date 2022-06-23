@@ -1,11 +1,14 @@
 <script>
     export let nome = 'Dummy'
+    export let nomeAutor
+    export let mensagem
+    export let idOS
+    import { parseMD } from "$lib/utils/utils";
 </script>
-<h1>E aí</h1>
-<h2>{nome}</h2>
-
-{#if true}
-    <p>Valor <span style='color: red'>condicional</span></p>
-{:else}
-    <p>Isso não devia aparecer</p>
-{/if}
+<h1>
+    Olá {nome} <br> Nova mensagem no chamado {idOS}
+</h1>
+    <p>
+        De: {nomeAutor}
+    </p>
+    {@html parseMD(mensagem)}

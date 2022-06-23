@@ -41,8 +41,8 @@ export {
 		try {
 			await requestPost(`/update/servico/${created_os.id}/arquivo`, {title: anexo.name, data: anexo.data})
 				.then(async (os) => {
-					let { email } = await get_user(os.autorId)
-					return sendEmail('open', [email, email_suporte], {idOS: os.id})
+					let { email } = await get_user(os.usuarioId || os.autorId)
+					return sendEmail('open', [email, email_suporte], {idOS: os.id, assunto : os.assunto})
 				})
 		} catch(e) {
 			console.error(e)
@@ -61,9 +61,10 @@ async function update_servico (id, update, flag) {
 		servico[key] = value
 	return requestPost('/update/servico/' + id, servico)
 		.then(/**@param {OS} os */async os=>{
-			const { email } = await get_user(os.usuarioId || os.autorId)
-			const { email : emailSuporte } = await get_user(os.suporteId)
-			if (flag) sendEmail(flag, [email, emailSuporte], {idOS: os.id, ...update})
+			console.log(os)
+			const { nome, email } = await get_user(os.usuarioId || os.autorId)
+			const { nome : nomeSuporte, email : emailSuporte } = await get_user(os.atendenteId)
+			if (flag) sendEmail(flag, [email, emailSuporte], {idOS: os.id, nome, nomeSuporte, ...update})
 			return os
 		})
 		.catch(console.error)
@@ -79,10 +80,11 @@ async function add_mensagem (id, mensagem) {
 	let { chat } = await get_servico(id)
 	chat.push(mensagem)
 	return update_servico(id, { chat })
-		.then(async ({ chat, autorId, usuarioId, suporteId })=>{
+		.then(async ({ chat, autorId, usuarioId, atendenteId })=>{
 			const { email : emailUsuario } = await get_user(usuarioId || autorId)
-			const { email : emailSuporte } = await get_user(suporteId)
-			sendEmail('message', [emailUsuario, emailSuporte], mensagem)
+			const { email : emailSuporte } = await get_user(atendenteId)
+			const { nome: nomeAutor } = await get_user(mensagem.autorId)
+			sendEmail('message', [emailUsuario, emailSuporte], {...mensagem, nomeAutor, idOS : id})
 			return chat
 		})
 		.catch(console.error)
