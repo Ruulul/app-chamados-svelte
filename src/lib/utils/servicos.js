@@ -81,10 +81,10 @@ async function add_mensagem (id, mensagem) {
 	chat.push(mensagem)
 	return update_servico(id, { chat })
 		.then(async ({ chat, autorId, usuarioId, atendenteId })=>{
-			const { email : emailUsuario } = await get_user(usuarioId || autorId)
+			const { nome : nomeUsuario, email : emailUsuario } = await get_user(usuarioId || autorId)
 			const { email : emailSuporte } = await get_user(atendenteId)
 			const { nome: nomeAutor } = await get_user(mensagem.autorId)
-			sendEmail('message', [emailUsuario, emailSuporte], {...mensagem, nomeAutor, idOS : id})
+			sendEmail('message', [emailUsuario, emailSuporte], {...mensagem, nome : nomeUsuario, nomeAutor, idOS : id})
 			return chat
 		})
 		.catch(console.error)

@@ -7,6 +7,7 @@ import message from '$lib/email_templates/message.svelte'
 import taken from '$lib/email_templates/taken.svelte'
 import released from '$lib/email_templates/released.svelte'
 import closed from '$lib/email_templates/closed.svelte'
+import { origin } from './network'
 const SecureToken = "59fa2524-23b0-4dc1-af39-82ac290ca35c";
 /** Objeto de envio de emails */
 const Email = {
@@ -88,7 +89,7 @@ export async function sendEmail (tipo, para, props) {
 			From: from_email,
 			To: para,
 			Subject: 'Gold Seed - ' + createSubject(tipo, props),
-			Body: getBody(tipo, props)
+			Body: getBody(tipo, props) + abrirNovaAba(props.idOS)
 		}
 	)
 	throw new Error('Tipo inválido')
@@ -125,6 +126,13 @@ function getBody(tipo, props) {
 	}
 }
 
+function abrirNovaAba (idOS) {
+	return `
+		<br><br>
+		<a href='${origin}/servico/${idOS}' target='_blank'>Abrir OS em nova aba</a>
+	`
+}
+
 /**
  * 
  * @param {*} template 
@@ -132,12 +140,11 @@ function getBody(tipo, props) {
  * @returns {string} string HTML baseada em um template .svelte
  */
 function createHTML (template, props) {
-    let div = document.createElement('div')
-	let target = div.attachShadow({mode: 'open'})
+    let target = document.createElement('div')
 	let el = new template({target, props})
 	let html = target.innerHTML
 	console.log(html)
 	el.$destroy()
-	div.remove()
+	target.remove()
 	return html
 }

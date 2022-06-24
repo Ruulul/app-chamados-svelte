@@ -28,61 +28,18 @@ import { setFiliaisValidas, setFilial } from './filial.js'
 export { filial } from './filial.js'
 
 export {
-	get_monitoring,
-	get_file,
-	get_user,
 	auth,
-	config
+	config,
+	get_file,
+	get_monitoring,
+	get_user
 }
 
-async function get_monitoring () {
-	return requestGet('/monitoring')
-		.then(async function ({chamados, atendentes}) {
-			let response = []
-			let hojeOSI = converteDateToISO(Date())
-			let date_7daysOSI = converteDateToISO(new Date(Date.now()-6.048e8).toString())
-			for (let atendente of atendentes) {
-				let { id, nome } = atendente
-				let chamados_atendente = chamados.filter(({atendenteId})=>atendenteId==id)
-				let chamados_pendentes = chamados_atendente.filter(({status})=>status==='pendente')
-				let atendendo = chamados_pendentes.filter(({atendimento})=>atendimento==='true').length
-				let atendido_hoje = chamados_atendente.filter(({fechado_em})=>fechado_em?.split('T')[0]===hojeOSI).length
-				let atendido_semana = chamados_atendente.filter(({fechado_em})=>fechado_em?.split('T')[0]>=date_7daysOSI).length
-				let atendente_monitoring = {
-					id,
-					nome,
-					atendendo,
-					atendido_hoje,
-					atendido_semana
-				}
-				response.push(atendente_monitoring)
-			}
-			return response
-		})
-
-
+const get = {
+	monitoring: get_monitoring,
+	file: get_file,
+	user: get_user
 }
-
-/**
- * pega da API um arquivo pelo nome
- * @param {string} filename 
- * @returns {Promise<string>} base64url do arquivo
- */
-async function get_file (filename) {
-	return requestGet('/files/' + filename)
-		.catch(console.error)
-}
-
-/**
- * Pega da API um usuário pelo Id
- * @param {Number | string} id Id válida de usuário
- * @returns {Promise} Usuário pelo id
- */
-async function get_user (id) {
-	return requestGet('/usuario/' + id)
-		.catch(console.error)
-}
-
 
 /**
  * Funções de parâmetros
@@ -141,4 +98,53 @@ const auth = {
 				})
 				.catch(console.error)
 	}
+}
+
+
+async function get_monitoring () {
+	return requestGet('/monitoring')
+		.then(async function ({chamados, atendentes}) {
+			let response = []
+			let hojeOSI = converteDateToISO(Date())
+			let date_7daysOSI = converteDateToISO(new Date(Date.now()-6.048e8).toString())
+			for (let atendente of atendentes) {
+				let { id, nome } = atendente
+				let chamados_atendente = chamados.filter(({atendenteId})=>atendenteId==id)
+				let chamados_pendentes = chamados_atendente.filter(({status})=>status==='pendente')
+				let atendendo = chamados_pendentes.filter(({atendimento})=>atendimento==='true').length
+				let atendido_hoje = chamados_atendente.filter(({fechado_em})=>fechado_em?.split('T')[0]===hojeOSI).length
+				let atendido_semana = chamados_atendente.filter(({fechado_em})=>fechado_em?.split('T')[0]>=date_7daysOSI).length
+				let atendente_monitoring = {
+					id,
+					nome,
+					atendendo,
+					atendido_hoje,
+					atendido_semana
+				}
+				response.push(atendente_monitoring)
+			}
+			return response
+		})
+
+
+}
+
+/**
+ * pega da API um arquivo pelo nome
+ * @param {string} filename 
+ * @returns {Promise<string>} base64url do arquivo
+ */
+async function get_file (filename) {
+	return requestGet('/files/' + filename)
+		.catch(console.error)
+}
+
+/**
+ * Pega da API um usuário pelo Id
+ * @param {Number | string} id Id válida de usuário
+ * @returns {Promise} Usuário pelo id
+ */
+async function get_user (id) {
+	return requestGet('/usuario/' + id)
+		.catch(console.error)
 }

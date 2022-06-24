@@ -48,6 +48,7 @@
         border: thin blue solid;
         padding: 1em;
         border-radius: 3em;
+        place-self: center;
     }
     .buttons {
         display: flex;

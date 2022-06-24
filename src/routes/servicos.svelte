@@ -14,7 +14,7 @@
     let servicos_filtrados = []
     let contagem = 0, contagem_total = 0
     let status = 'pendente'
-    let tipo = 'Infraestrutura'
+    let tipo = ''
     $: $filial, get_servicos().then((data)=>servicos=data.reverse())
 
     $: servicos, status, tipo, filtraChamados()

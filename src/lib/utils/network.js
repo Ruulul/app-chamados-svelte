@@ -2,8 +2,9 @@
 import { filial as filial_store } from './filial.js'
 let filial = '0101'
 filial_store.subscribe((value)=>filial=value)
-let server = 'https://10.0.0.5:5000/api/'//'https://45.177.254.161:5000/api/'
-let api =  () => server + filial
+export const origin = 'https://10.0.0.5:5000'
+const server = origin + '/api/'//'https://45.177.254.161:5000/api/'
+const api =  () => server + filial
 import { browser } from '$app/env'
 
 export { requestGet, requestPost }
