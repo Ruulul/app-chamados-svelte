@@ -1,9 +1,3 @@
-<svelte:head>
-	<title>
-		Página Inicial
-	</title>
-</svelte:head>
-
 <script>
 	import { user } from '$lib/stores/user.js'
 	import { filial, get_monitoring } from '$lib/utils/db.js'
@@ -12,7 +6,11 @@
 	import Suporte from '$lib/components/ExibeSuporte.svelte'
 	import CardChamadosPendentes from '$lib/components/CardChamadosPendentes.svelte'
 </script>
-
+<svelte:head>
+	<title>
+		Página Inicial
+	</title>
+</svelte:head>
 <h1>Olá, {$user.nome}</h1>
 <div class='wrapper'>
 	{#key $filial}

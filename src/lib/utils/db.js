@@ -25,7 +25,7 @@ import { converteDateToISO } from './utils.js'
 import { requestGet, requestPost } from './network.js'
 import { setFiliaisValidas, setFilial } from './filial.js'
 
-export { filial } from './filial.js'
+export { filial, filiais_validas } from './filial.js'
 
 export {
 	auth,
@@ -49,7 +49,7 @@ const config = {
 	 * Obtém os tipos de {@link OS} da API.
 	 * @returns {Promise<Array<OS>>} Lista de tipos de {@link OS} no sistema.
 	 */
-	getTipos: function getTipos () {
+	 getTipos () {
 		return requestGet('/tipos')
 			.catch(console.error)
 	},
@@ -57,7 +57,7 @@ const config = {
 	 * Obtém as categorias de {@link OS} da API.
 	 * @returns {Promise<Array<Categoria>>} Lista de categorias de {@link OS} no sistema.
 	 */
-	getCategorias: function getCategorias () {
+	 getCategorias () {
 		return requestGet('/servicos/categorias')
 			.catch(console.error)
 	}
@@ -72,21 +72,21 @@ const auth = {
 	 * @param {AuthData} auth 
 	 * @returns 
 	 */
-	login: function login (auth) {
+	login (auth) {
 		return requestPost('/login', auth).catch(console.error)
 	},
 	/**
 	 * Realiza a desautenticação na API.
 	 * @returns 
 	 */
-	logout: function logout () {
+	logout () {
 		return requestPost('/logout').catch(console.error)
 	},
 	/**
 	 * Obtém as informações de {@link PerfilData perfil} do usuário autenticado no momento.
 	 * @returns {PerfilData} perfil
 	 */
-	getPerfil:  function getPerfil () {
+	getPerfil () {
 		return requestGet('/perfil')
 				.then(async profile=>{
 					let filiais = await requestGet('/all').catch(console.error)

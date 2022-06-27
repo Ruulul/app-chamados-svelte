@@ -2,7 +2,7 @@
 	import Icon from '$lib/components/MenuIcon.svelte'
 	import Logo from '$lib/assets/MainLogo.svelte';
 	import Filtro from '$lib/components/Filtro.svelte';
-	import { auth, filial } from '$lib/utils/db.js'
+	import { auth, filial, filiais_validas } from '$lib/utils/db.js'
 	import { goto } from '$app/navigation'
 	let itemsE =
 		[
@@ -15,12 +15,8 @@
 		]
 	let itemsAll = [itemsE, itemsD]
 </script>
-	<ul>
+	<nav>
 	{#each itemsAll as items}
-		<ul class="third 
-		{itemsAll.indexOf(items)%2===0
-		 ? 'left'
-		 : 'right'}">
 		{#each items as [name, href, action]}
 			<li title={name} on:click={action}>
 				<a href={action?'#':href}>
@@ -32,19 +28,16 @@
 		<li style="border: none; display: flex; outline: none;">
 			<Filtro
 				label='Filial'
-				options={['0101', '0201']}
+				options={$filiais_validas}
 				on:input={({target:{value}})=>filial.set(value)}
 			/>
 		</li>
-		{/if}
-		</ul>
-		{#if itemsAll.indexOf(items)===0}
 		<li class="logo third">
 			<Logo/>
 		</li>
 		{/if}
 	{/each}
-	</ul>
+	</nav>
 <style>
 	li:not(.logo) {
 		margin: 1em 2em;
@@ -58,9 +51,10 @@
 		place-content: center;
 		display: grid;
 	}
-	ul {
+	nav {
 		padding: 0;
 		display: flex;
+		justify-content: space-around;
 	}
 	.logo {
 		place-content: center;
@@ -69,12 +63,5 @@
 	}
 	.third {
 		width: 33vw;
-	}
-	
-	.left {
-		justify-content: flex-start
-	}
-	.right {
-		justify-content: flex-end
 	}
 </style>

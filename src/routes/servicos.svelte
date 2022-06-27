@@ -1,13 +1,9 @@
-<svelte:head>
-    <title>
-        Chamados
-    </title>
-</svelte:head>
 <script>
-    import { filial } from '$lib/utils/db.js'
+    import { filial, get_user } from '$lib/utils/db.js'
     import { get_servicos } from '$lib/utils/servicos.js'
     import { tipos_os } from '$lib/stores/local_db.js'
     import Filtro from '$lib/components/Filtro.svelte'
+    import { onDestroy } from 'svelte';
 
 
     let servicos = []
@@ -15,7 +11,10 @@
     let contagem = 0, contagem_total = 0
     let status = 'pendente'
     let tipo = ''
+    let tooltipX, tooltipY;
     $: $filial, get_servicos().then((data)=>servicos=data.reverse())
+    let agora = Date.now()/1000
+    let handlerAgora = setInterval(()=>agora=Date.now()/1000, 1000)
 
     $: servicos, status, tipo, filtraChamados()
 
@@ -35,13 +34,27 @@
         contagem_total = servicos.length
     }
 
-    function limpaFiltros() {
+    function limpaFiltros () {
         status = undefined
         tipo = undefined
     }
-</script>
 
-<div class='filtros'>
+    onDestroy(()=>clearInterval(handlerAgora))
+
+    function updateTooltipPosition (mouseEvent) {
+        [tooltipX, tooltipY] = [mouseEvent.clientX+10+'px', mouseEvent.clientY+10+'px']
+    }
+
+    function getDateFromISO (ISODate) {
+        return ISODate.split('T')[0].split('-').reverse().join('/')
+    }
+</script>
+<svelte:head>
+    <title>
+        Chamados
+    </title>
+</svelte:head>
+<aside class='filtros'>
     <Filtro 
         label='Tipo' 
         options={$tipos_os?.map(({tipo})=>tipo) || []}
@@ -61,10 +74,13 @@
     <button on:click={limpaFiltros}>Limpar filtros!</button>
     <p>{contagem} serviço{contagem.length === 1 ? '' : 's'} listados no momento;</p>
     <p>{contagem_total} serviço{contagem_total.length === 1 ? '' : 's'} no total.</p>
-</div>
+</aside>
 <table>
     <caption>Ordens de Serviço</caption>
     <thead>
+        <th>
+            ID
+        </th>
         <th>
             Assunto
         </th>
@@ -73,21 +89,76 @@
         </th>
     </thead>
     <tbody>
-        {#each servicos_filtrados as servico}           
-            <tr>
+        {#each servicos_filtrados as servico}
+            {@const prazoDateObj = new Date(servico.prazo)}
+            {@const diffTime = Math.floor(prazoDateObj.getTime()/1000 - agora)}
+            {@const expired = diffTime < 0}
+            <tr class:expired on:mousemove={updateTooltipPosition} style="--tooltip-x:{tooltipX};--tooltip-y: {tooltipY}">
+                <td>
+                    {servico.id}
+                </td>
                 <td>
                     <a sveltekit:prefetch href="/servico/{servico.id}">{servico.assunto}</a>
                 </td>
                 <td>
                     {servico.status}
                 </td>
+                <div class='anchor'>
+                    <div class='tooltip'>
+                        Tipo: {servico.tipo}<br>
+                        Categoria: {servico.subCategoria}<br>
+                        Aberto em: {getDateFromISO(servico.createdAt)}
+                        {#if servico.assumido_em}
+                        Assumido em {getDateFromISO(servico.assumido_em)}<br>
+                        {/if}
+                        Prazo estimado: {getDateFromISO(servico.prazo)}<br>
+                        Tempo {expired ? 'passado' : 'restante'} : <br>{Math.floor(diffTime/86400)} dias <br> {Math.floor(diffTime/3600) % 24}h {Math.floor(diffTime/60)%60}min {diffTime%60}s<br>
+                        {#if servico.atendenteId}
+                        {#await get_user(servico.atendenteId) then {nome}}
+                        Assistente: {nome}<br>
+                        {/await}
+                        {/if}
+                    </div>
+                </div>
             </tr>
         {/each}
     </tbody>
 </table>
 
 <style>
-    div {
+    .expired {
+        background-color: rgb(196, 30, 30);
+    }
+    .expired :link {
+        color: yellow
+    }
+    .expired :visited {
+        color: aliceblue
+    }
+    tr {
+        text-align: center;
+    }
+    .anchor {
+        position: fixed;
+        width: 0;
+        height: 0;
+        left: var(--tooltip-x, 50%);
+        top: var(--tooltip-y, 50%);
+    }
+    .tooltip {
+        position: absolute;
+        z-index: 999;
+        background-color: aqua;
+        padding: 0.5em;
+        width: 10em;
+        font-size: small;
+        transition: opacity 0.2s;
+        opacity: 0;
+    }
+    tr:hover .anchor .tooltip {
+        opacity: 1;
+    }
+    aside {
         float: left;
     }
     .filtros {
@@ -98,9 +169,6 @@
     table {
         justify-content: space-around;
         width: 75%;
-    }
-    tr {
-        text-align: center;
     }
     caption {
         caption-side: bottom;

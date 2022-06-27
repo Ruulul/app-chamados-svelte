@@ -1,8 +1,4 @@
 <script>
-    /**
-     * Exibe o anexo, dado o nome do arquivo na API
-     */
-
     import { get_file } from "$lib/utils/db";
     import { geraCSS } from '$lib/utils/utils'
     /**

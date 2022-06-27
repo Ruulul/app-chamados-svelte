@@ -23,9 +23,9 @@ function auth() {
 		<a href="#main">Ir para conteúdo principal</a>
 		<UpBar/>
 		<SideBar/>
-		<div id="main">
+		<main id="main">
 			<slot/>
-		</div>
+		</main>
 	{/await}
 {/await}
 

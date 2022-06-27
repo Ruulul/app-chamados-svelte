@@ -1,8 +1,3 @@
-<svelte:head>
-	<title>
-		Login
-	</title>
-</svelte:head>
 <script>
 	import { user } from '$lib/stores/user.js'
 	import { goto } from '$app/navigation'
@@ -23,6 +18,11 @@
 			.catch(console.error)
 	}
 </script>
+<svelte:head>
+	<title>
+		Login
+	</title>
+</svelte:head>
 <h1>
 Gold Seed
 </h1>

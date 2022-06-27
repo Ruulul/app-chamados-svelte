@@ -7,7 +7,7 @@
 			['Configurações', '/config']
 		]
 </script>
-<ul title='Barra lateral'>
+<nav title='Barra lateral'>
 	{#each items as [name, href]}
 	<li>
 		<a {href} alt="Página {name}">
@@ -16,10 +16,10 @@
 		</a>
 	</li>
 	{/each}
-</ul>
+</nav>
 
 <style>
-	ul {
+	nav {
 		float: left;
 		padding: 0;
 		background: grey;
