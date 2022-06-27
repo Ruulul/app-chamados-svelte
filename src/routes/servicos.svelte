@@ -4,6 +4,8 @@
     import { tipos_os } from '$lib/stores/local_db.js'
     import Filtro from '$lib/components/Filtro.svelte'
     import { onDestroy } from 'svelte';
+    import { fly } from 'svelte/transition';
+    import { flip } from 'svelte/animate'
 
 
     let servicos = []
@@ -89,11 +91,16 @@
         </th>
     </thead>
     <tbody>
-        {#each servicos_filtrados as servico}
+        {#each servicos_filtrados as servico(servico.id)}
             {@const prazoDateObj = new Date(servico.prazo)}
             {@const diffTime = Math.floor(prazoDateObj.getTime()/1000 - agora)}
             {@const expired = diffTime < 0}
-            <tr class:expired on:mousemove={updateTooltipPosition} style="--tooltip-x:{tooltipX};--tooltip-y: {tooltipY}">
+            <tr 
+                transition:fly={{y: 100}} 
+                animate:flip
+                class:expired 
+                on:mousemove={updateTooltipPosition} 
+                style="--tooltip-x:{tooltipX};--tooltip-y: {tooltipY}">
                 <td>
                     {servico.id}
                 </td>
@@ -128,6 +135,7 @@
 <style>
     .expired {
         background-color: rgb(196, 30, 30);
+        color: white
     }
     .expired :link {
         color: yellow
@@ -149,6 +157,7 @@
         position: absolute;
         z-index: 999;
         background-color: aqua;
+        color: black;
         padding: 0.5em;
         width: 10em;
         font-size: small;
