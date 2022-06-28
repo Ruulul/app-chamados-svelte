@@ -21,6 +21,14 @@
         resolvido: 'fechado'
     }
 
+    /**
+     * Lista encadeada de status com metadado
+     */
+    const metadado_hora = {
+        resolvido: 'resolvido_em',
+        fechado: 'fechado_em'
+    }
+
     const servico = getContext('servico')
     function adicionaMensagem () {
         goto('addMensagem', {
@@ -30,10 +38,13 @@
 
     function atualizaChamado () {
         let novo_status = proximo_status[$servico.status]
+        let update;
         if (novo_status)
-        update_servico($servico.id, {status: novo_status}, novo_status === 'fechado' ? 'closed' : undefined)
-            .then(os=>servico.set(os))
-            .then(function(){if(novo_status==='fechado')goto('/servicos')})
+            update = {status: novo_status, [metadado_hora[novo_status]]:(new Date()).toISOString()}
+        if (update)
+            update_servico($servico.id, update, novo_status === 'fechado' ? 'closed' : undefined)
+                .then(os=>servico.set(os))
+                .then(function(){if(novo_status==='fechado')goto('/servicos')})
     }
 
 </script>

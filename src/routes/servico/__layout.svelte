@@ -2,7 +2,6 @@
     import { setContext } from 'svelte';
     import { get_user, } from '$lib/utils/db.js'
     import { get_servico, update_servico } from '$lib/utils/servicos';
-    import { converteDateToISO } from '$lib/utils/utils.js'
     import { page } from '$app/stores'
     import { goto } from '$app/navigation'
     import { user } from '$lib/stores/user.js'
@@ -25,7 +24,7 @@
         let update = {
             atendimento: true,
             atendenteId: $user.id,
-            assumido_em: converteDateToISO(Date())
+            assumido_em: (new Date()).toISOString()
         }
         update_servico(servico.id, update, 'taken').then(setServico)
     }
