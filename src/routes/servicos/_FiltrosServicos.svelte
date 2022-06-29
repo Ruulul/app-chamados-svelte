@@ -5,6 +5,15 @@
     export let status
     export let sort
     export let limpaFiltros
+
+    const style = document.documentElement.style
+
+    function changeActive (name) {
+        let active = style.getPropertyValue('--active')
+        style.setProperty('--active-'+active, 'none')
+        style.setProperty('--active-'+name, 'block')
+        style.setProperty('--active', name)
+    }
 </script>
 <aside class='filtros'>
     <Filtro 
@@ -28,11 +37,26 @@
         label='Ordenar por'
         options={
             [
-                {value: function porAssunto(a, b){return a.assunto > b.assunto}, label: 'assunto'},
-                {value: function porPrazo(a, b){return a.prazo > b.prazo}, label: 'prazo'},
-                {value: function porTempo(a, b){return a.prazo > b.prazo}, label: 'tempo restante'},
-                {value: function porAbertura(a, b){return a.createdAt > b.createdAt}, label: 'abertura'},
-                {value: function porPrioridade(a, b){return a.prioridade > b.prioridade}, label: 'urgência'},
+                {value: function porAssunto(a, b){
+                    changeActive('assunto')
+                    return a.assunto > b.assunto
+                }, label: 'assunto'},
+                {value: function porPrazo(a, b){
+                    changeActive('prazo')
+                    return a.prazo > b.prazo}, label: 'prazo'
+                },
+                {value: function porTempo(a, b){
+                    changeActive('tempo')
+                    return a.prazo > b.prazo}, label: 'tempo restante'
+                },
+                {value: function porAbertura(a, b){
+                    changeActive('abertura')
+                    return a.createdAt > b.createdAt}, label: 'abertura'
+                },
+                {value: function porPrioridade(a, b){
+                    changeActive('prioridade')
+                    return a.prioridade > b.prioridade
+                }, label: 'urgência'},
             ]
         }
         bind:value={sort}

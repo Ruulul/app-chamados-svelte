@@ -6,7 +6,6 @@
     import Tooltip from '$lib/components/Tooltip.svelte';
     export let sort;
     export let servicos;
-
     let sinal = 1;
     let agora = Date.now()/1000
     let handlerAgora = setInterval(()=>agora=Date.now()/1000, 1000)
@@ -15,30 +14,7 @@
 
 
     function getDateFromISO (ISODate) {
-        return ISODate.split('T')[0].split('-').reverse().join('/')
-    }
-
-    function getCampoFiltro (servico, name) {
-        switch (name) {
-            case 'abertura':
-                return getDateFromISO(servico.createdAt)
-            case 'prazo':
-                return getDateFromISO(servico[name])
-            case 'assumido_em':
-                return getDateFromISO(servico.assumido_em)
-            case 'prioridade':
-                return ['Baixa', 'Média', 'Alta', 'Urgente'][servico[name]-1]
-            case 'tempo':
-            let prazoDateObj = new Date(servico.prazo)
-            let prazo = prazoDateObj.getTime()/1000
-            let diffTime = Math.floor(prazo - agora)
-            let dias = Math.floor(diffTime/86400)
-            let horas = Math.floor(diffTime/3600) % 24
-            return  (dias!=0?`${dias} dias `:' ')+
-                    (horas!=0?`${horas} h `:' ')+
-                    `${Math.floor(diffTime/60)%60}min ${diffTime%60}s`
-        }
-        return servico[name]
+        return ISODate?.split('T')[0].split('-').reverse().join('/') || ''
     }
 </script>
 <table>
@@ -53,18 +29,16 @@
         <th>
             Status
         </th>
-        {#if !['sort', 'porAssunto'].includes(sort.name)}
-        {@const name=sort.name.slice(3)}
-            <th transition:fly={{x:200}}>
-                {name}
-                <button on:click={()=>sinal*=-1}>
-                    {sinal==1 ? '▲' : '▼'}
-                </button>
-            </th>
-        {/if}
+        <th>
+            Filtro
+            <button on:click={()=>sinal*=-1}>
+                {sinal==1 ? '▲' : '▼'}
+            </button>
+        </th>
     </thead>
     <tbody>
         {#each servicos.sort((a,b)=>sinal==1?sort(a,b):!sort(a,b)) as servico(servico.id)}
+        {@const name=sort.name.slice(3).toLowerCase()}
             {@const prazoDateObj = new Date(servico.prazo)}
             {@const prazo = prazoDateObj.getTime()/1000}
             {@const diffTime = Math.floor(prazo - agora)}
@@ -82,14 +56,18 @@
                 <td>
                     {servico.status}
                 </td>
-                {#if !['sort', 'porAssunto'].includes(sort.name)}
-                {@const name=sort.name.slice(3).toLowerCase()}
-                    <td transition:fly={{x:200}}>
+                    <td>
                         {#key agora}
-                        {getCampoFiltro(servico, name)}
+                        <span class='tempo'>
+                            {Math.floor(diffTime/86400)} dias <br> 
+                            {Math.floor(diffTime/3600) % 24}h 
+                            {Math.floor(diffTime/60)%60}min {diffTime%60}s
+                        </span>
                         {/key}
+                        <span class='prazo'>{getDateFromISO(servico.prazo)}</span>
+                        <span class='abertura'>{getDateFromISO(servico.createdAt)}</span>
+                        <span class='prioridade'>{['Baixa', 'Média', 'Alta', 'Urgente'][servico.prioridade-1]}</span>
                     </td>
-                {/if}
                 <Tooltip>
 		            Tipo: {servico.tipo}<br>
 		            Categoria: {servico.subCategoria}<br>
@@ -97,6 +75,7 @@
 		            {#if servico.assumido_em}
 		            Assumido em {getDateFromISO(servico.assumido_em)}<br>
 		            {/if}
+                    Prioridade: {['Baixa', 'Média', 'Alta', 'Urgente'][servico.prioridade-1]}<br>
 		            Prazo estimado: {getDateFromISO(servico.prazo)}<br>
 		            Tempo {expired ? 'passado' : 'restante'} : 
 		            <br>{Math.floor(diffTime/86400)} dias 
@@ -114,6 +93,18 @@
 </table>
 
 <style>
+    span.tempo {
+        display: var(--active-tempo, none);
+    }
+    span.prazo {
+        display: var(--active-prazo, none);
+    }
+    span.abertura {
+        display: var(--active-abertura, none);
+    }
+    span.prioridade {
+        display: var(--active-prioridade, none);
+    }
     .expired {
         background-color: rgb(196, 30, 30);
         color: white
