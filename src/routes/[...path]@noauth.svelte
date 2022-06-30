@@ -1,8 +1,13 @@
-<svelte:head>
-	<title>
-		Página não encontrada
-	</title>
-</svelte:head>
+<script context='module'>
+	export function load () {
+		return {
+			stuff: {
+				title: 'Página não encontrada'
+			},
+			status: 404
+		}
+	}
+</script>
 <h1>
 	Erro 404
 </h1>

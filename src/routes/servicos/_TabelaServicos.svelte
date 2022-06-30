@@ -9,6 +9,7 @@
     let sinal = 1;
     let agora = Date.now()/1000
     let handlerAgora = setInterval(()=>agora=Date.now()/1000, 1000)
+    let ISOd = getDateFromISO
     
     onDestroy(()=>clearInterval(handlerAgora))
 
@@ -29,8 +30,7 @@
         <th>
             Status
         </th>
-        <th>
-            Filtro
+        <th class='filtro'>
             <button on:click={()=>sinal*=-1}>
                 {sinal==1 ? '▲' : '▼'}
             </button>
@@ -38,7 +38,6 @@
     </thead>
     <tbody>
         {#each servicos.sort((a,b)=>sinal==1?sort(a,b):!sort(a,b)) as servico(servico.id)}
-        {@const name=sort.name.slice(3).toLowerCase()}
             {@const prazoDateObj = new Date(servico.prazo)}
             {@const prazo = prazoDateObj.getTime()/1000}
             {@const diffTime = Math.floor(prazo - agora)}
@@ -64,19 +63,19 @@
                             {Math.floor(diffTime/60)%60}min {diffTime%60}s
                         </span>
                         {/key}
-                        <span class='prazo'>{getDateFromISO(servico.prazo)}</span>
-                        <span class='abertura'>{getDateFromISO(servico.createdAt)}</span>
+                        <span class='prazo'>{ISOd(servico.prazo)}</span>
+                        <span class='abertura'>{ISOd(servico.createdAt)}</span>
                         <span class='prioridade'>{['Baixa', 'Média', 'Alta', 'Urgente'][servico.prioridade-1]}</span>
                     </td>
                 <Tooltip>
 		            Tipo: {servico.tipo}<br>
 		            Categoria: {servico.subCategoria}<br>
-		            Aberto em: {getDateFromISO(servico.createdAt)}
+		            Aberto em: {ISOd(servico.createdAt)}
 		            {#if servico.assumido_em}
-		            Assumido em {getDateFromISO(servico.assumido_em)}<br>
+		            Assumido em {ISOd(servico.assumido_em)}<br>
 		            {/if}
                     Prioridade: {['Baixa', 'Média', 'Alta', 'Urgente'][servico.prioridade-1]}<br>
-		            Prazo estimado: {getDateFromISO(servico.prazo)}<br>
+		            Prazo estimado: {ISOd(servico.prazo)}<br>
 		            Tempo {expired ? 'passado' : 'restante'} : 
 		            <br>{Math.floor(diffTime/86400)} dias 
 		            <br> {Math.floor(diffTime/3600) % 24}h 
@@ -104,6 +103,10 @@
     }
     span.prioridade {
         display: var(--active-prioridade, none);
+    }
+    th.filtro::before {
+        content: var(--active, 'filtro');
+        text-transform: capitalize;
     }
     .expired {
         background-color: rgb(196, 30, 30);

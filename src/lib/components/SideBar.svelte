@@ -1,4 +1,5 @@
 <script>
+	import { servicos } from '$lib/stores/servicos';
 	import Icon from '$lib/components/MenuIcon.svelte'
 	let items =
 		[
@@ -6,6 +7,8 @@
 			['Serviços', '/servicos'],
 			['Configurações', '/config']
 		]
+	$: count = $servicos.filter(({status})=>status==='pendente').length
+	$: hidden = !count
 </script>
 <nav title='Barra lateral'>
 	{#each items as [name, href]}
@@ -14,6 +17,11 @@
 			<span>{name}</span>
 			<Icon {href} />
 		</a>
+		{#if href==='/servicos'}
+			<div class:hidden>
+				<p>{count}</p>
+			</div>
+		{/if}
 	</li>
 	{/each}
 </nav>
@@ -36,5 +44,28 @@
 	}
 	span {
 		place-self: center;
+	}
+	div {
+		position: relative;
+		width: 0;
+		height: 0;
+	}
+	p {
+		position: absolute;
+		font-size: small;
+		background-color: darkred;
+		color: white;
+		transition: width 0.2s, height 0.2s, font-size 0.2s;
+		top: -1.5em;
+		width: 1.5em;
+		height: 1.5em;
+		border-radius: 2em;
+		display: grid;
+		place-content: center;
+	}
+	.hidden p {
+		width: 0;
+		height: 0;
+		font-size: 0;
 	}
 </style>

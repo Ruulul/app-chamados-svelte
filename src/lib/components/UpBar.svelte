@@ -4,6 +4,7 @@
 	import Filtro from '$lib/components/Filtro.svelte';
 	import { auth, filial, filiais_validas } from '$lib/utils/db.js'
 	import { goto } from '$app/navigation'
+	import { servicos } from '$lib/stores/servicos';
 	let itemsE =
 		[
 			['Abrir O.S.', '/abrir_os'],
@@ -29,7 +30,11 @@
 			<Filtro
 				label='Filial'
 				options={$filiais_validas}
-				on:input={({target:{value}})=>filial.set(value)}
+				on:input={({target:{value}})=>{
+					filial.set(value)
+					servicos.update()
+					}
+				}
 			/>
 		</li>
 		<li class="logo third">

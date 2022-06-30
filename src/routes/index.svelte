@@ -1,35 +1,32 @@
+<script context='module'>
+	export function load () {
+		return {
+			stuff: {
+				title: 'Página inicial'
+			}
+		}
+	}
+</script>
 <script>
 	import { user } from '$lib/stores/user.js'
-	import { filial, get_monitoring } from '$lib/utils/db.js'
-	import { get_servicos } from '$lib/utils/servicos';
+	import { get_monitoring } from '$lib/utils/db.js'
+	import { servicos as servicos_store } from '$lib/stores/servicos';
 	import { converteDateToISO } from '$lib/utils/utils.js'
 	import Suporte from '$lib/components/ExibeSuporte.svelte'
 	import CardChamadosPendentes from '$lib/components/CardChamadosPendentes.svelte'
+
+	$: servicos = $servicos_store.filter(({status})=>status==='pendente')
 </script>
-<svelte:head>
-	<title>
-		Página Inicial
-	</title>
-</svelte:head>
 <h1>Olá, {$user.nome}</h1>
 <div class='wrapper'>
-	{#key $filial}
-		{#await get_servicos('pendente')} 
-		<div class='placeholderCard'>
-			Carregando...
-		</div>
-		{:then servicos}
-			{@const pendentes = servicos.length}
-			{@const novos = servicos.filter(({createdAt})=>createdAt.split('T')===converteDateToISO(Date())).length}
-			{@const atendimento = servicos.filter(({atendimento})=>atendimento==='true').length}
-			{@const parados = pendentes - atendimento}
-			<CardChamadosPendentes {...{pendentes, novos, atendimento, parados}} />
-		{/await}
-	{/key}
+	{#if servicos}
+	{@const pendentes = servicos.length}
+	{@const novos = servicos.filter(({createdAt})=>createdAt.split('T')[0]===converteDateToISO(Date())).length}
+	{@const atendimento = servicos.filter(({atendimento})=>atendimento==='true').length}
+	{@const parados = pendentes - atendimento}
+	<CardChamadosPendentes {...{pendentes, novos, atendimento, parados}} />
+	{/if}
 	<div>
-		<!--div class='hook'>
-			<img alt='' src='https://10.0.0.5:5000/images/call-center-assistant-pngrepo-com.png'>
-		</div-->
 		<h2>Equipe de suporte</h2>
 		{#await get_monitoring()}
 			{#each [0, 0, 0] as id}
@@ -43,13 +40,6 @@
 	</div>
 </div>
 <style>
-    div.placeholderCard {
-        width: 20%;
-        height: 40%;
-        padding: 2em;
-		padding-top: 0;
-        border: thin blue solid;
-    }
 	.wrapper {
 		display: flex;
 		justify-content: space-between;
@@ -60,20 +50,4 @@
         padding: 2em;
 		padding-top: 0;
 	}
-	/*
-	.wrapper div .hook {
-		position: relative;
-		width: 0;
-		height: 0;
-		padding: 0;
-		margin: 0;
-		border: none;
-	}
-	img {
-		width: 10em;
-		height: 10em;
-		position: absolute;
-		left: 2em;
-	}
-		*/
 </style>

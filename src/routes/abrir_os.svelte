@@ -1,3 +1,12 @@
+<script context='module'>
+	export function load () {
+		return {
+			stuff: {
+				title: 'Abrir chamado'
+			}
+		}
+	}
+</script>
 <script>
 	import { goto } from '$app/navigation';
 	import { user } from '$lib/stores/user.js'
@@ -58,11 +67,6 @@
 		files = files.filter(file=>file.digest!==digest)
 	}
 	</script>
-<svelte:head>
-	<title>
-		Abrir Chamado
-	</title>
-</svelte:head>
 <h1>
 	{#await get_id_nova_os()}
 	Carregando...

@@ -4,15 +4,30 @@
     export let tipo
     export let status
     export let sort
-    export let limpaFiltros
 
     const style = document.documentElement.style
 
     function changeActive (name) {
         let active = style.getPropertyValue('--active')
-        style.setProperty('--active-'+active, 'none')
+        style.setProperty('--active-'+active.slice(1,-1), 'none')
         style.setProperty('--active-'+name, 'block')
-        style.setProperty('--active', name)
+        style.setProperty('--active', "'"+name+"'")
+    }
+
+    function limpaFiltros () {
+        tipo = ''
+        status = ''
+    }
+
+    function limpaOrdena () {
+        sort=(a, b)=>b.id-a.id
+    }
+
+    function limpa (limpa) {
+        return function () {
+            limpa()
+            changeActive('none')
+        }
     }
 </script>
 <aside class='filtros'>
@@ -27,12 +42,14 @@
             [
                 {value: 'pendente', label: 'Pendente'}, 
                 {value: 'atendimento', label: 'Em Atendimento'},
+                {value: 'resolvido', label: 'Resolvido'},
                 {value: 'fechado', label: 'Fechado'}
             ]
         }
         bind:value={status}
     />
     <button title='Limpar status' on:click={()=>status=undefined}>X</button>
+    <br><button on:click={limpa(limpaFiltros)}>Limpar filtros!</button><br>
     <Filtro
         label='Ordenar por'
         options={
@@ -61,8 +78,7 @@
         }
         bind:value={sort}
     />
-    <button title='Limpar filtro' on:click={()=>sort=(a, b)=>b.id-a.id}>X</button>
-    <button on:click={limpaFiltros}>Limpar filtros!</button>
+    <button title='Limpar filtro' on:click={limpa(limpaOrdena)}>X</button>
     <slot/>
 </aside>
 

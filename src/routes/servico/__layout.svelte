@@ -1,3 +1,12 @@
+<script context='module'>
+	export function load ({params}) {
+		return {
+			stuff: {
+				title: `Chamado ${params.servico_id}`
+			}
+		}
+	}
+</script>
 <script>
     import { setContext } from 'svelte';
     import { get_user, } from '$lib/utils/db.js'
@@ -39,11 +48,6 @@
         servico_store.set(novo_servico)
     }
 </script>
-<svelte:head>
-    <title>
-        Chamado {$page.params.servico_id}
-    </title>
-</svelte:head>
 {#key servico?.updatedAt}
 {#await get_servico_and_clone()}
     <h1>Carregando...</h1>

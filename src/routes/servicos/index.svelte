@@ -1,17 +1,24 @@
+<script context='module'>
+	export function load () {
+		return {
+			stuff: {
+				title: 'Chamados'
+			}
+		}
+	}
+</script>
 <script>
-    import { filial } from '$lib/utils/db.js'
-    import { get_servicos } from '$lib/utils/servicos.js'
+    import { servicos as servicos_store } from '$lib/stores/servicos';
     import Tabela from './_TabelaServicos.svelte'
     import Filtros from './_FiltrosServicos.svelte'
 
 
-    let servicos = []
+    $: servicos = $servicos_store
     let servicos_filtrados = []
     let contagem = 0, contagem_total = 0
     let status = 'pendente'
     let tipo = ''
     let sort = (a, b)=>b.id-a.id
-    $: $filial, get_servicos().then((data)=>servicos=data.reverse())
 
     $: servicos, status, tipo, filtraChamados()
 
@@ -30,19 +37,8 @@
         contagem = servicos_filtrados.length
         contagem_total = servicos.length
     }
-
-    function limpaFiltros () {
-        status = undefined
-        tipo = undefined
-    }
-
 </script>
-<svelte:head>
-    <title>
-        Chamados
-    </title>
-</svelte:head>
-<Filtros bind:tipo bind:status bind:sort {limpaFiltros}>
+<Filtros bind:tipo bind:status bind:sort>
     <p>{contagem} serviço{contagem.length === 1 ? '' : 's'} listados no momento;</p>
     <p>{contagem_total} serviço{contagem_total.length === 1 ? '' : 's'} no total.</p>
 </Filtros>
