@@ -1,57 +1,61 @@
 <script>
-    export let pendentes 
+    import { user } from "$lib/stores/user";
     export let novos
     export let parados
     export let atendimento
 </script>
 
 <div>
-	<h2>Chamados</h2>
+    <h2>
+        Olá, <span>{$user.nome}</span>
+    </h2>
+    <div class='divider'></div>
+	<h3>Meus tickets</h3>
+    <a sveltekit:prefetch href='/abrir_os'>Abrir Chamado</a>
     <ul>
-	<li><h3>Pendentes: {pendentes}</h3></li>
-        <li>
-            <div class='hook'>
-                <p class="novos">Novos: {novos}</p>
-            </div>
-        </li>
-    <li>Parados: {parados}</li>
-	<li>Em atendimento: {atendimento}</li>
-</ul>
+        <li>{novos} abertos hoje</li>
+        <li>{parados} parados</li>
+	    <li>{atendimento} em atendimento</li>
+    </ul>
+    <div class='divider'></div>
+    <ul>
+        <li>Venceram</li>
+        <li>Vencem hoje</li>
+        <li>Vencem essa semana</li>
+    </ul>
 </div>
 
 <style>
+    :not(span) {
+        color: grey;
+    }
     div {
+        justify-content: center;
         width: 20%;
         height: 40%;
         padding: 2em;
 		padding-top: 0;
         border: thin blue solid;
+        color: grey;
+    }
+    .divider {
+        width: 100%;
+        height: 0.3em;
+        padding: 0;
+        border: none;
+        background-color: grey;
     }
     ul {
         list-style: none;
-        margin-left: -2.5em;
-    }
-    p {
-        margin: 0
     }
     li {
         padding: 0;
     }
-    .hook {
-        position: relative;
-        width: 0;
-        height: 0;
-        padding: 0;
-        margin: 0;
-        border: none;
-    }
-    .novos {
-        position: absolute;
-        display: flex;
-        left: 10em;
-        top: -3em;
-        padding: 1em;
-        border: orange solid;
-        border-radius: 1em;
+    a {
+        background-color: var(--dark);
+        border-radius: 2em;
+        padding: 0.5em;
+        color: white;
+        text-decoration: none;
     }
 </style>

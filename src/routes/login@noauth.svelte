@@ -23,56 +23,91 @@
 		Login
 	</title>
 </svelte:head>
-<h1>
-Gold Seed
-</h1>
 <main>
-<h2>
-Login
-</h2>
-<form on:submit|preventDefault="{handleLogin}">
-	<div>
+	<img alt=''>
+	<span>
+		Seja bem vindo,
+	</span>
+	<form on:submit|preventDefault="{handleLogin}">
 		<label for='email'>
 		Email
 		</label>
-		<input id='email' required bind:value={email} type="email"/>
-	</div>
-	<div>
+		<input placeholder='Email' id='email' required bind:value={email} type="email"/>
 		<label for='senha'>
 		Senha
 		</label>
-		<input id='senha' required bind:value={senha} type='password'/>
-	</div>
-	<span>{error || ''}</span>
-	<button type='submit'>Login</button>
-</form>
+		<input placeholder='Senha' id='senha' required bind:value={senha} type='password'/>
+		<span>{error || ''}</span>
+		<div>
+			<button type='submit'>Conectar</button>
+		</div>
+	</form>
+	<span class='recupera-senha'>Esqueceu sua senha? <br><a href='#'>Clique aqui para recuperar sua senha</a></span>
 </main>
 <style>
-	h1 {
-		text-align: center;
+	img {
+		content: var(--logo);
+		width: 15em;
+		margin: auto;
+		display: grid;
 	}
 	main {
+		position: block;
+		width: 20%;
+		height: fit-content;
+		padding: 3em;
+
 		text-align: center;
-		display: grid;
+		place-self: center;
 		margin: auto;
-		border: green solid;
+		display: flex;
+		flex-flow: column;
+		background-color: var(--grey);
+		border-radius: 1.5em;
+
+		margin-top: 5%;
+	}
+	main * {
+		margin: 0.5em 0;
+	}
+	div {
+		position: relative;
+		top: unset;
+		left: unset;
+		width: 100%;
+		height: 2em;
+	}
+	label {
+		width: 0;
+		height: 0;
+		overflow: hidden;
+	}
+	input {
+		width: 10em;
+		margin: 0.5em 0;
+		padding: 0.5em;
 		border-radius: 1em;
-		width: fit-content;
-		padding: 0.5em 1em;
+		border: thin var(--secondary-color) solid;
+	}
+	button {
+		border-radius: 1em;
+		border: none;
+		background-color: var(--dark);
+		color: white;
+		text-transform: uppercase;
+		left: 0;
+		position: absolute;
+		width: 100%;
+		padding: 0.3em 2em;
 	}
 	form {
 		display: grid;
-		width: 20em;
-	}
-	div {
-		display: flex;
-		justify-content: flex-end;
-	}
-	div * {
-		margin: 0.3em 3em 0.3em 0;
-	}
-	button {
 		margin: auto;
-		padding: 0.3em 2em;
+	}
+	.recupera-senha {
+		font-size: small;
+	}
+	.recupera-senha a {
+		font-size: x-small;
 	}
 </style>

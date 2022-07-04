@@ -7,7 +7,6 @@
 	import { servicos } from '$lib/stores/servicos';
 	let itemsE =
 		[
-			['Abrir O.S.', '/abrir_os'],
 		]
 	let itemsD = 
 		[
@@ -49,10 +48,8 @@
 		width: 1.5em;
 		list-style-type: none;
 		padding: 0.5em;
-		border: 
-			hsl(100, 50%, 50%)
-			outset;
-		border-radius: 40% 40% 0 0;
+		border: var(--dark) solid;
+		border-radius: 50%;
 		place-content: center;
 		display: grid;
 	}

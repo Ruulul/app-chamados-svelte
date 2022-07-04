@@ -11,10 +11,9 @@
 	$: hidden = !count
 </script>
 <nav title='Barra lateral'>
-	{#each items as [name, href]}
+	{#each items as [title, href]}
 	<li>
-		<a {href} alt="Página {name}">
-			<span>{name}</span>
+		<a {title} {href} alt="Página {title}">
 			<Icon {href} />
 		</a>
 		{#if href==='/servicos'}
@@ -30,20 +29,23 @@
 	nav {
 		float: left;
 		padding: 0;
-		background: grey;
+		background: var(--grey);
 		height: 76.837398527vh;
 		margin-right: 1em;
-		margin-left: -1em;
-		border-radius: 0% 10% 10% 0%
+		margin-left: -0.5em;
+		border-radius: 0 1em 1em 0;
+	}
+	nav::after {
+		content: var(--small-logo);
+		position: absolute;
+		bottom: 4em;
 	}
 	li {
 		display: flex;
 		margin: 1em;
-		width: 15vw;
+		padding: 0.5em;
+		width: fit-content;
 		justify-content: end;
-	}
-	span {
-		place-self: center;
 	}
 	div {
 		position: relative;
