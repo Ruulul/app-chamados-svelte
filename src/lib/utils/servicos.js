@@ -38,15 +38,13 @@ export {
 	delete os.anexos
 	let created_os = await requestPost('/novo/servico', in_os)
 	for (let anexo in os.anexos)
-		try {
-			await requestPost(`/update/servico/${created_os.id}/arquivo`, {title: anexo.name, data: anexo.data})
-				.then(async (os) => {
-					let { email } = await get_user(os.usuarioId || os.autorId)
-					return sendEmail('open', [email, email_suporte], {idOS: os.id, assunto : os.assunto})
-				})
-		} catch(e) {
-			console.error(e)
-		}
+		requestPost(`/update/servico/${created_os.id}/arquivo`, {title: anexo.name, data: anexo.data})
+			.then(async (os) => {
+				console.log(`Arquivo ${anexo.name} enviado`)
+			})
+			.catch(()=>console.log(`Arquivo ${anexo.name} falhou no envio`))
+	let { email } = await get_user(os.usuarioId || os.autorId)
+	return sendEmail('open', [email, email_suporte], {idOS: os.id, assunto : os.assunto})
 }
 
 /**

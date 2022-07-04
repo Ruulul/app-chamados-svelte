@@ -35,7 +35,7 @@
         label='Tipo' 
         options={$tipos_os?.map(({tipo})=>tipo) || []}
         bind:value={tipo}
-    /><button title='Limpar tipo' on:click={()=>tipo=undefined}>X</button>
+    /><button title='Limpar tipo' on:click={()=>tipo=''}>X</button>
     <Filtro 
         label='Status' 
         options={
@@ -48,7 +48,7 @@
         }
         bind:value={status}
     />
-    <button title='Limpar status' on:click={()=>status=undefined}>X</button>
+    <button title='Limpar status' on:click={()=>status=''}>X</button>
     <br><button on:click={limpa(limpaFiltros)}>Limpar filtros!</button><br>
     <Filtro
         label='Ordenar por'
@@ -56,11 +56,14 @@
             [
                 {value: function porAssunto(a, b){
                     changeActive('assunto')
+                    if (a.assunto == b.assunto)
+                        return 0
                     return a.assunto > b.assunto
                 }, label: 'assunto'},
                 {value: function porPrazo(a, b){
                     changeActive('prazo')
-                    return a.prazo > b.prazo}, label: 'prazo'
+                    return a.prazo > b.prazo
+                }, label: 'prazo'
                 },
                 {value: function porTempo(a, b){
                     changeActive('tempo')
@@ -72,6 +75,8 @@
                 },
                 {value: function porPrioridade(a, b){
                     changeActive('prioridade')
+                    if (a.prioridade == b.prioridade)
+                        return 0
                     return a.prioridade > b.prioridade
                 }, label: 'urgência'},
             ]

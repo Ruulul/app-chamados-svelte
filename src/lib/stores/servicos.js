@@ -16,6 +16,8 @@ function createServicos () {
     return { subscribe, update(){getServicos(set)} }
 
     function getServicos (set) {
-        get_servicos(get(filtro), get(tipo_filtro)).then(set)
+        get_servicos(get(filtro), get(tipo_filtro))
+            .then(set)
+            .catch(()=>set([]))
     }
 }
