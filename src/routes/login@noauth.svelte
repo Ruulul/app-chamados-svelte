@@ -45,11 +45,14 @@
 	<span class='recupera-senha'>Esqueceu sua senha? <br><a href='#'>Clique aqui para recuperar sua senha</a></span>
 </main>
 <style>
+	span {
+		text-align: left;
+	}
 	img {
 		content: var(--logo);
-		width: 15em;
+		width: 10em;
 		margin: auto;
-		display: grid;
+		display: block;
 	}
 	main {
 		position: block;
@@ -83,7 +86,8 @@
 		overflow: hidden;
 	}
 	input {
-		width: 10em;
+		width: 15em;
+		font-size: medium;
 		margin: 0.5em 0;
 		padding: 0.5em;
 		border-radius: 1em;
@@ -91,14 +95,14 @@
 	}
 	button {
 		border-radius: 1em;
+		font-size: medium;
 		border: none;
 		background-color: var(--dark);
 		color: white;
 		text-transform: uppercase;
-		left: 0;
-		position: absolute;
-		width: 100%;
-		padding: 0.3em 2em;
+		position: block;
+		width: 15em;
+		padding: 0.5em 2em;
 	}
 	form {
 		display: grid;
@@ -106,8 +110,5 @@
 	}
 	.recupera-senha {
 		font-size: small;
-	}
-	.recupera-senha a {
-		font-size: x-small;
 	}
 </style>

@@ -3,11 +3,12 @@
     --secondary-color: #FFAD00;
     --grey: #F4F0F0;
     --dark: #924912;
+    --texto: grey;
     --logo: url('/logo-gold seed 1.svg');
     --small-logo: url('/logo-gold seed-folha 1.svg');
     @import url('https://fonts.googleapis.com/css2?family=ABeeZee&display=swap');
 }
 * {
     font-family: 'ABeeZee', sans-serif;
-    color: var(--dark);
+    color: var(--texto);
 }

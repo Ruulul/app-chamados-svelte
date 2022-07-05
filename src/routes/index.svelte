@@ -8,16 +8,19 @@
 	}
 </script>
 <script>
-	import { servicos as servicos_store } from '$lib/stores/servicos';
-	import { converteDateToISO } from '$lib/utils/utils.js'
-	import CardChamadosPendentes from '$lib/components/CardChamadosPendentes.svelte'
-
-	$: servicos = $servicos_store.filter(({status})=>status==='pendente')
+	import CardChamadosPendentes from './_CardChamadosPendentes.svelte'
+	import MuralAvisos from './_MuralAvisos.svelte';
 </script>
-	{#if servicos}
-	{@const pendentes = servicos.length}
-	{@const novos = servicos.filter(({createdAt})=>createdAt.split('T')[0]===converteDateToISO(Date())).length}
-	{@const atendimento = servicos.filter(({atendimento})=>atendimento==='true').length}
-	{@const parados = pendentes - atendimento}
-	<CardChamadosPendentes {...{novos, atendimento, parados}} />
-	{/if}
+<div>
+	<CardChamadosPendentes/>
+	<MuralAvisos/>
+</div>
+<style>
+	div {
+		display: flex;
+		position: relative;
+		justify-content: space-between;
+		padding: 5em;
+		padding-top: 0;
+	}
+</style>
