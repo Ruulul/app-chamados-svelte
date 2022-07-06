@@ -41,7 +41,7 @@ function createUser() {
 			}
 		},
 		login: async function(user) {
-			try {
+			try { 
 				let res = await auth.login(user)
 				if (res.error){
 					set(null)
