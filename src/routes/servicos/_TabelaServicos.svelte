@@ -18,7 +18,7 @@
         return ISODate?.split('T')[0].split('-').reverse().join('/') || ''
     }
 </script>
-<table>
+<table class='filled container'>
     <caption>Ordens de Serviço</caption>
     <thead>
         <th>
@@ -125,8 +125,8 @@
         opacity: 1;
     }
     table {
-        justify-content: space-around;
         width: 75%;
+        padding-right: 1em;
     }
     caption {
         caption-side: bottom;

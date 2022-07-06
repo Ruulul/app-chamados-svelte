@@ -48,12 +48,13 @@
     }
 
 </script>
-<h2>
-    Mensagens
-</h2>
+<div class='campo filled container assunto'>
+    Assunto:
+    {$servico.assunto}
+</div>
 <div class='messages'>
     {#each $servico?.chat.sort((a, b)=>b.id-a.id) || [] as message}
-        <div class='campo'>
+        <div class='campo filled container'>
             <h3>
                 {#await get_user(message.autorId)}
                     Carregando...
@@ -67,9 +68,9 @@
 </div>
 {#if $servico?.status != 'fechado'}
     <div class='buttons'>
-        <button on:click={adicionaMensagem}>Adicionar Mensagem</button>
+        <button class='action button' on:click={adicionaMensagem}>Adicionar Mensagem</button>
         {#if [$servico?.atendenteId, $servico?.usuarioId].includes($user.id.toString())}
-            <button on:click={atualizaChamado}>{label_por_status[$servico?.status]}</button>
+            <button class='action button' on:click={atualizaChamado}>{label_por_status[$servico?.status]}</button>
         {/if}
     </div>
 {/if}
@@ -79,21 +80,27 @@
         max-height: 30em;
         overflow-y: scroll;
     }
+    .messages .campo::before {
+        content: ' ';
+        position: absolute;
+        left: -1em;
+        border-top: 1em solid transparent;
+        border-left: 1em solid white;
+        border-bottom: 1em solid transparent;
+    }
+    .assunto {
+        width: 100%;
+    }
     .campo {
         font-size: small;
-        border: grey solid;
-        margin: 1em;
+        --fill-color: white;
         padding: 1em;
-        border-radius: 2em;
+        margin: 1em;
     }
-    .buttons {
-        display: flex;
-        height: fit-content;
-        place-content: center;
-        margin-top: 3em;
-    }
-    .buttons button {
-        padding: 0.2em;
+    .action.button {
+        text-transform: uppercase;
+        padding: 0.6em;
+        border-radius: 0.5em;
         margin: 1em;
     }
 </style>

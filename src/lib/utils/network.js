@@ -1,13 +1,14 @@
 
-import { filial as filial_store } from './filial.js'
-let filial = '0101'
-filial_store.subscribe((value)=>filial=value)
+
 export const origin = 'https://10.0.0.5:5000'
 const server = origin + '/api/'//'https://45.177.254.161:5000/api/'
 const api =  () => server + filial
 import { browser } from '$app/env'
-
+import { filial as filial_store } from './filial.js'
 export { requestGet, requestPost }
+
+let filial = '0101'
+filial_store.subscribe((value)=>filial=value)
 
 let headers = new Headers([
 	['Content-Type', 'application/json'],

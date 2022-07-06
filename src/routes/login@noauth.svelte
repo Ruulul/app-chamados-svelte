@@ -23,7 +23,7 @@
 		Login
 	</title>
 </svelte:head>
-<main>
+<main class='filled container'>
 	<img alt=''>
 	<span>
 		Seja bem vindo,
@@ -39,7 +39,7 @@
 		<input placeholder='Senha' id='senha' required bind:value={senha} type='password'/>
 		<span>{error || ''}</span>
 		<div>
-			<button type='submit'>Conectar</button>
+			<button class='action button' type='submit'>Conectar</button>
 		</div>
 	</form>
 	<span class='recupera-senha'>Esqueceu sua senha? <br><a href='#'>Clique aqui para recuperar sua senha</a></span>
@@ -58,16 +58,7 @@
 		position: block;
 		width: 20%;
 		height: fit-content;
-		padding: 3em;
-
-		text-align: center;
-		place-self: center;
 		margin: auto;
-		display: flex;
-		flex-flow: column;
-		background-color: var(--grey);
-		border-radius: 1.5em;
-
 		margin-top: 5%;
 	}
 	main * {
@@ -94,15 +85,9 @@
 		border: thin var(--secondary-color) solid;
 	}
 	button {
-		border-radius: 1em;
 		font-size: medium;
-		border: none;
-		background-color: var(--dark);
-		color: white;
 		text-transform: uppercase;
-		position: block;
 		width: 15em;
-		padding: 0.5em 2em;
 	}
 	form {
 		display: grid;

@@ -34,7 +34,7 @@ export {
  * @param {OS} os 
  */
  async function abrir_os (os) {
-	let in_os = {...os}
+	let in_os = {...os, tipo: 'A.D.', subCategoria: 'A.D.', prioridade: 0}
 	delete os.anexos
 	let created_os = await requestPost('/novo/servico', in_os)
 	for (let anexo in os.anexos)

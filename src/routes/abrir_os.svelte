@@ -1,24 +1,16 @@
 <script context='module'>
-	export function load () {
+	export async function load () {
 		return {
 			stuff: {
 				title: 'Abrir chamado'
-			}
+			},
 		}
 	}
 </script>
 <script>
-	import { goto } from '$app/navigation';
-	import { user } from '$lib/stores/user.js'
-	import { categorias_os } from '$lib/stores/local_db.js'
-	import { abrir_os, get_id_nova_os } from '$lib/utils/servicos.js';
-	let assunto = '', mensagem = '', categoria = '', urgencia = 1, files = [];
-	let file_input;
-	$: $categorias_os, setCategoria()
-	$: tipo = categoria?.tipo
-	function setCategoria () {
-		categoria = $categorias_os ? $categorias_os[0] : 'Carregando...'
-	}
+	import { user } from '$lib/stores/user';
+	import { abrir_os } from '$lib/utils/servicos.js';
+	let assunto = '', mensagem = '', files = [];
 
 	async function onSubmit() {
 		let os = {
@@ -29,10 +21,7 @@
 					mensagem
 				}
 			],
-			tipo,
 			anexos: files,
-			subCategoria: categoria,
-			prioridade: urgencia,
 			autorId: $user.id,
 			usuarioId: $user.id,				//Alterar depois para suportes
 			departamento: $user.departamento	//	''		''		''		''
@@ -67,60 +56,22 @@
 		files = files.filter(file=>file.digest!==digest)
 	}
 	</script>
-<h1>
-	{#await get_id_nova_os()}
-	Carregando...
-	{:then id}
-		{#if id==='Não autorizado'}
-			{#await goto('/login')}
-				Redirecionando...
-			{/await}
-		{:else}
-			Chamado nº {id || 0}
-		{/if}
-	{:catch error}
-	<p style:color="red">{error}</p>
-	{/await}
-</h1>
-<h2>
-	{#await $user then {nome}}
-	Olá, {nome}
-	{/await}
-</h2>
-<form on:submit|preventDefault={onSubmit}>
+<form class='div filled container' on:submit|preventDefault={onSubmit}>
 	<div>
-		<span>Tipo: {tipo}</span>
+		<h1>Abrir chamado</h1>
 		<span>Departamento: {$user.dept}</span>
-		<label for="categoria">Categoria</label>
-		<select id="categoria" name="categoria" bind:value="{categoria}">
-			{#if $categorias_os}
-			{#each $categorias_os as categoria(categoria.id)}
-				<option value={categoria}>{categoria.categoria}</option>
-			{/each}
-			{:else}
-				<option>Carregando...</option>
-			{/if}
-		</select>
-		<label for="urgência">Urgência</label>
-		<select id="urgência" name="urgência" bind:value="{urgencia}">
-			{#each 
-				[
-				{urgencia: 1, descr: '🟩 Baixa'},
-				{urgencia: 2, descr: '🟨 Média'},
-				{urgencia: 3, descr: '🟥 Alta'},
-				{urgencia: 4, descr: '⬛ Urgente'},
-				] as {descr, urgencia}(urgencia)}
-			<option value={urgencia}>{descr}</option>
-			{/each}
-		</select>
 		<label for="arquivos">Arquivos</label>
-		<input bind:this={file_input} id="arquivos" on:input={({target:{files}})=>addFiles(files)} type='file' multiple/>
+		<input id="arquivos" on:input={({target:{files}})=>addFiles(files)} type='file' multiple/>
 		{#each Array.from(files) as file (file.digest)}
 			<div class="file-wrapper">
 				<span>{file.name} (Approx. {Math.floor(file.data.split(';base64,')[1].length/4 * 3 / 1024)} kB)
 					<br/>
 					{#if file.data.slice(0, 20).includes('image')}
 					<img alt='' src={file.data}/>
+					{:else}
+					<object alt='' title='anexo' data={file.data}>
+						Não pudemos exibir
+					</object>
 					{/if}
 				</span>
 				<button class="remove-file" on:click={()=>removeFile(file.digest)}>X</button>
@@ -131,29 +82,33 @@
 		<label for='assunto'>Assunto</label>
 		<input id='assunto' bind:value={assunto} required/>
 		<label for='mensagem'>Mensagem</label>
-		<textarea id='mensagem' bind:value={mensagem} required />
+		<textarea class='outlined container' id='mensagem' bind:value={mensagem} required />
 		<input type="submit" value="Enviar"/>
 	</div>
 </form>
 
 <style>
-	div {
-		width: 35%;
-		padding: 1em 2em;
-		border: red solid;
-		display: flex;
-		flex-flow: column;
-		float: left;
+	form {
+		justify-content: space-between;
+		flex-flow: row;
+		width: 80%;
+		padding: 3em;
+	}
+	form > div {
+		margin: 1em;
+	}
+	form > :first-child {
+		width: 25%;
+	}
+	form > :last-child {
+		width: 60%;
 	}
 	input {
-	margin: 0 0 1em 0
+		margin: 0 0 1em 0
 	}
 	input[type=submit] {
 		width: 10em;
 		margin: 1em auto
-	}
-	select {
-	margin: 0 0 1em 0
 	}
 
 	img {

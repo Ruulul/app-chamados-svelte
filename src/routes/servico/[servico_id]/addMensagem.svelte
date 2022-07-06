@@ -31,33 +31,18 @@
         Prévia:
     </p>
         {@html parsed}
-    <textarea bind:value maxlength="1000" rows='20' cols='60' />
+    <textarea class='outlined container' bind:value maxlength="1000" rows='20' cols='60' />
     <div class='buttons'>
-        <button type='submit'>Enviar mensagem</button>
-        <button on:click={voltar}>Voltar</button>
+        <button class='action button' type='submit'>Enviar mensagem</button>
+        <button class='action button' on:click={voltar}>Voltar</button>
     </div>
 </form>
 
 <style>
-    form {
-        display: block;
-        margin: auto;
-        margin-top: 2em;
-    }
-    textarea {
-        border: thin blue solid;
-        padding: 1em;
-        border-radius: 3em;
-        place-self: center;
-    }
-    .buttons {
-        display: flex;
-        height: fit-content;
-        place-content: center;
-        margin-top: 3em;
-    }
-    .buttons button {
-        padding: 0.2em;
+    .action.button {
+        text-transform: uppercase;
+        padding: 0.6em;
+        border-radius: 0.5em;
         margin: 1em;
     }
 </style>

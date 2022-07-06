@@ -11,13 +11,13 @@
     $: hoje = servicos.filter(({prazo})=>prazo.split('T')[0]==converteDateToISO(Date())).length
 </script>
 
-<div>
+<div class='outlined container'>
     <h2>
         Olá, <span>{$user.nome}</span>
     </h2>
     <h3>Meus tickets</h3>
     <div class='divider'/>
-    <a sveltekit:prefetch href='/abrir_os'>Abrir Chamado</a>
+    <a class='action button' sveltekit:prefetch href='/abrir_os'>Abrir Chamado</a>
     <ul>
         <li>{novos} abertos hoje</li>
         <li>{parados} parados</li>
@@ -41,24 +41,6 @@
     h3 {
         margin-top: 0;
     }
-    div {
-        display: flex;
-        flex-flow: column;
-        border: thin var(--texto) solid;
-        border-radius: 2em;
-        width: fit-content;
-        height: 40%;
-        padding: 4em;
-		padding-top: 2em;
-        color: var(--texto);
-    }
-    .divider {
-        width: 100%;
-        height: 0.3em;
-        padding: 0;
-        border: none;
-        background-color: var(--texto);
-    }
     ul {
         list-style: none;
     }
@@ -66,14 +48,5 @@
         width: 1em;
         height: 1em;
         background-color: var(--dark);
-    }
-    a {
-        background-color: var(--dark);
-        border-radius: 2em;
-        padding: 0.5em;
-        margin-top: 1em;
-        color: white;
-        text-decoration: none;
-        text-align: center;
     }
 </style>

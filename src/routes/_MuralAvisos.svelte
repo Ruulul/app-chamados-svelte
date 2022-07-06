@@ -3,7 +3,7 @@
     import { flip } from 'svelte/animate'
 </script>
 
-<div>
+<div class='filled container'>
     <h2>
         Mural de avisos
     </h2>
@@ -38,15 +38,7 @@
         font-weight: lighter;
     }
     div {
-        justify-content: center;
-        display: flex;
-        flex-flow: column;
-        border-radius: 2em;
-        width: fit-content;
         height: 40%;
-        padding: 4em;
-		padding-top: 2em;
-        background: var(--grey);
     }
     tr.readed {
         opacity: 0.5

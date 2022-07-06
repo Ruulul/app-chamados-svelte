@@ -43,16 +43,19 @@ function createUser() {
 		login: async function(user) {
 			try {
 				let res = await auth.login(user)
-				if (!res.error)
-					auth.getPerfil()
-						.then(function(perfil){
-							set(
-								perfil === 'Não autorizado'
-									? null
-									: perfil)
-						})
-				else set(null)
-				return res
+				if (res.error){
+					set(null)
+					return res
+				}
+				else
+				return await auth.getPerfil()
+					.then(function(perfil){
+						set(
+							perfil === 'Não autorizado'
+								? null
+								: perfil)
+						return perfil
+					})
 			} catch(e) {
 				console.log(e);
 				return e
