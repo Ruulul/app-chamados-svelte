@@ -7,7 +7,7 @@
 <svelte:body on:pointermove={updateTooltipPosition}/>
 <div class='anchor'
 style="--tooltip-x:{tooltipX};--tooltip-y: {tooltipY}">
-	<div class='tooltip'>
+	<div class='filled container tooltip'>
 		<slot/>
 	</div>
 </div>
@@ -18,11 +18,10 @@ style="--tooltip-x:{tooltipX};--tooltip-y: {tooltipY}">
         height: 0;
         left: var(--tooltip-x, 50%);
         top: var(--tooltip-y, 50%);
+        z-index: 999;
     }
     .tooltip {
         position: absolute;
-        z-index: 999;
-        background-color: aqua;
         color: black;
         padding: 0.5em;
         width: 10em;

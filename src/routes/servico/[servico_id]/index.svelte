@@ -43,7 +43,7 @@
             update = {status: novo_status, [metadado_hora[novo_status]]:(new Date()).toISOString()}
         if (update)
             update_servico($servico.id, update, novo_status === 'fechado' ? 'closed' : undefined)
-                .then(os=>servico.set(os))
+                .then(servico.set)
                 .then(function(){if(novo_status==='fechado')goto('/servicos')})
     }
 

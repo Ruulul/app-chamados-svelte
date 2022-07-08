@@ -22,5 +22,9 @@
 <style>
     * {
         display: flex;
+        color: var(--text-color);
+    }
+    select, option {
+        color: var(--texto);
     }
 </style>

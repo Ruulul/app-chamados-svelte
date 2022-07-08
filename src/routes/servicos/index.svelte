@@ -38,8 +38,6 @@
         contagem_total = servicos.length
     }
 </script>
-<Filtros bind:tipo bind:status bind:sort>
-    <p>{contagem} serviço{contagem.length === 1 ? '' : 's'} listados no momento;</p>
-    <p>{contagem_total} serviço{contagem_total.length === 1 ? '' : 's'} no total.</p>
-</Filtros>
-<Tabela {sort} servicos={servicos_filtrados}/>
+<Tabela {sort} servicos={servicos_filtrados}>
+    <Filtros bind:tipo bind:status bind:sort />
+</Tabela>
