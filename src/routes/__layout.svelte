@@ -1,5 +1,5 @@
 <script>
-import global_style from '$lib/assets/global_style.css'
+import "../app.css";
 import SideBar from '$lib/components/SideBar.svelte'
 import UpBar from '$lib/components/UpBar.svelte'
 import { user } from '$lib/stores/user.js'

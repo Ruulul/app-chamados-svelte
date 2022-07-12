@@ -1,24 +1,31 @@
 {
-	"name": "app-chamados",
-	"version": "0.0.1",
-	"scripts": {
-		"dev": "svelte-kit dev",
-		"build": "svelte-kit build",
-		"package": "svelte-kit package",
-		"preview": "svelte-kit preview",
-		"prepare": "svelte-kit sync",
-		"test": "playwright test"
-	},
-	"devDependencies": {
-		"@playwright/test": "^1.21.0",
-		"@sveltejs/adapter-auto": "next",
-		"@sveltejs/adapter-static": "1.0.0-next.34",
-		"@sveltejs/kit": "next",
-		"svelte": "^3.44.0"
-	},
-	"type": "module",
-	"dependencies": {
-		"insane": "^2.6.2",
-		"marked": "^4.0.17"
-	}
+  "name": "app-chamados",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "package": "svelte-kit package",
+    "preview": "vite preview",
+    "prepare": "svelte-kit sync",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@octokit/core": "^4.0.4",
+    "@octokit/rest": "^19.0.3",
+    "@playwright/test": "^1.21.0",
+    "@sveltejs/adapter-auto": "next",
+    "@sveltejs/adapter-static": "1.0.0-next.34",
+    "@sveltejs/kit": "1.0.0-next.367",
+    "autoprefixer": "^10.4.7",
+    "postcss": "^8.4.14",
+    "postcss-load-config": "^4.0.1",
+    "svelte": "^3.44.0",
+    "svelte-preprocess": "^4.10.7",
+    "vite": "^2.9.14"
+  },
+  "type": "module",
+  "dependencies": {
+    "insane": "^2.6.2",
+    "marked": "^4.0.17"
+  }
 }

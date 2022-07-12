@@ -48,7 +48,6 @@ import { TimeFromSeconds } from '$lib/utils/utils';
 <tr 
     class:hidden={loading}
     transition:fly={{y: 100}} 
-    class:expired
     class='underline'>
     <td class:expired>
         {TimeFromSeconds(sla)}
@@ -95,6 +94,15 @@ import { TimeFromSeconds } from '$lib/utils/utils';
 </tr>
 
 <style>
+    .expired::after {
+        content: '!';
+        position: absolute;
+        right: -0.2em;
+        top: -0.2em;
+        z-index: 5;
+        font-size: xx-large;
+        color: var(--warning-color, crimson);
+    }
     .a-classificar::after {
         content: '?';
         position: absolute;
