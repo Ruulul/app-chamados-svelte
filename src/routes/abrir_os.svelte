@@ -104,7 +104,8 @@
 		width: 60%;
 	}
 	input {
-		margin: 0 0 1em 0
+		margin: 0 0 1em 0;
+		border-radius: 0.5em;
 	}
 	input[type=submit] {
 		width: 10em;
