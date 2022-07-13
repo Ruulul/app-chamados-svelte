@@ -1,12 +1,12 @@
 <script>
     import Filtro from '$lib/components/Filtro.svelte'
     import { tipos_os } from '$lib/stores/local_db.js'
+    import Tooltip from '$lib/components/Tooltip.svelte';
     export let tipo
     export let status
     export let sort
     let activeSort = ''
     let visible = false;
-    let heights = Array(5)
     $: console.log(visible)
 
     const style = document.documentElement.style
@@ -47,12 +47,12 @@
                     {value: 'pendente', label: 'Pendente'}, 
                     {value: 'atendimento', label: 'Em Atendimento'},
                     {value: 'resolvido', label: 'Resolvido'},
-                    {value: 'fechado', label: 'Fechado'}
+                    {value: 'fechado', label: 'Fechado'},
                 ]
             }
             bind:value={status}
         />
-        <span class='tooltip-text'>Status</span>
+        <Tooltip>Status</Tooltip>
         <button title='Limpar status' on:click={()=>status=''}>X</button>
     </span>
     <span class='underline tooltip'>
@@ -61,7 +61,7 @@
             options={$tipos_os?.map(({tipo})=>tipo) || []}
             bind:value={tipo}
         />
-        <span class='tooltip-text'>Tipo</span>
+        <Tooltip>Tipo</Tooltip>
         <button title='Limpar tipo' on:click={()=>tipo=''}>X</button>
     </span>
     <span class='underline tooltip'>
@@ -98,7 +98,7 @@
             }
             bind:value={sort}
         />
-        <span class='tooltip-text'>Ordenar por</span>
+        <Tooltip>Ordenar por</Tooltip>
         <button title='Limpar filtro' on:click={limpa(limpaOrdena)}>X</button>
     </span>
     <span class='underline'>
@@ -128,23 +128,11 @@
         border: none;
         padding: 0 1em;
     }
-    .tooltip .tooltip-text {
-        position: absolute;
-        z-index: -5;
-        opacity: 0;
-        background-color: var(--grey);
-        border-radius: 1em;
-        border: thin var(--dark) solid;
-        margin: auto;
-        transition: all 0.2s ease 0.2s;
-        padding-top: 0.5rem;
-        top: 100%;
-        right: -25%;
-    }
-    .tooltip:hover .tooltip-text {
+    .tooltip:hover :global(.anchor .tooltip) {
         display: flex;
         z-index: 5;
         opacity: 1;
+        width: fit-content;
     }
     aside {
         border-radius: 50%;
@@ -159,9 +147,6 @@
     }
     label {
         width: 10em;
-        cursor: pointer;
-        float: left;
-        display: flex;
     }
     span {
         display: flex;

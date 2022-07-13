@@ -4,7 +4,6 @@
 `npm install` or `pnpm install` or `yarn`
 ### Running
 ```bash
-./caddy/caddy start
 npm run dev
 ```
 
