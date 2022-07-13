@@ -23,9 +23,9 @@
 
 import { converteDateToISO } from './utils.js'
 import { requestGet, requestPost } from './network.js'
-import { setFiliaisValidas, setFilial } from './filial.js'
+import { filiais_validas_por_id, setFiliaisValidas, setFilial } from './filial.js'
 
-export { filial, filiais_validas } from './filial.js'
+export { filial, filiais_validas, filiais_validas_por_id } from './filial.js'
 
 export {
 	auth,
@@ -33,12 +33,6 @@ export {
 	get_file,
 	get_monitoring,
 	get_user
-}
-
-const get = {
-	monitoring: get_monitoring,
-	file: get_file,
-	user: get_user
 }
 
 /**
@@ -50,7 +44,7 @@ const config = {
 	 * @returns {Promise<Array<OS>>} Lista de tipos de {@link OS} no sistema.
 	 */
 	 getTipos () {
-		return requestGet('/tipos')
+		return requestGet('/tipos', )
 			.catch(console.error)
 	},
 	/**
@@ -92,6 +86,7 @@ const auth = {
 					let filiais = await requestGet('/all').catch(console.error)
 					if(Array.isArray(filiais)){
 						setFiliaisValidas(filiais.map(filial=>filial.codigo))
+						filiais_validas_por_id.set(filiais.map(filial=>[filial.id, filial.codigo]))
 						setFilial(filiais[0].codigo)
 					} 
 					return profile

@@ -13,6 +13,8 @@ let filial = '0101'
 /** Lista de filiais válidas para o usuário atual */
 let filiais_validas = [filial]
 
+let filiais_validas_por_id = {}
+
 import { Store } from "./utils"
 
 const filial_store = new Store({
@@ -39,6 +41,18 @@ const filiais_validas_store_interface = {
 }
 
 export { filiais_validas_store_interface as filiais_validas }
+
+const filiais_validas_por_id_store = new Store({
+	get: ()=>filiais_validas_por_id,
+	set: (novas_filiais_por_id)=>filiais_validas_por_id=Object.fromEntries(novas_filiais_por_id)
+})
+
+const filiais_validas_por_id_store_interface = {
+	subscribe : filiais_validas_por_id_store.subscribe.bind(filiais_validas_por_id_store),
+	set : filiais_validas_por_id_store.set.bind(filiais_validas_por_id_store)
+}
+
+export { filiais_validas_por_id_store_interface as filiais_validas_por_id }
 
 /**
  * @type {Function}

@@ -2,7 +2,7 @@
 
 export const origin = 'https://10.0.0.5:5000'
 const server = origin + '/api/'//'https://45.177.254.161:5000/api/'
-const api =  () => server + filial
+const api =  (filial) => server + filial
 import { browser } from '$app/env'
 import { filial as filial_store } from './filial.js'
 export { requestGet, requestPost }
@@ -24,8 +24,8 @@ let init = {
  * @param {Object} options 
  * @returns {Promise<any>} Recurso requisitado
  */
- function requestGet(path, options={}) {
-	return request(path, {	
+ function requestGet(path, filial_requisicao=filial, options={}) {
+	return request(path, filial_requisicao, {	
 		...options, 
 		method: 'GET'
 	})
@@ -37,8 +37,8 @@ let init = {
  * @param {Object} options 
  * @returns {Promise}
  */
- function requestPost(path, body, options={}) {
-	return request(path, {	
+ function requestPost(path, body, filial_requisicao=filial, options={}) {
+	return request(path, filial_requisicao, {	
 		...options, 
 		method: 'POST',
 		body: JSON.stringify(body)
@@ -51,8 +51,8 @@ let init = {
  * @param {Object} options 
  * @returns {Promise}
  */
-function request(path, options={}) {
-	return browser ? fetch(api() + path, {
+function request(path, filial_requisicao=filial, options={}) {
+	return browser ? fetch(api(filial_requisicao) + path, {
 		...init,
 		...options
 	}).then(handleResponse) : Promise.resolve(null)

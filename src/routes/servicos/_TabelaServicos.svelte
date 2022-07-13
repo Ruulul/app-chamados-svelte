@@ -16,6 +16,9 @@
     <caption>Ordens de Serviço</caption>
     <thead class='underline'>
         <th>
+            Filial
+        </th>
+        <th>
             Sla
         </th>
         <th>

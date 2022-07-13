@@ -1,10 +1,8 @@
 <script>
 	import Icon from '$lib/components/MenuIcon.svelte'
 	import Logo from '$lib/assets/MainLogo.svelte';
-	import Filtro from '$lib/components/Filtro.svelte';
-	import { auth, filial, filiais_validas } from '$lib/utils/db.js'
-	import { goto } from '$app/navigation'
-	import { servicos } from '$lib/stores/servicos';
+	import { auth } from '$lib/utils/db.js'
+	import { goto } from '$app/navigation';
 	let itemsE =
 		[
 		]
@@ -25,17 +23,6 @@
 			</li>
 		{/each}
 		{#if itemsAll.indexOf(items)===0}
-		<li style="border: none; display: flex; outline: none;">
-			<Filtro
-				label='Filial'
-				options={$filiais_validas}
-				on:input={({target:{value}})=>{
-					filial.set(value)
-					servicos.update()
-					}
-				}
-			/>
-		</li>
 		<li class="logo third">
 			<Logo/>
 		</li>

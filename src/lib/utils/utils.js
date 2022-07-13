@@ -109,8 +109,6 @@ export function Store ({
 
 export function TimeFromSeconds (seconds) {
     return `
-        ${Math.floor(seconds/86400)} dias \n
-        ${Math.floor(seconds/3600) % 24}h 
-        ${Math.floor(seconds/60)%60}min ${seconds%60}s
+        ${Math.floor(seconds/86400)}d ${(Math.floor(seconds/3600) % 24).toString().padStart(2, '0')}:${(Math.floor(seconds/60)%60).toString().padStart(2, '0')}:${(seconds%60).toString().padStart(2, '0')}
     `
 }

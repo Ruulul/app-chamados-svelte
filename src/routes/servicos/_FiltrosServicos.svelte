@@ -1,10 +1,12 @@
 <script>
     import Filtro from '$lib/components/Filtro.svelte'
     import { tipos_os } from '$lib/stores/local_db.js'
+    import { filiais_validas_por_id } from '$lib/utils/filial';
     import Tooltip from '$lib/components/Tooltip.svelte';
     export let tipo
     export let status
     export let sort
+    export let filial = ''
     let activeSort = ''
     let visible = false;
     $: console.log(visible)
@@ -35,8 +37,7 @@
     }
 </script>
 <aside class='filtros'>
-    <input bind:checked={visible} type='checkbox' id='menu-filtros-servicos'>
-    <label on:input={()=>visible=!visible} class='action button' for='menu-filtros-servicos'>
+    <label class='action button' for=''>
         Painel de controle
     </label>
     <span class='underline tooltip'>
@@ -101,6 +102,17 @@
         <Tooltip>Ordenar por</Tooltip>
         <button title='Limpar filtro' on:click={limpa(limpaOrdena)}>X</button>
     </span>
+    <span class='underline tooltip'>
+        <Filtro
+            label=''
+            options={
+                Object.entries($filiais_validas_por_id).map(([value, label])=>({value, label}))
+            }
+            bind:value={filial}
+        />
+        <Tooltip>Filial</Tooltip>
+        <button title='Limpar filtro' on:click={()=>filial=''}>X</button>
+    </span>
     <span class='underline'>
         <button on:click={limpa(limpaFiltros)}>Limpar filtros!</button><br>
     </span>
@@ -138,12 +150,6 @@
         border-radius: 50%;
         position: relative;
         display: flex;
-    }
-    input[type='checkbox'] {
-        display: none;
-        height: 100%;
-        width: 100%;
-        display: pointer;
     }
     label {
         width: 10em;

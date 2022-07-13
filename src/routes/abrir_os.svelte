@@ -8,10 +8,11 @@
 	}
 </script>
 <script>
+	import Filtro from '$lib/components/Filtro.svelte';
 	import { user } from '$lib/stores/user';
+	import { filiais_validas, filial } from '$lib/utils/filial';
 	import { abrir_os } from '$lib/utils/servicos.js';
 	let assunto = '', mensagem = '', files = [];
-
 	async function onSubmit() {
 		let os = {
 			assunto,
@@ -59,6 +60,13 @@
 <form class='div filled container' on:submit|preventDefault={onSubmit}>
 	<div>
 		<h1>Abrir chamado</h1>
+		<Filtro required
+			label='Selecione a filial'
+			options={
+				$filiais_validas
+			}
+			bind:value={$filial}
+		/>
 		<span>Departamento: {$user.dept}</span>
 		<label for="arquivos">Arquivos</label>
 		<input id="arquivos" on:input={({target:{files}})=>addFiles(files)} type='file' multiple/>

@@ -18,7 +18,8 @@
 
 import { requestGet, requestPost } from "./network.js"
 import { sendEmail, email_suporte } from './email.js'
-import { get_user } from "./db.js";
+import { get_user, filiais_validas } from "./db.js";
+import { get } from "svelte/store";
 
 export {
 	update_servico,
@@ -104,10 +105,15 @@ async function add_mensagem (id, mensagem) {
  * @returns {Promise<Array<OS>>}
  */
  async function get_servicos (filtro = undefined, tipo_filtro = 'status') {
+	let servicos = []
+	let filiais = get(filiais_validas);
 	let path = '/servicos/'
 	if (filtro) path += tipo_filtro + '/' + filtro
-	return requestGet(path)
-			.catch(console.error)
+	for (let filial of filiais) {
+		servicos = [...servicos, ...await requestGet(path, filial)
+				.catch(console.error)]
+	}
+	return servicos
 }
 
 
