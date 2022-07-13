@@ -18,8 +18,6 @@
 <style>
 	div {
 		flex-flow: row;
-		padding: 5em;
-		padding-top: 0;
 		width: auto;
 	}
 </style>

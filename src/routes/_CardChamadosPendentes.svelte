@@ -44,9 +44,16 @@
     ul {
         list-style: none;
     }
-    ul::before {
-        width: 1em;
-        height: 1em;
-        background-color: var(--dark);
+    li {
+        position: relative;
+    }
+    li::before {
+        content: '';
+        position: absolute;
+        left: -10%;
+        bottom:35%;
+        border-style: solid;
+        border-color: black black transparent transparent;
+        transform: rotate(45deg);
     }
 </style>

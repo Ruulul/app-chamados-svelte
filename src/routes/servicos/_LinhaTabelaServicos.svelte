@@ -83,6 +83,7 @@
             <span class='prazo'>{ISOd(servico.prazo)}</span>
             <span class='abertura'>{ISOd(servico.createdAt)}</span>
             <span class='prioridade'>{['Baixa', 'Média', 'Alta', 'Urgente'][servico.prioridade-1]}</span>
+            <span class='filial'>{$filiais_validas_por_id[servico.filialId]}</span>
         </td>
         <Tooltip>
             Tipo: {servico.tipo}<br>
@@ -136,6 +137,9 @@
     }
     span.prioridade {
         display: var(--active-prioridade, none);
+    }
+    span.filial {
+        display: var(--active-filial, none);
     }
     tr {
         text-align: center;

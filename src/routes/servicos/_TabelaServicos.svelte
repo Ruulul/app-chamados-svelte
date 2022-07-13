@@ -58,7 +58,7 @@
         text-transform: capitalize;
     }
     div {
-        width: auto;
+        width: 100%;
         padding-top: 0;
         padding-right: 1em;
     }

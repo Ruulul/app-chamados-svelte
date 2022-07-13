@@ -30,10 +30,13 @@
 		float: left;
 		padding: 0;
 		background: var(--grey);
-		height: 76.837398527vh;
+		height: 100vh;
+		width: fit-content;
 		margin-right: 1em;
 		margin-left: -0.5em;
+		margin-top: -0.5em;
 		border-radius: 0 1em 1em 0;
+		padding: 0 0.5em;
 	}
 	nav::after {
 		content: var(--small-logo);

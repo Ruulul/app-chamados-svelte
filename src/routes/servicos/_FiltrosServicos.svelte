@@ -95,6 +95,10 @@
                             return 0
                         return a.prioridade < b.prioridade
                     }, label: 'urgência'},
+                    {value: function porFilial(a, b){
+                        changeActive('filial')
+                        return a.filialId < b.filialId
+                    }, label: 'filial'},
                 ]
             }
             bind:value={sort}

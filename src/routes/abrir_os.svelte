@@ -34,6 +34,9 @@
 	async function addFiles(fileArray) {
 		for (let file of Array.from(fileArray)){
 			let base64File = await readFileAsBase64(file)
+			if (!base64File) {
+				return
+			};
 			let { buffer } = new Uint8Array(base64File.split('').map(c=>c.charCodeAt(0)))
 			let digest = await crypto.subtle.digest('SHA-256', buffer)			//Here we receive an ArrayBuffer
 			digest = String.fromCharCode.apply(null, new Uint8Array(digest))	//Then we convert it to a binary string... with the help of the Uint8Array class
@@ -41,6 +44,10 @@
 			files = [...files, {data: base64File, digest, name: file.name}]
 		}
 		function readFileAsBase64(file) {
+			if (file.size > 12582912) {
+				alert("muito grande");
+				return;
+			}
 			return new Promise(
 				function PromiseReadFileAsBase64(resolve, reject) {
 					let reader = new FileReader()

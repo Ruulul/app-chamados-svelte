@@ -29,15 +29,45 @@ function auth() {
 {:then}
 	{#await auth() then}
 		<a href="#main">Ir para conteúdo principal</a>
-		<UpBar/>
-		<SideBar/>
-		<main id="main">
-			<slot/>
-		</main>
+		<div class='grid'>
+			<div class='upbar'>
+				<UpBar/>
+			</div>
+			<div class='sidebar'>
+				<SideBar/>
+			</div>
+			<main id="main">
+				<slot/>
+			</main>
+		</div>
 	{/await}
 {/await}
 
 <style>
+.grid {
+	display: grid;
+	grid-template-columns: repeat(12, 1fr);
+	grid-template-rows: repeat(12, 1fr);
+	justify-content: space-around;
+	width: auto;
+	height: 100vh;
+	grid-column-gap: 0px;
+	grid-row-gap: 0px;
+}
+.sidebar {
+	position: fixed;
+	height: 100vh;
+}
+.upbar, #main {
+	grid-column: 2 / 12;
+}
+.upbar {
+	grid-row: 1 / 1;
+}
+#main {
+	grid-row: 2 / 12;
+}
+
 a	{
 	transition: width 5s, height 5s;
 	position:absolute;
