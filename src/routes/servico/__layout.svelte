@@ -76,7 +76,7 @@ import { TimeFromSeconds } from '$lib/utils/utils';
 </script>
 {#if servico}
 {#key servico?.updatedAt}
-<div transition:fade={{duration: 200, easing:(t)=>Math.log1p(t)}} class='filled container'>
+<div class='filled container'>
     <div class='wrapper'>
         <h1>Chamado {servico.id}</h1> 
         <table> 

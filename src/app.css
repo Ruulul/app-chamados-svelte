@@ -80,6 +80,7 @@ div div {
     text-align: center;
     background-color: var(--background-color);
     color: var(--text-color);
+    cursor: pointer;
 }
 
 .action.button {

@@ -48,7 +48,6 @@
 <a  sveltekit:prefetch href="/servico/{servico.id}">
     <tr
         class:hidden={loading}
-        transition:fly={{y: 100}} 
         class='underline'>
         <td>
             {$filiais_validas_por_id[servico.filialId]}

@@ -60,6 +60,7 @@ function auth() {
 }
 .upbar, #main {
 	grid-column: 2 / 12;
+	width: 88vw;
 }
 .upbar {
 	grid-row: 1 / 1;

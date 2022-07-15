@@ -4,19 +4,23 @@
 			stuff: {
 				title: 'Chamado ' + params.chamado_id + ' - Classificação'
 			},
-			props: {
-				servico
-			}
 		}
 	}
 </script>
 <script>
+	import Filtro from '$lib/components/Filtro.svelte';
 	import { servicos } from '$lib/stores/servicos';
+	import { filial, filiais_validas_por_id } from '$lib/utils/filial';
 	import { update_servico } from '$lib/utils/servicos.js';
 	import { tipos_os, categorias_os } from '$lib/stores/local_db.js';
-	let tipo = '', categoria = ''
-	let servico = $servicos.find(servico=>servico.id==params.chamado_id);
-	$: console.log(tipo, categoria)
+	import { page } from '$app/stores';
+	let tipo = '', categoria = '', prioridade = 0
+	let servico = $servicos.find(servico=>servico.id==$page.params.chamado_id);
+	$: new_servico = $servicos.find(servico=>servico.id==$page.params.chamado_id);
+	$: if (servico?.updatedAt != new_servico?.updatedAt) servico = new_servico;
+	$: tipo = servico?.tipo || tipo, categoria = servico?.subCategoria || categoria, prioridade = parseInt(servico?.prioridade) || prioridade
+	$: $filial = $filiais_validas_por_id[servico?.filialId];
+	$: console.log(tipo, categoria, $page.params.chamado_id);
 
 	async function onSubmit() {
 		let update = {
@@ -25,25 +29,39 @@
 		}
 		await update_servico(update)
 	}
+
+	
 	</script>
 <form class='div filled container' on:submit|preventDefault={onSubmit}>
 	<div>
 		<h1>Classificar chamado</h1>
-		<span>Departamento: {servico.dept}</span>
+		<span>Assunto: <br>{servico?.assunto}</span>
+		<span>Departamento: {servico?.departamento}</span>
 	</div>
 	<div>
-		<label for='tipo'>Tipo</label>
-		<select id='tipo' required bind:value={tipo}>
-			{#each $tipos_os as {tipo}}
-			<option>{tipo}</option>
-			{/each}
-		</select>
-		<label for='categoria'>Categoria</label>
-		<select id='categoria' bind:value={categoria}>
-			{#each $categorias_os.filter(categoria=>categoria.tipo==tipo) as {categoria}}
-			<option>{categoria}</option>
-			{/each}
-		</select>
+		<Filtro
+			label='Tipo'
+			required
+			options={$tipos_os.map(({tipo})=>tipo)}
+			bind:value={tipo}/>
+		<Filtro
+			label='Categoria'
+			required
+			options={$categorias_os.filter(categoria=>categoria.tipo==tipo).map(({categoria})=>categoria)}
+			bind:value={categoria}/>
+		<Filtro
+			label='Urgencia'
+			required
+			options={
+				[
+					{value: 1, label:'Baixa'},
+					{value: 2, label:'Média'},
+					{value: 3, label:'Alta'},
+					{value: 4, label:'Urgente'},
+				]
+			}
+			bind:value={prioridade}
+			/>
 		<input type="submit" value="Enviar"/>
 	</div>
 </form>

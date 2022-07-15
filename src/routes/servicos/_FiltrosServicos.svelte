@@ -37,9 +37,9 @@
     }
 </script>
 <aside class='filtros'>
-    <label class='action button' for=''>
+    <span class='action button'>
         Painel de controle
-    </label>
+    </span>
     <span class='underline tooltip'>
         <Filtro 
             label=''
@@ -155,8 +155,10 @@
         position: relative;
         display: flex;
     }
-    label {
+    .action.button {
         width: 10em;
+        margin-left: 0;
+        cursor: unset;
     }
     span {
         display: flex;
