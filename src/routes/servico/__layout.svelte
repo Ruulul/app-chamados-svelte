@@ -9,10 +9,12 @@
 
 </script>
 <script>
+    import Fa from 'svelte-fa';
+    import {faPen} from '@fortawesome/free-solid-svg-icons';
     import { servicos } from '$lib/stores/servicos';
     import { onDestroy, setContext } from 'svelte';
-    import { get_user, } from '$lib/utils/db.js'
-    import { update_servico } from '$lib/utils/servicos';
+    import { getUser, } from '$lib/utils/db.js'
+    import { updateServico } from '$lib/utils/servicos';
     import { user } from '$lib/stores/user.js'
     import { fade } from 'svelte/transition';
     import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
@@ -35,7 +37,7 @@ import { TimeFromSeconds } from '$lib/utils/utils';
             atendimento: false,
             atendenteId: ''
         }
-        update_servico(servico.id, update, 'released')
+        updateServico(servico.id, update, 'released')
     }
 
     function assumeChamado () {
@@ -44,7 +46,7 @@ import { TimeFromSeconds } from '$lib/utils/utils';
             atendenteId: $user.id,
             assumido_em: (new Date()).toISOString()
         }
-        update_servico(servico.id, update, 'taken')
+        updateServico(servico.id, update, 'taken')
     }
 
     let agora = 0
@@ -63,12 +65,12 @@ import { TimeFromSeconds } from '$lib/utils/utils';
         if (id)
             if (id == $user.id)
                 atendente=$user.nome
-            else get_user(id).then(({nome})=>(atendente=nome, nome))
+            else getUser(id).then(({nome})=>(atendente=nome, nome))
     }
     function setNomeAndDept () {
         let id = servico?.usuarioId
         if (id)
-            get_user(id).then(({nome : gettedNome, dept : gettedDept})=>{
+            getUser(id).then(({nome : gettedNome, dept : gettedDept})=>{
                 nome = gettedNome;
                 dept = gettedDept;
             })
@@ -78,7 +80,7 @@ import { TimeFromSeconds } from '$lib/utils/utils';
 {#key servico?.updatedAt}
 <div class='filled container'>
     <div class='wrapper'>
-        <h1>Chamado {servico.id}</h1> 
+        <h1>Chamado {servico.id}</h1> <a href='/classificar/{$page.params.servico_id}'><Fa icon={faPen}/></a>
         <table> 
             <tr>
                 <th>
@@ -120,6 +122,22 @@ import { TimeFromSeconds } from '$lib/utils/utils';
                 </th>
                 <td>
                     {dept}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Tipo:
+                </th>
+                <td>
+                    {servico.tipo}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Categoria:
+                </th>
+                <td>
+                    {servico.subCategoria}
                 </td>
             </tr>
         </table>

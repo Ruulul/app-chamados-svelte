@@ -18,24 +18,39 @@
 
 import { requestGet, requestPost } from "./network.js"
 import { sendEmail, email_suporte } from './email.js'
-import { get_user, filiais_validas } from "./db.js";
+import { getUser, filiais_validas } from "./db.js";
 import { get } from "svelte/store";
 
 export {
-	update_servico,
-	add_mensagem,
-	get_servico,
-    get_servicos,
-	get_id_nova_os,
-	abrir_os
+	updateServico,
+	addMensagem,
+	getServico,
+    getServicos,
+	getIdNovaOs,
+	abrirOs,
+	getPrazo
 }
 
+async function getPrazo(prioridade, createdAt) {
+	let data = createdAt ? new Date(createdAt) : new Date();
+	switch (parseInt(prioridade)) {
+	  case 1:
+		data.setDate(data.getDate()+7)
+	  case 2:
+		data.setDate(data.getDate()+3)
+	  case 3:
+		data.setDate(data.getDate()+1)
+	  default:
+		data = new Date(data.getTime()+28800000)
+	}
+	return data.toISOString();
+  }
 /**
  * Faz uma requisição POST para a API, para abrir uma nova O.S.
  * @param {OS} os 
  */
- async function abrir_os (os) {
-	let in_os = {...os, tipo: 'A.D.', subCategoria: 'A.D.', prioridade: 0}
+ async function abrirOs (os) {
+	let in_os = {...os, tipo: 'A.D.', subCategoria: 'A.D.', prioridade: 0, prazo: await getPrazo(os.prioridade)}
 	delete os.anexos
 	let created_os = await requestPost('/novo/servico', in_os)
 	for (let anexo in os.anexos)
@@ -44,7 +59,7 @@ export {
 				console.log(`Arquivo ${anexo.name} enviado`)
 			})
 			.catch(()=>console.log(`Arquivo ${anexo.name} falhou no envio`))
-	let { email } = await get_user(os.usuarioId || os.autorId)
+	let { email } = await getUser(os.usuarioId || os.autorId)
 	return sendEmail('open', [email, email_suporte], {idOS: os.id, assunto : os.assunto})
 }
 
@@ -54,15 +69,15 @@ export {
  * @param {Object} update Objeto que possui os parâmetros a serem atualizados 
  * @returns {Promise<OS>} OS atualizada
  */
-async function update_servico (id, update, flag) {
-	let servico = await get_servico(id)
+async function updateServico (id, update, flag) {
+	let servico = await getServico(id)
 	for (let [key, value] of Object.entries(update))
 		servico[key] = value
 	return requestPost('/update/servico/' + id, servico)
 		.then(/**@param {OS} os */async os=>{
 			console.log(os)
-			const { nome, email } = await get_user(os.usuarioId || os.autorId)
-			const { nome : nomeSuporte, email : emailSuporte } = await get_user(os.atendenteId)
+			const { nome, email } = await getUser(os.usuarioId || os.autorId)
+			const { nome : nomeSuporte, email : emailSuporte } = await getUser(os.atendenteId)
 			if (flag) sendEmail(flag, [email, emailSuporte], {idOS: os.id, nome, nomeSuporte, ...update})
 			return os
 		})
@@ -75,14 +90,14 @@ async function update_servico (id, update, flag) {
  * @param {Mensagem} mensagem 
  * @returns {Promise<Mensagem[]>}
  */
-async function add_mensagem (id, mensagem) {
-	let { chat } = await get_servico(id)
+async function addMensagem (id, mensagem) {
+	let { chat } = await getServico(id)
 	chat.push(mensagem)
-	return update_servico(id, { chat })
+	return updateServico(id, { chat })
 		.then(async ({ chat, autorId, usuarioId, atendenteId })=>{
-			const { nome : nomeUsuario, email : emailUsuario } = await get_user(usuarioId || autorId)
-			const { email : emailSuporte } = await get_user(atendenteId)
-			const { nome: nomeAutor } = await get_user(mensagem.autorId)
+			const { nome : nomeUsuario, email : emailUsuario } = await getUser(usuarioId || autorId)
+			const { email : emailSuporte } = await getUser(atendenteId)
+			const { nome: nomeAutor } = await getUser(mensagem.autorId)
 			sendEmail('message', [emailUsuario, emailSuporte], {...mensagem, nome : nomeUsuario, nomeAutor, idOS : id})
 			return chat
 		})
@@ -94,7 +109,7 @@ async function add_mensagem (id, mensagem) {
  * @param {Number} id 
  * @returns {Promise<OS>} Ordem de Serviço
  */
- async function get_servico (id) {
+ async function getServico (id) {
 	return requestGet('/servico/' + id)
 			.catch(console.error)
 }
@@ -104,7 +119,7 @@ async function add_mensagem (id, mensagem) {
  * Retorna um array das OSs acessíveis para o usuário atual
  * @returns {Promise<Array<OS>>}
  */
- async function get_servicos (filtro = undefined, tipo_filtro = 'status') {
+ async function getServicos (filtro = undefined, tipo_filtro = 'status') {
 	let servicos = []
 	let filiais = get(filiais_validas);
 	let path = '/servicos/'
@@ -121,7 +136,7 @@ async function add_mensagem (id, mensagem) {
  * Obtém o id sequencial da Ordem de Serviço a ser aberta.
  * @returns {Promise<Number>} id nova filial
  */
- async function get_id_nova_os () {
+ async function getIdNovaOs () {
 	return requestGet('/monitoring')
 			.then(function ({chamados}){
 				return chamados.length !== 0 ? chamados.at(-1).id + 1 : 0

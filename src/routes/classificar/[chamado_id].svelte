@@ -11,23 +11,28 @@
 	import Filtro from '$lib/components/Filtro.svelte';
 	import { servicos } from '$lib/stores/servicos';
 	import { filial, filiais_validas_por_id } from '$lib/utils/filial';
-	import { update_servico } from '$lib/utils/servicos.js';
+	import { getPrazo, updateServico } from '$lib/utils/servicos.js';
 	import { tipos_os, categorias_os } from '$lib/stores/local_db.js';
 	import { page } from '$app/stores';
+	import {goto } from '$app/navigation';
 	let tipo = '', categoria = '', prioridade = 0
 	let servico = $servicos.find(servico=>servico.id==$page.params.chamado_id);
 	$: new_servico = $servicos.find(servico=>servico.id==$page.params.chamado_id);
-	$: if (servico?.updatedAt != new_servico?.updatedAt) servico = new_servico;
-	$: tipo = servico?.tipo || tipo, categoria = servico?.subCategoria || categoria, prioridade = parseInt(servico?.prioridade) || prioridade
+	$: if (servico?.updatedAt != new_servico?.updatedAt) servico = new_servico
+	//$: tipo = servico?.tipo || tipo, categoria = servico?.subCategoria || categoria, prioridade = parseInt(servico?.prioridade) || prioridade
 	$: $filial = $filiais_validas_por_id[servico?.filialId];
-	$: console.log(tipo, categoria, $page.params.chamado_id);
+	//$: console.log(tipo, categoria, $page.params.chamado_id);
 
 	async function onSubmit() {
+		let prazo = undefined;
+		if (prioridade != servico.prioridade) prazo = await getPrazo(prioridade, servico.createdAt)
 		let update = {
 			tipo,
-			categoria
+			categoria,
+			prioridade,
+			prazo
 		}
-		await update_servico(update)
+		await updateServico($page.params.chamado_id, update).then(()=>history.back());
 	}
 
 	

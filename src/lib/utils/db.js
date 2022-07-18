@@ -30,9 +30,9 @@ export { filial, filiais_validas, filiais_validas_por_id } from './filial.js'
 export {
 	auth,
 	config,
-	get_file,
-	get_monitoring,
-	get_user
+	getFile,
+	getMonitoring,
+	getUser
 }
 
 /**
@@ -96,7 +96,7 @@ const auth = {
 }
 
 
-async function get_monitoring () {
+async function getMonitoring () {
 	return requestGet('/monitoring')
 		.then(async function ({chamados, atendentes}) {
 			let response = []
@@ -129,7 +129,7 @@ async function get_monitoring () {
  * @param {string} filename 
  * @returns {Promise<string>} base64url do arquivo
  */
-async function get_file (filename) {
+async function getFile (filename) {
 	return requestGet('/files/' + filename)
 		.catch(console.error)
 }
@@ -139,7 +139,7 @@ async function get_file (filename) {
  * @param {Number | string} id Id válida de usuário
  * @returns {Promise} Usuário pelo id
  */
-async function get_user (id) {
+async function getUser (id) {
 	return requestGet('/usuario/' + id)
 		.catch(console.error)
 }

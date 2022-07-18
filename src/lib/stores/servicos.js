@@ -1,5 +1,5 @@
 import { goto } from "$app/navigation";
-import { get_servicos } from "$lib/utils/servicos";
+import { getServicos } from "$lib/utils/servicos";
 import { get, writable } from "svelte/store";
 
 export const servicos = createServicos()
@@ -9,15 +9,15 @@ export const tipo_filtro = writable(undefined)
 
 function createServicos () {
     const { subscribe, set } = writable([], function start (set) {
-        getServicos(set)
-        let handle = setInterval(()=>getServicos(set), 1000)
+        setServicos(set)
+        let handle = setInterval(()=>setServicos(set), 1000)
         return ()=>clearInterval(handle)
     })
 
-    return { subscribe, async update(){return await getServicos(set)} }
+    return { subscribe, async update(){return await setServicos(set)} }
 
-    async function getServicos (set) {
-        get_servicos(get(filtro), get(tipo_filtro))
+    async function setServicos (set) {
+        getServicos(get(filtro), get(tipo_filtro))
             .then((oss)=>{
                 if (oss=='Não autorizado') goto('/login')
                 set(oss)

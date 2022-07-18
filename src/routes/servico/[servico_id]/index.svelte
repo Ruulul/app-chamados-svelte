@@ -1,10 +1,11 @@
 <script>
     import { getContext } from 'svelte'
     import { goto } from '$app/navigation'
-    import { get_user } from '$lib/utils/db.js'
-    import { update_servico } from '$lib/utils/servicos';
+    import { getUser } from '$lib/utils/db.js'
+    import { updateServico } from '$lib/utils/servicos';
     import { user } from '$lib/stores/user.js'
     import { parseMD } from '$lib/utils/utils'
+import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     /**
      * Objeto que mapeia o label do botão de alterar status com o status em si
      */
@@ -42,7 +43,7 @@
         if (novo_status)
             update = {status: novo_status, [metadado_hora[novo_status]]:(new Date()).toISOString()}
         if (update)
-            update_servico($servico.id, update, novo_status === 'fechado' ? 'closed' : undefined)
+            updateServico($servico.id, update, novo_status === 'fechado' ? 'closed' : undefined)
                 .then(servico.set)
                 .then(function(){if(novo_status==='fechado')goto('/servicos')})
     }
@@ -56,13 +57,14 @@
     {#each $servico?.chat.sort((a, b)=>b.id-a.id) || [] as message}
         <div class='campo filled container'>
             <h3>
-                {#await get_user(message.autorId)}
+                {#await getUser(message.autorId)}
                     Carregando...
                 {:then {nome}}
                 {nome || 'Sem atendente'}
                 {/await}
             </h3>
             {@html parseMD(message.mensagem)}
+            <ExibeArquivo filename={message.anexo} sem_arquivo=''/>
         </div>
     {/each}
 </div>

@@ -1,5 +1,5 @@
 <script>
-    import { get_file } from "$lib/utils/db";
+    import { getFile } from "$lib/utils/db";
     import { geraCSS } from '$lib/utils/utils'
     /**
      * Nome do arquivo na API
@@ -30,7 +30,7 @@
     export let style = {}
 </script>
 {#if String(filename) !== 'undefined'}
-    {#await get_file(filename)}
+    {#await getFile(filename)}
         {carregando}
     {:then arquivo}
         {#if arquivo !== 'Não autorizado'}
@@ -48,8 +48,6 @@
             {sem_arquivo}
         {/if}
     {/await}
-{:else}
-    Sem anexo nesse chamado
 {/if}
 
 <style>

@@ -1,7 +1,7 @@
 <script>
-    import { filiais_validas_por_id, get_user } from '$lib/utils/db.js'
+    import { filiais_validas_por_id, getUser } from '$lib/utils/db.js'
     import { fly } from 'svelte/transition';
-    import { get_servico } from "$lib/utils/servicos";
+    import { getServico } from "$lib/utils/servicos";
     import Tooltip from '$lib/components/Tooltip.svelte';
     import { TimeFromSeconds } from '$lib/utils/utils';
 
@@ -20,7 +20,7 @@
     $: expired = diffTime < 0
     $: classificado = false
     function defineServico () {
-        get_servico(id).then(setServico)
+        getServico(id).then(setServico)
     }
     function setServico (os) {
         servico = os
@@ -34,7 +34,7 @@
         abertura = aberturaDateObj.getTime()/1000
         let id = servico.atendenteId 
         if (id)
-        get_user(id).then(({nome})=>atendente=nome)
+        getUser(id).then(({nome})=>atendente=nome)
     }
     
     function getDateFromISO (ISODate) {
