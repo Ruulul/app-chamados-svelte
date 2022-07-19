@@ -9,10 +9,15 @@
 				return
 			};
 			let { buffer } = new Uint8Array(base64File.split('').map(c=>c.charCodeAt(0)))
-			let digest = await crypto.subtle.digest('SHA-256', buffer)			//Here we receive an ArrayBuffer
-			digest = String.fromCharCode.apply(null, new Uint8Array(digest))	//Then we convert it to a binary string... with the help of the Uint8Array class
-			digest = btoa(digest)
-			if(!files.find(file=>file.digest==digest)) files = [...files, {data: base64File, digest, name: file.name}]
+			let digest;
+            try {
+                digest = await crypto.subtle.digest('SHA-256', buffer)			//Here we receive an ArrayBuffer
+			    digest = String.fromCharCode.apply(null, new Uint8Array(digest))	//Then we convert it to a binary string... with the help of the Uint8Array class
+			    digest = btoa(digest)
+            } catch {
+                digest = Math.floor(Math.random() * 2576); 
+            }
+			if(!files.find(file=>file.digest==digest)) files = [...files, {data: base64File, digest, title: file.name}]
 		}
 		function readFileAsBase64(file) {
 			if (file.size > 12582912) {
@@ -39,7 +44,7 @@
 <input id="arquivos" on:input={({target:{files}})=>addFiles(files)} type='file' multiple/>
 {#each Array.from(files) as file (file.digest)}
 	<div class="file-wrapper">
-		<span>{file.name} (Approx. {Math.floor(file.data.split(';base64,')[1].length/4 * 3 / 1024)} kB)
+		<span>{file.title} (Approx. {Math.floor(file.data.split(';base64,')[1].length/4 * 3 / 1024)} kB)
 			<br/>
 			{#if file.data.slice(0, 20).includes('image')}
 			<img alt='' src={file.data}/>

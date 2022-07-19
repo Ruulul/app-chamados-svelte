@@ -50,17 +50,19 @@ async function getPrazo(prioridade, createdAt) {
  * @param {OS} os 
  */
  async function abrirOs (os) {
-	let in_os = {...os, tipo: 'A.D.', subCategoria: 'A.D.', prioridade: 0, prazo: await getPrazo(os.prioridade)}
+	os = {...os, tipo: 'A.D.', subCategoria: 'A.D.', prioridade: 0, prazo: await getPrazo(os.prioridade)}
+	let { anexos } = os;
 	delete os.anexos
-	let created_os = await requestPost('/novo/servico', in_os)
-	for (let anexo in os.anexos)
-		requestPost(`/update/servico/${created_os.id}/arquivo`, {title: anexo.name, data: anexo.data})
+	let created_os = await requestPost('/novo/servico', os)
+	for (let anexo of anexos){
+		requestPost(`/update/servico/${created_os.id}/arquivo`, anexo)
 			.then(async (os) => {
-				console.log(`Arquivo ${anexo.name} enviado`)
+				console.log(`Arquivo ${anexo.title} enviado para chamado ${created_os.id}`)
 			})
-			.catch(()=>console.log(`Arquivo ${anexo.name} falhou no envio`))
+			.catch(()=>console.log(`Arquivo ${anexo.title} falhou no envio`))
+	}
 	let { email } = await getUser(os.usuarioId || os.autorId)
-	return sendEmail('open', [email, email_suporte], {idOS: os.id, assunto : os.assunto})
+	return sendEmail('open', [email, email_suporte], {idOS: created_os.id, assunto : os.assunto})
 }
 
 /**
@@ -92,9 +94,19 @@ async function updateServico (id, update, flag) {
  */
 async function addMensagem (id, mensagem) {
 	let { chat } = await getServico(id)
-	chat.push(mensagem)
+	let { anexo } = mensagem;
+	delete mensagem.anexo;
+	chat.push(mensagem);
 	return updateServico(id, { chat })
 		.then(async ({ chat, autorId, usuarioId, atendenteId })=>{
+			if (anexo) {
+				console.log(mensagem)
+				console.log(chat)
+				let { id : mensagem_id, chamadoId: chamado_id } = chat.at(-1);
+				console.log(id)
+				requestPost(`/update/mensagem/${mensagem_id}/arquivo`, anexo)
+					.then(()=>console.log(`Anexo no chamado ${chamado_id} na mensagem ${mensagem_id} salvo com sucesso`))
+			}
 			const { nome : nomeUsuario, email : emailUsuario } = await getUser(usuarioId || autorId)
 			const { email : emailSuporte } = await getUser(atendenteId)
 			const { nome: nomeAutor } = await getUser(mensagem.autorId)

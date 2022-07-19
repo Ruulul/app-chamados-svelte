@@ -5,7 +5,7 @@
     import { updateServico } from '$lib/utils/servicos';
     import { user } from '$lib/stores/user.js'
     import { parseMD } from '$lib/utils/utils'
-import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
+    import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     /**
      * Objeto que mapeia o label do botão de alterar status com o status em si
      */
@@ -31,6 +31,7 @@ import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     }
 
     const servico = getContext('servico')
+    console.log($servico.chat.at(-1))
     function adicionaMensagem () {
         goto('addMensagem', {
             noscroll: true,
@@ -64,7 +65,7 @@ import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
                 {/await}
             </h3>
             {@html parseMD(message.mensagem)}
-            <ExibeArquivo filename={message.anexo} sem_arquivo=''/>
+            <ExibeArquivo filename={message.metadados.find(({nome})=>nome=='anexo')?.valor} sem_arquivo=''/>
         </div>
     {/each}
 </div>

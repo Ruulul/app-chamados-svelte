@@ -14,7 +14,6 @@
 	import { getPrazo, updateServico } from '$lib/utils/servicos.js';
 	import { tipos_os, categorias_os } from '$lib/stores/local_db.js';
 	import { page } from '$app/stores';
-	import {goto } from '$app/navigation';
 	let tipo = '', categoria = '', prioridade = 0
 	let servico = $servicos.find(servico=>servico.id==$page.params.chamado_id);
 	$: new_servico = $servicos.find(servico=>servico.id==$page.params.chamado_id);
@@ -24,8 +23,7 @@
 	//$: console.log(tipo, categoria, $page.params.chamado_id);
 
 	async function onSubmit() {
-		let prazo = undefined;
-		if (prioridade != servico.prioridade) prazo = await getPrazo(prioridade, servico.createdAt)
+		let prazo = await getPrazo(prioridade || servico.prioridade, servico.createdAt)
 		let update = {
 			tipo,
 			categoria,

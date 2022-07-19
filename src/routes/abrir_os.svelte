@@ -8,12 +8,13 @@
 	}
 </script>
 <script>
-	import Anexos, { addFiles } from '$lib/components/Anexos.svelte';
-import Filtro from '$lib/components/Filtro.svelte';
+	import Anexos from '$lib/components/Anexos.svelte';
+	import Filtro from '$lib/components/Filtro.svelte';
 	import { user } from '$lib/stores/user';
 	import { filiais_validas, filial } from '$lib/utils/filial';
 	import { abrirOs } from '$lib/utils/servicos.js';
 	let assunto = '', mensagem = '';
+	let addFiles, anexos;
 	async function onSubmit() {
 		let os = {
 			assunto,
@@ -23,13 +24,13 @@ import Filtro from '$lib/components/Filtro.svelte';
 					mensagem
 				}
 			],
-			anexos: files,
+			anexos,
 			autorId: $user.id,
 			usuarioId: $user.id,				//Alterar depois para suportes
 			departamento: $user.dept			//	''		''		''		''
 		}
 
-		await abrirOs(os)
+		await abrirOs(os).then(()=>history.back())
 	}
 	</script>
 <form class='div filled container' on:submit|preventDefault={onSubmit}>
@@ -43,7 +44,7 @@ import Filtro from '$lib/components/Filtro.svelte';
 			bind:value={$filial}
 		/>
 		<span>Departamento: {$user.dept}</span>
-		<Anexos/>
+		<Anexos bind:addFiles bind:files={anexos}/>
 	</div>
 	<div>
 		<label for='assunto'>Assunto</label>

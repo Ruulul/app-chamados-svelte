@@ -18,7 +18,8 @@
     function onSubmit () {
         let mensagem = {
             autorId: $user.id,
-            mensagem: value
+            mensagem: value,
+            anexo: files[0]
         }
         if (value.length > 0)
         addMensagem($servico.id, mensagem)
