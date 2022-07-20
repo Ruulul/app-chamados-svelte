@@ -1,3 +1,12 @@
+<script context='module'>
+    export async function load() {
+        return {
+            stuff: {
+                title: 'Configurações'
+            }
+        }
+    }
+</script>
 <h2>
     Tipos de Configuração
 </h2>

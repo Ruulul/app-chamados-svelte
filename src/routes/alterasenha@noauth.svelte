@@ -1,48 +1,43 @@
 <script>
-	import { user } from '$lib/stores/user.js'
+    import { auth } from '$lib/utils/db';
 	import { goto } from '$app/navigation'
+    import { page } from '$app/stores'
 	let email;
 	let senha;
 	let error;
-	function handleLogin() {
-		console.log('Iniciando login')
-		user.login({email, senha})
-			.then(async (response)=>{
-				console.log('response: ', response)
-				if(response.error) {
-					return error = response.error
-				}
-				else await goto('/')
-			})
-			.then(()=>console.log('Fim do login'))
-			.catch(console.error)
+	function handleSubmit() {
+        let args = {email, senha}
+        auth.alteraSenha(args)
+        .then(()=>auth.login(args))
+        .then(()=>goto('/'))
 	}
 </script>
 <svelte:head>
 	<title>
-		Login
+		Recuperação de Senha
 	</title>
 </svelte:head>
 <main class='filled container'>
 	<img alt=''>
 	<span>
-		Seja bem vindo,
+		Recuperação de Senha
 	</span>
-	<form on:submit|preventDefault="{handleLogin}">
+	<form on:submit|preventDefault="{handleSubmit}">
 		<label for='email'>
 		Email
 		</label>
 		<input placeholder='Email' id='email' required bind:value={email} type="email"/>
+
 		<label for='senha'>
-		Senha
+		Nova Senha
 		</label>
-		<input placeholder='Senha' id='senha' required bind:value={senha} type='password'/>
+		<input placeholder='Nova Senha' id='senha' required bind:value={senha} type='password'/>
 		<span>{error || ''}</span>
 		<div>
-			<button class='action button' type='submit'>Conectar</button>
+			<button class='action button' type='submit'>Alterar minha senha</button>
 		</div>
 	</form>
-	<span class='recupera-senha'>Esqueceu sua senha? <br><a href='/alterasenha'>Clique aqui para recuperar sua senha</a></span>
+	<div class="voltar"><a href='/login'>Eu tenho acesso</a></div>
 </main>
 <style>
 	span {
@@ -91,7 +86,9 @@
 		display: grid;
 		margin: auto;
 	}
-	.recupera-senha {
-		font-size: small;
+	.voltar {
+        width: auto;
+        margin: auto;
+        text-align: center;
 	}
 </style>
