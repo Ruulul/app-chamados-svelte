@@ -98,6 +98,9 @@ const auth = {
 					return profile
 				})
 				.catch(console.error)
+	},
+	getPerfis () {
+		return requestGet('/usuarios/all').catch(console.error)
 	}
 }
 

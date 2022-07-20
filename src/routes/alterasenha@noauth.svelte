@@ -1,15 +1,23 @@
 <script>
     import { auth } from '$lib/utils/db';
 	import { goto } from '$app/navigation'
-    import { page } from '$app/stores'
+	import { onMount } from 'svelte';
 	let email;
 	let senha;
 	let error;
+	let dialog;
+
 	function handleSubmit() {
         let args = {email, senha}
         auth.alteraSenha(args)
         .then(()=>auth.login(args))
         .then(()=>goto('/'))
+	}
+
+	onMount(showModal)
+
+	function showModal () {
+		dialog.showModal()
 	}
 </script>
 <svelte:head>
@@ -17,6 +25,11 @@
 		Recuperação de Senha
 	</title>
 </svelte:head>
+<dialog class='filled container' bind:this={dialog}>
+	<p>Para recuperar sua senha, primeiro entre em contato com o departamento de TI para requisitar o reset.</p>
+	<p>Apenas então você poderá usar essa tela para escolher sua nova senha.</p>
+	<button class='action button' on:click={dialog.close.bind(dialog)}>Continuar</button>
+</dialog>
 <main class='filled container'>
 	<img alt=''>
 	<span>
@@ -40,6 +53,10 @@
 	<div class="voltar"><a href='/login'>Eu tenho acesso</a></div>
 </main>
 <style>
+	dialog::backdrop {
+		background-color: black;
+		opacity: 0.8;
+	}
 	span {
 		text-align: left;
 	}

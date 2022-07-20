@@ -5,7 +5,8 @@
 		[
 			['Home', '/'],
 			['Serviços', '/servicos'],
-			['Configurações', '/config']
+			['Configurações', '/config'],
+			['Usuários', '/usuarios']
 		]
 	$: count = $servicos.filter(({status})=>status==='pendente').length
 	$: hidden = !count

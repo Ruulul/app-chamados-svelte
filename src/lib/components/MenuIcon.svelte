@@ -1,31 +1,19 @@
 <script>
 	import Fa from 'svelte-fa';
-	import { faHome, faGear, faList, faUser, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+	import { faHome as home, faCog as config, faList as servicos, faUser as perfil, faArrowRight as logout, faUsers as usuarios } from '@fortawesome/free-solid-svg-icons';
+	//import * as faIcons from '@fortawesome/free-solid-svg-icons/index.es';
+	//let { faHome : home, faGear : config, faList : servicos, faUser : perfil, faArrowRightFromBracket : logout, faUsers : usuarios } = faIcons;
+	
 	export let href
-	let icon
-	//let icon = href == '/' ? 'home' : href.split('/')[1]
-	//let src = `/menu_icons/${icon}.svg`
-
-	switch (href == '/' ? 'home' : href.split('/')[1]) {
-		case 'home':
-			icon = faHome;
-			break;
-		case 'config':
-			icon = faGear;
-			break;
-		case 'logout':
-			icon = faArrowRightFromBracket;
-			break;
-		case 'perfil':
-			icon = faUser;
-			break;
-		case 'servicos':
-			icon = faList;
-			break;
-		default:
-			console.log("hmmm... not supposed to happen")
-
+	let icons = {
+		home,
+		config,
+		servicos,
+		perfil,
+		logout,
+		usuarios
 	}
+	let icon = icons[href == '/' ? 'home' : href.split('/')[1]]
 </script>
 <Fa {icon}
 	size='lg'

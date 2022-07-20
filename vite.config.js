@@ -11,6 +11,9 @@ const config = {
             clientPort: 3000,
         }
     },
+    preview: {
+        port: 4127
+    }
 };
 
 export default config;
