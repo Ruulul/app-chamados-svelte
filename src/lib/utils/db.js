@@ -23,7 +23,8 @@
 
 import { converteDateToISO } from './utils.js'
 import { requestGet, requestPost } from './network.js'
-import { filiais_validas_por_id, setFiliaisValidas, setFilial } from './filial.js'
+import { filiais_validas_por_id, filial, setFiliaisValidas, setFilial } from './filial.js'
+import { get } from 'svelte/store'
 
 export { filial, filiais_validas, filiais_validas_por_id } from './filial.js'
 
@@ -55,7 +56,12 @@ const config = {
 		return requestGet('/servicos/categorias')
 			.catch(console.error)
 	}
-}
+	,
+	async addCategoria (categoria) {
+		await requestPost('/servicos/novo/subcategoria', categoria)
+			.catch(console.error)
+		filial.set(get(filial));
+	}}
 
 /**
  * Funções de autenticação

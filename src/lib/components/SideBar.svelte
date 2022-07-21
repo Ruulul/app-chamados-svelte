@@ -1,13 +1,14 @@
 <script>
 	import { servicos } from '$lib/stores/servicos';
+	import { user } from '$lib/stores/user';
 	import Icon from '$lib/components/MenuIcon.svelte'
 	let items =
 		[
 			['Home', '/'],
 			['Serviços', '/servicos'],
 			['Configurações', '/config'],
-			['Usuários', '/usuarios']
 		]
+	if ($user.cargo == "admin") items.push(['Usuários', '/usuarios']);
 	$: count = $servicos.filter(({status})=>status==='pendente').length
 	$: hidden = !count
 </script>

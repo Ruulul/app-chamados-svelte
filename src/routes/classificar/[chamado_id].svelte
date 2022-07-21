@@ -8,20 +8,25 @@
 	}
 </script>
 <script>
+	const nova_categoria = 'AC - INTERNAL GOLD SEED';
 	import Filtro from '$lib/components/Filtro.svelte';
 	import { servicos } from '$lib/stores/servicos';
 	import { filial, filiais_validas_por_id } from '$lib/utils/filial';
 	import { getPrazo, updateServico } from '$lib/utils/servicos.js';
 	import { tipos_os, categorias_os } from '$lib/stores/local_db.js';
 	import { page } from '$app/stores';
-	let tipo = '', categoria = '', prioridade = 0
+import { config } from '$lib/utils/db';
+	let tipo = '', categoria = '', prioridade = 0, nova_categoria_dialog
 	let servico = $servicos.find(servico=>servico.id==$page.params.chamado_id);
 	$: new_servico = $servicos.find(servico=>servico.id==$page.params.chamado_id);
 	$: if (servico?.updatedAt != new_servico?.updatedAt) servico = new_servico
-	//$: tipo = servico?.tipo || tipo, categoria = servico?.subCategoria || categoria, prioridade = parseInt(servico?.prioridade) || prioridade
-	$: $filial = $filiais_validas_por_id[servico?.filialId];
-	//$: console.log(tipo, categoria, $page.params.chamado_id);
 
+	$: $filial = $filiais_validas_por_id[servico?.filialId];
+
+	$: if (categoria == nova_categoria) {
+		nova_categoria_dialog?.showModal()
+		categoria = '';
+	}
 	async function onSubmit() {
 		let prazo = await getPrazo(prioridade || servico.prioridade, servico.createdAt)
 		let update = {
@@ -47,10 +52,31 @@
 			required
 			options={$tipos_os.map(({tipo})=>tipo)}
 			bind:value={tipo}/>
+		<dialog class='filled container' bind:this={nova_categoria_dialog}>
+			<button class='close button' on:click={()=>nova_categoria_dialog.close()}>X</button>
+			<h2>Escreva a nova categoria e envie</h2>
+			<form on:submit|preventDefault={async ()=>{
+				await config.addCategoria({
+					tipo,
+					newCategoria: categoria
+				})
+				nova_categoria_dialog.close()
+				}
+			}>
+			<div>
+				<Filtro
+				label='Tipo'
+				options={$tipos_os.map(({tipo})=>tipo)}
+				bind:value={tipo}/>
+				<input bind:value={categoria}>
+				<input type='submit' value='Enviar' class='action button'>
+			</div>
+			</form>
+		</dialog>
 		<Filtro
 			label='Categoria'
 			required
-			options={$categorias_os.filter(categoria=>categoria.tipo==tipo).map(({categoria})=>categoria)}
+			options={[ {value: nova_categoria, label: 'Novo...'}, ...$categorias_os.filter(categoria=>categoria.tipo==tipo).map(({categoria})=>categoria)]}
 			bind:value={categoria}/>
 		<Filtro
 			label='Urgencia'
@@ -75,6 +101,13 @@
 		flex-flow: row;
 		width: 80%;
 		padding: 3em;
+	}
+	dialog {
+		padding: 2em;
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+		flex-flow: column;
 	}
 	form > div {
 		margin: 1em;
