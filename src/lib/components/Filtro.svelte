@@ -8,7 +8,6 @@ import { geraCSS } from "$lib/utils/utils";
     export let style = '';
     export let style_button = '';
     export let style_label = '';
-    export let required = false;
     export function input() {
         return
     }
@@ -19,7 +18,7 @@ import { geraCSS } from "$lib/utils/utils";
 </script>
 
 <label style={generated_css_label} for="filtro">{label}</label>
-<select {required} style={generated_css_select} bind:value id="filtro" on:input>
+<select {...$$restProps} style={generated_css_select} bind:value id="filtro" on:input>
     {#each options as option}
         {#if typeof option === 'string'}
             <option style={generated_css_option} {option}>{option}</option>

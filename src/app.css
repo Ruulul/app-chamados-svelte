@@ -12,6 +12,7 @@
 * {
     font-family: 'ABeeZee', sans-serif;
     color: var(--texto);
+    font-size: small;
 }
 :focus-visible {
     --focus-border-color: rgb(245, 255, 64);

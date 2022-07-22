@@ -118,7 +118,7 @@
         <button title='Limpar filtro' on:click={()=>filial=''}>X</button>
     </span>
     <span class='underline'>
-        <button on:click={limpa(limpaFiltros)}>Limpar filtros!</button><br>
+        <button class='limpar-geral' on:click={limpa(limpaFiltros)}>Limpar filtros!</button><br>
     </span>
     <slot/>
 </aside>
@@ -172,5 +172,10 @@
     span::after {
         border-width: thin;
     }
-
+    button {
+        background-color: transparent;
+    }
+    button.limpar-geral {
+        background-color: unset;
+    }
 </style>

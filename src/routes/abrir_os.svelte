@@ -37,7 +37,7 @@
 	<div>
 		<h1>Abrir chamado</h1>
 		<Filtro required
-			label='Selecione a filial'
+			label='Selecione a filial:'
 			options={
 				$filiais_validas
 			}

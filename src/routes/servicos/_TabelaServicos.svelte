@@ -60,6 +60,8 @@
     div {
         padding-top: 0;
         padding-right: 1em;
+        padding-left: 1em;
+        width: auto;
     }
     caption {
         caption-side: bottom;

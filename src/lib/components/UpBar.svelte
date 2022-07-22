@@ -43,12 +43,15 @@
 	nav {
 		padding: 0;
 		display: flex;
-		justify-content: space-around;
+		position: relative;
+		justify-content: flex-end;
 	}
 	.logo {
 		place-content: center;
 		padding: 1em 2em;
 		display: grid;
+		position: absolute;
+		left: 0;
 	}
 	.third {
 		width: 33vw;

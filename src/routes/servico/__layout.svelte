@@ -84,7 +84,7 @@ import { TimeFromSeconds } from '$lib/utils/utils';
         <table> 
             <tr>
                 <th>
-                    Sla:
+                    Tempo decorrido:
                 </th>
                 <td>
                     {TimeFromSeconds(sla)}

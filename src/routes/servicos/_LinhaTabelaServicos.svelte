@@ -53,7 +53,7 @@
             {$filiais_validas_por_id[servico.filialId]}
         </td>
         <td class:expired>
-            {TimeFromSeconds(sla)}
+            {TimeFromSeconds(diffTime)}
         </td>
         <td>
             {servico.id}
@@ -64,7 +64,7 @@
         <td>
             {atendente}
         </td>
-        <td class:a-classificar={!classificado}>
+        <td class='assunto' class:a-classificar={!classificado}>
             {servico.assunto}
         </td>
         <td>
@@ -90,10 +90,6 @@
             Assumido em {ISOd(servico.assumido_em)}<br>
             Prioridade: {['Baixa', 'Média', 'Alta', 'Urgente'][servico.prioridade-1]}<br>
             Prazo estimado: {ISOd(servico.prazo)}<br>
-            Tempo {expired ? 'vencido' : 'restante'} : 
-            <br>{Math.floor(diffTime/86400)} dias 
-            <br> {Math.floor(diffTime/3600) % 24}h 
-            {Math.floor(diffTime/60)%60}min {diffTime%60}s<br>
         </Tooltip>
     </tr>
 </a>
@@ -101,10 +97,10 @@
     .expired::after {
         content: '!';
         position: absolute;
-        right: -0.2em;
-        top: -0.2em;
+        right: 0;
+        top: 0;
         z-index: 5;
-        font-size: xx-large;
+        font-size: large;
         color: var(--warning-color, crimson);
     }
     .a-classificar::after {
@@ -113,7 +109,7 @@
         right: 0;
         top: 0;
         z-index: 5;
-        font-size: xx-large;
+        font-size: large;
         color: var(--warning-color, crimson);
     }
     .hidden {
@@ -146,6 +142,12 @@
     td {
         padding: 0.3em;
         position: relative;
+    }
+    td.assunto {
+        text-transform: lowercase;
+    }
+    td.assunto::first-letter {
+        text-transform: capitalize;
     }
     tr:hover :global(.anchor .tooltip) {
         opacity: 1;

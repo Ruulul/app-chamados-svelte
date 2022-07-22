@@ -22,7 +22,6 @@ style="--tooltip-x:{tooltipX};--tooltip-y: {tooltipY}">
     }
     .tooltip {
         position: absolute;
-        color: black;
         padding: 0.5em;
         width: 10em;
         font-size: small;

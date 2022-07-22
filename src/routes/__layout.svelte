@@ -55,15 +55,17 @@ function auth() {
 	grid-row-gap: 0px;
 }
 .sidebar {
-	position: fixed;
-	height: 100vh;
+	grid-column: 1 / 1;
+	grid-row: 2 / 12;
 }
-.upbar, #main {
+#main {
 	grid-column: 2 / 12;
 	width: 88vw;
 }
 .upbar {
 	grid-row: 1 / 1;
+	grid-column: 1 / 12;
+	width: auto;
 }
 #main {
 	grid-row: 2 / 12;

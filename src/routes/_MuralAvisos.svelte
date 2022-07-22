@@ -4,6 +4,10 @@
 </script>
 
 <div class='filled container'>
+        <!--Consulta futura para obter o clima; requer o site no domínio
+        {#await fetch('https://api.hgbrasil.com/weather?woeid=457294&fields=only_results,temp,description,currently,humidity&key={KEY}').then(response=>response.toJSON()) then json}
+            {JSON.stringify(json)}
+        {/await}-->
     <h2>
         Mural de avisos
     </h2>
