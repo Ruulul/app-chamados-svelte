@@ -55,13 +55,22 @@ const config = {
 	 getCategorias () {
 		return requestGet('/servicos/categorias')
 			.catch(console.error)
-	}
-	,
+	},
 	async addCategoria (categoria) {
 		await requestPost('/servicos/novo/subcategoria', categoria)
 			.catch(console.error)
 		filial.set(get(filial));
-	}}
+	},
+	getDepartamentos () {
+		return requestGet('/departamentos')
+			.catch(console.error)
+	},
+	async addDepartamento (departamento) {
+		await requestPost('/departamentos/novo', departamento)
+			.catch(console.error)
+		filial.set(get(filial));
+	}
+}
 
 /**
  * Funções de autenticação

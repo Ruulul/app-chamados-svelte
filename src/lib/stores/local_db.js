@@ -8,7 +8,6 @@ export const tipos_os = derived(filial, function start(_, set) {
 	config.getTipos()
 		.then(set)
 		.catch(console.error)
-	return ()=>console.log('Fim dos tipos')
 }, [])
 idd = 0
 
@@ -19,7 +18,6 @@ export const categorias_os = derived(filial, function start(_, set) {
 	config.getCategorias()
 		.then(set)
 		.catch(console.error)
-	return ()=>console.log('Fim das categorias')
 }, [])
 export const categorias_por_tipo_os = derived(
 	[tipos_os, categorias_os],
@@ -32,3 +30,9 @@ export const categorias_por_tipo_os = derived(
 		return cat_tipo
 	}
 )
+
+export const departamentos = derived(filial, function start(_, set) {
+	config.getDepartamentos()
+		.then(set)
+		.catch(console.error)
+}, [])

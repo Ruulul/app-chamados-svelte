@@ -43,7 +43,8 @@
 	nav::after {
 		content: var(--small-logo);
 		position: absolute;
-		bottom: 4em;
+		bottom: 1em;
+		left: 5%;
 	}
 	li {
 		display: flex;
