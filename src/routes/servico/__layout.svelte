@@ -80,7 +80,7 @@ import { TimeFromSeconds } from '$lib/utils/utils';
 {#key servico?.updatedAt}
 <div class='filled container'>
     <div class='wrapper'>
-        <h1>Chamado {servico.id}</h1> <a href='/classificar/{$page.params.servico_id}'><Fa icon={faPen}/></a>
+        <h1>Chamado {servico.id}</h1>{#if $user.tipo == 'suporte'}<a href='/classificar/{$page.params.servico_id}'><Fa icon={faPen}/></a>{/if}
         <table> 
             <tr>
                 <th>

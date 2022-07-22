@@ -46,7 +46,7 @@
         if (update)
             updateServico($servico.id, update, novo_status === 'fechado' ? 'closed' : undefined)
                 .then(servico.set)
-                .then(function(){if(novo_status==='fechado')goto('/servicos')})
+                .then(function(){if(novo_status==='fechado')window.history.back()})
     }
 
 </script>

@@ -13,34 +13,50 @@
 </script>
 
 <script>
+    import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import Fa from "svelte-fa";
+
     export let usuarios;
 </script>
 
-<table>
-    <thead>
-        <th>Nome</th>
-        <th>Email</th>
-        <th>Departamento</th>
-    </thead>
-    <tbody>
-        {#each usuarios as usuario}
-        <a href='/usuario/{usuario.id}'>
-            <tr>
-                <td>{usuario.nome}</td>
-                <td>{usuario.email}</td>
-                <td>{usuario.dept}</td>
-            </tr>
-        </a>
-        {/each}
-    </tbody>
-</table>
+<div class='filled container'>
+    <table>
+        <thead>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Departamento</th>
+        </thead>
+        <tbody>
+            {#each usuarios as usuario}
+            <a href='/usuario/{usuario.id}'>
+                <tr>
+                    <td>{usuario.nome}</td>
+                    <td>{usuario.email}</td>
+                    <td>{usuario.dept}</td>
+                </tr>
+            </a>
+            {/each}
+        </tbody>
+    </table>
+    <p>
+        <a href='/usuario' title='Adicionar usuário'><Fa icon={faUserPlus}/></a>
+    </p>
+</div>
 
 <style>
     a {
         display: contents;
     }
-    table {
-        width: 80%;
+    div {
+        width:80%;
         margin: auto;
+    }
+    th {
+        padding-top: 1em;
+        padding-bottom: 1em;
+    }
+    div {
+        padding-top: 0;
+        padding-right: 1em;
     }
 </style>

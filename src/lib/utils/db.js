@@ -86,7 +86,7 @@ const auth = {
 		return requestPost('/alterasenha', auth).catch(console.error)
 	},
 	resetaSenha (email) {
-		return requestPost('/resetasenha', email).catch(console.error)
+		return requestPost('/resetasenha', { email }).catch(console.error)
 	},
 	/**
 	 * Obtém as informações de {@link PerfilData perfil} do usuário autenticado no momento.

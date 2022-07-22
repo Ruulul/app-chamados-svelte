@@ -43,8 +43,32 @@ import { config } from '$lib/utils/db';
 <form class='div filled container' on:submit|preventDefault={onSubmit}>
 	<div>
 		<h1>Classificar chamado</h1>
-		<span>Assunto: <br>{servico?.assunto}</span>
-		<span>Departamento: {servico?.departamento}</span>
+		<table>
+			<tr>
+				<th>
+					Assunto:
+				</th>
+				<td>
+					{servico?.assunto}
+				</td>
+			</tr>
+			<tr>
+				<th>
+					Departamento:
+				</th>
+				<td>
+					{servico?.departamento}
+				</td>
+			</tr>
+			<tr>
+				<th>
+					Mensagem de abertura:
+				</th>
+				<td>
+					{servico?.chat[0]?.mensagem}
+				</td>
+			</tr>
+		</table>
 	</div>
 	<div>
 		<Filtro
@@ -56,6 +80,7 @@ import { config } from '$lib/utils/db';
 			<button class='close button' on:click={()=>nova_categoria_dialog.close()}>X</button>
 			<h2>Escreva a nova categoria e envie</h2>
 			<form on:submit|preventDefault={async ()=>{
+				if (tipo && categoria)
 				await config.addCategoria({
 					tipo,
 					newCategoria: categoria
@@ -96,6 +121,16 @@ import { config } from '$lib/utils/db';
 </form>
 
 <style>
+	table {
+		display: flex;
+		flex-flow: column;
+		gap: 1em;
+	}
+	tr {
+		display: flex;
+		flex-flow: column;
+		text-align: center;
+	}
 	form {
 		justify-content: space-between;
 		flex-flow: row;

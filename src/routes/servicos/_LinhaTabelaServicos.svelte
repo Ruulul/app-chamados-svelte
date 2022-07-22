@@ -1,6 +1,6 @@
 <script>
     import { filiais_validas_por_id, getUser } from '$lib/utils/db.js'
-    import { fly } from 'svelte/transition';
+    import { user } from '$lib/stores/user';
     import { getServico } from "$lib/utils/servicos";
     import Tooltip from '$lib/components/Tooltip.svelte';
     import { TimeFromSeconds } from '$lib/utils/utils';
@@ -18,7 +18,7 @@
     $: diffTime = Math.floor(prazo - agora)
     $: sla = Math.floor(agora - abertura)
     $: expired = diffTime < 0
-    $: classificado = false
+    $: classificado = $user.tipo == 'suporte' ? true : false
     function defineServico () {
         getServico(id).then(setServico)
     }
@@ -26,7 +26,7 @@
         servico = os
         if (servico) {
             loading = false
-            classificado = servico.tipo !== 'A.D.' && servico.subCategoria !== 'A.D.'
+            classificado = $user.tipo == 'suporte' ? servico.tipo !== 'A.D.' && servico.subCategoria !== 'A.D.' : true
         }
         let prazoDateObj = new Date(servico.prazo)
         let aberturaDateObj = new Date(servico.createdAt)
@@ -45,7 +45,7 @@
 <tr class='placeholder' class:loading>
     <td colspan="8">Carregando...</td>
 </tr>
-<a  sveltekit:prefetch href="/servico/{servico.id}">
+<a  sveltekit:prefetch href={$user.tipo == 'suporte' && !classificado ? `/classificar/${servico.id}` : `/servico/${servico.id}`}>
     <tr
         class:hidden={loading}
         class='underline'>
