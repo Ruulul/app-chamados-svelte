@@ -17,6 +17,7 @@
 	let filial_id = filial_selecionada
 	$: $filial = $filiais_validas_por_id[filial_id]
 	$: filiais_de_acesso = [filial_id]
+	$: filiais_de_acesso = [...((new Set(filiais_de_acesso)).add(filial_id))]
 	
 	$: console.log(filial_id, filiais_de_acesso)
 
@@ -107,5 +108,23 @@
 		padding: 0.5em;
 		border-radius: 1em;
 		border: thin var(--secondary-color) solid;
+	}
+	dialog {
+		padding: 2em;
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+		flex-flow: column;
+	}
+	dialog > form {
+		justify-content: center;
+	}
+	.close.button {
+		position: absolute;
+		top: -0.5em;
+		right: 0;
+		padding: 1em;
+		margin: 1em;
+		background-color: transparent;
 	}
 </style>

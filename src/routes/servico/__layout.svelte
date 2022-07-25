@@ -155,7 +155,7 @@ import { TimeFromSeconds } from '$lib/utils/utils';
 {/if}
 <style>
     .filled.container {
-        width: auto;
+        margin: auto;
         flex-flow: row;
     }
     .wrapper {

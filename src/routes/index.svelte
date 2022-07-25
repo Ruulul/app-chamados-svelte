@@ -18,6 +18,7 @@
 <style>
 	div {
 		flex-flow: row;
-		width: auto;
+		margin: auto;
+		gap: 5em;
 	}
 </style>
