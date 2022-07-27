@@ -21,6 +21,7 @@
 
     /**
      * Texto para o link para abrir em nova aba. Sete para `false` se quiser ocultar o link.
+     * @type {string | boolean}
      */
     export let abrir = 'Abrir arquivo em nova aba'
 
