@@ -55,5 +55,6 @@
 	}
 	.third {
 		width: 33vw;
+		height: 100%;
 	}
 </style>
