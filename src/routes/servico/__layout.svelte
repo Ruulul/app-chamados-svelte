@@ -20,7 +20,7 @@
     import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     import { page } from '$app/stores'
     import { writable } from 'svelte/store';
-import { TimeFromSeconds } from '$lib/utils/utils';
+    import { TimeFromSeconds } from '$lib/utils/utils';
 
     let atendente='', nome='Sem usuário', dept='Sem usuário'
     let servico_store = writable({})
