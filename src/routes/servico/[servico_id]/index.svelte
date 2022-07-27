@@ -31,7 +31,6 @@
     }
 
     const servico = getContext('servico')
-    console.log($servico.chat.at(-1))
     function adicionaMensagem () {
         goto('addMensagem', {
             noscroll: true,
@@ -55,17 +54,18 @@
     {$servico.assunto}
 </div>
 <div class='messages'>
-    {#each $servico?.chat.sort((a, b)=>b.id-a.id) || [] as message}
+    {#each $servico?.chat.sort((a, b)=>b.id-a.id) || [] as {autorId, mensagem, metadados}}
+    {@const filename = metadados.find(({nome})=>nome=='anexo')?.valor}
         <div class='campo filled container'>
             <h3>
-                {#await getUser(message.autorId)}
+                {#await getUser(autorId)}
                     Carregando...
                 {:then {nome}}
                 {nome || 'Sem atendente'}
                 {/await}
             </h3>
-            {@html parseMD(message.mensagem)}
-            <ExibeArquivo filename={message.metadados.find(({nome})=>nome=='anexo')?.valor} sem_arquivo=''/>
+            {@html parseMD(mensagem)}
+            <ExibeArquivo {filename} sem_arquivo=''/>
         </div>
     {/each}
 </div>
