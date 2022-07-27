@@ -18,8 +18,6 @@
 	$: $filial = $filiais_validas_por_id[filial_id]
 	$: filiais_de_acesso = [filial_id]
 	$: filiais_de_acesso = [...((new Set(filiais_de_acesso)).add(filial_id))]
-	
-	$: console.log(filial_id, filiais_de_acesso)
 
 	let dept = ''
 	let novo_departamento_dialog
@@ -64,6 +62,9 @@
 			options={
 				['Novo...', ...$departamentos?.map(({departamento})=>departamento)]
 			}
+			on:exclude={(node)=>{
+				console.log(node)
+			}}
 			bind:value={dept}
 		/>
 		<dialog class='filled container' bind:this={novo_departamento_dialog}>
