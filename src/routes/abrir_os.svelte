@@ -132,7 +132,9 @@
     .assunto {
         margin: 0;
         margin-bottom: 1em;
-        width: 100%;
+        width: auto;
+        display: flex;
+        flex-flow: row;
     }
     .assunto span {
         border-radius: 2em;
@@ -147,8 +149,9 @@
     .placeholder {
         position: absolute;
         pointer-events: none;
-        top: 2em;
-        left: 2em;
+        top: 1em;
+        left: 10em;
+        background-color: white;
         opacity: 0;
         transition: opacity 0.5s;
     }
