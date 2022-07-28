@@ -50,7 +50,7 @@ function auth() {
 	grid-template-rows: repeat(12, 1fr);
 	justify-content: space-around;
 	width: auto;
-	height: 100vh;
+	height: 90vh;
 	grid-column-gap: 0px;
 	grid-row-gap: 0px;
 }

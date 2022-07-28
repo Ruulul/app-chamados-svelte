@@ -9,6 +9,8 @@
 	$: parados = pendentes - atendimento
     $: vencidos = servicos.filter(({prazo})=>prazo.split('T')[0]<converteDateToISO(Date())).length
     $: hoje = servicos.filter(({prazo})=>prazo.split('T')[0]==converteDateToISO(Date())).length
+
+    $:hidden = !pendentes
 </script>
 
 <div class='outlined container'>
@@ -18,6 +20,7 @@
     <h3>Meus tickets</h3>
     <div class='divider'/>
     <a class='action button' sveltekit:prefetch href='/abrir_os'>Abrir Chamado</a>
+    <a class='action button' sveltekit:prefetch href='/servicos'>Ver Chamados<div class='counter' class:hidden style:--count={'"' + pendentes + '"'}/></a>
     <ul>
         <li>{novos} abertos hoje</li>
         <li>{parados} parados</li>
@@ -56,4 +59,32 @@
         border-color: black black transparent transparent;
         transform: rotate(45deg);
     }
+    a {
+        position: relative;
+    }
+    .counter {
+		position: absolute;
+		width: 0;
+		height: 0;
+        right: 5%;
+        top: -25%;
+	}
+    .counter::after {
+        content: var(--count);
+		position: absolute;
+		font-size: small;
+		background-color: darkred;
+		color: white;
+		transition: width 0.2s, height 0.2s, font-size 0.2s;
+		width: 1.5em;
+		height: 1.5em;
+		border-radius: 2em;
+		display: grid;
+		place-content: center;
+    }
+	.counter.hidden::after {
+		width: 0;
+		height: 0;
+		font-size: 0;
+	}
 </style>

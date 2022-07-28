@@ -3,6 +3,7 @@
 	import Logo from '$lib/assets/MainLogo.svelte';
 	import { auth } from '$lib/utils/db.js'
 	import { goto } from '$app/navigation';
+
 	let itemsE =
 		[
 		]
@@ -48,7 +49,6 @@
 	}
 	.logo {
 		place-content: center;
-		padding: 1em 2em;
 		display: grid;
 		position: absolute;
 		left: 0;

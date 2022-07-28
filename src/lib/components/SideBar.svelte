@@ -5,7 +5,7 @@
 	let items =
 		[
 			['Home', '/'],
-			['Serviços', '/servicos'],
+			//['Serviços', '/servicos'],
 			['Configurações', '/config'],
 		]
 	if ($user.cargo == "admin") items.push(['Usuários', '/usuarios']);
