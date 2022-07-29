@@ -56,10 +56,11 @@ function auth() {
 }
 .sidebar {
 	grid-column: 1 / 1;
-	grid-row: 2 / 12;
+	grid-row: 2 / 13;
 }
 #main {
 	grid-column: 2 / 12;
+	grid-row: 2 / 12;
 	width: 88vw;
 }
 .upbar {
@@ -67,10 +68,6 @@ function auth() {
 	grid-column: 1 / 12;
 	width: auto;
 }
-#main {
-	grid-row: 2 / 12;
-}
-
 a	{
 	transition: width 5s, height 5s;
 	position:absolute;

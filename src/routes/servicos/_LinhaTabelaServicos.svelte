@@ -43,7 +43,7 @@
     }
 </script>
 <tr class='placeholder' class:loading>
-    <td colspan="8">Carregando...</td>
+    <td colspan="9">Carregando...</td>
 </tr>
 <a  sveltekit:prefetch href={$user.tipo == 'suporte' && !classificado ? `/classificar/${servico.id}` : `/servico/${servico.id}`}>
     <tr
@@ -58,7 +58,7 @@
         <td>
             {servico.id}
         </td>
-        <td>
+        <td class='status'>
             {servico.status}
         </td>
         <td>
@@ -141,12 +141,17 @@
     }
     td {
         padding: 0.3em;
+        padding-top: 0.45em;
+        padding-bottom: 0.45em;
         position: relative;
     }
     td.assunto {
         text-transform: lowercase;
     }
     td.assunto::first-letter {
+        text-transform: capitalize;
+    }
+    td.status {
         text-transform: capitalize;
     }
     tr:hover :global(.anchor .tooltip) {

@@ -4,11 +4,15 @@ import { get, writable } from "svelte/store";
 
 export const servicos = createServicos()
 
-export const filtro = writable(undefined)
-export const tipo_filtro = writable(undefined)
+export const filtros = writable({
+    chamados:[],
+    limit:5,
+    page:1
+    })
 
 function createServicos () {
     const { subscribe, set } = writable([], function start (set) {
+        console.log("Start servicos")
         setServicos(set)
         let handle = setInterval(()=>setServicos(set), 1000)
         return ()=>clearInterval(handle)
@@ -17,11 +21,16 @@ function createServicos () {
     return { subscribe, async update(){return await setServicos(set)} }
 
     async function setServicos (set) {
-        getServicos(get(filtro), get(tipo_filtro))
+        let filtro = get(filtros)
+        let {chamados, limit, page} = filtro
+        getServicos(chamados, {limit, page})
             .then((oss)=>{
                 if (oss=='Não autorizado') goto('/login')
                 set(oss)
             })
-            .catch(()=>set([]))
+            .catch((e)=>{
+                console.log(e)
+                set([])
+            })
     }
 }

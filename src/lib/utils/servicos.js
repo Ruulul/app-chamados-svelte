@@ -26,6 +26,8 @@ export {
 	addMensagem,
 	getServico,
     getServicos,
+	getServicosCount,
+	getServicosPageCount,
 	getIdNovaOs,
 	abrirOs,
 	getPrazo
@@ -129,21 +131,33 @@ async function addMensagem (id, mensagem) {
 
 /**
  * Retorna um array das OSs acessíveis para o usuário atual
+ * @param {string[][]} filtros
  * @returns {Promise<Array<OS>>}
  */
- async function getServicos (filtro = undefined, tipo_filtro = 'status') {
+ async function getServicos (filtros, {limit=5, page=1}={limit:5, page:1}) {
 	let servicos = []
 	let filiais = get(filiais_validas);
-	let path = '/servicos/'
-	if (filtro) path += tipo_filtro + '/' + filtro
+	let path = '/servicos?' + filtros.reduce((pv, cv, i)=>pv+(i?'&':'')+'filtro='+cv[0]+','+cv[1], '') + `&page=${page}&limit=${limit}`
 	for (let filial of filiais) {
-		servicos = [...servicos, ...await requestGet(path, filial)
+		servicos = [...servicos, ...await requestGet(path, filial).then(({page})=>page)
 				.catch(console.error)]
 	}
 	return servicos
 }
-
-
+async function getServicosCount (filtros) {
+	let servicos = 0
+	let filiais = get(filiais_validas);
+	let path = '/servicos?' + filtros.reduce((pv, cv, i)=>pv+(i?'&':'')+'filtro='+cv[0]+','+cv[1], '') + '&page=1&limit=0'
+	for (let filial of filiais) {
+		servicos += await requestGet(path, filial).then(({count})=>count)
+				.catch(console.error)
+	}
+	return servicos
+}
+async function getServicosPageCount (filtros,limit) {
+	let count = await getServicosCount(filtros)
+	return Math.ceil(count/limit)
+}
 /**
  * Obtém o id sequencial da Ordem de Serviço a ser aberta.
  * @returns {Promise<Number>} id nova filial

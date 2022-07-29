@@ -3,6 +3,9 @@
     import LinhaTabelaServicos from './_LinhaTabelaServicos.svelte';
     export let sort;
     export let servicos;
+    export let countPages;
+    export let page;
+    
     let agora = Date.now()/1000
     let handlerAgora = setInterval(()=>agora=Date.now()/1000, 1000)
     
@@ -47,6 +50,13 @@
         {/each}
     </tbody>
 </table>
+<!--ul>
+    {#each Array.from({length: 10}, (_, i)=>i+1) as index}
+        <li>
+            {index}
+        </li>
+    {/each}
+</ul-->
 </div>
 <style>
     th {
@@ -62,6 +72,9 @@
         padding-right: 1em;
         padding-left: 1em;
         width: auto;
+        height: 100%;
+        justify-content: flex-start;
+        gap: 1.2em;
     }
     caption {
         caption-side: bottom;

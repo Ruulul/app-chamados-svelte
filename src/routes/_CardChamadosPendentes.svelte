@@ -1,14 +1,10 @@
 <script>
     import { user } from "$lib/stores/user";
-	import { servicos as servicos_store } from '$lib/stores/servicos';
-    import { converteDateToISO } from "$lib/utils/utils";
-    $: servicos = $servicos_store.filter(({status})=>status=='pendente')
-	$: pendentes = servicos.length
-	$: novos = servicos.filter(({createdAt})=>createdAt.split('T')[0]===converteDateToISO(Date())).length
-	$: atendimento = servicos.filter(({atendimento})=>atendimento==='true').length
-	$: parados = pendentes - atendimento
-    $: vencidos = servicos.filter(({prazo})=>prazo.split('T')[0]<converteDateToISO(Date())).length
-    $: hoje = servicos.filter(({prazo})=>prazo.split('T')[0]==converteDateToISO(Date())).length
+    import { getServicosCount as getServicos } from "$lib/utils/servicos";
+    let pendentes, atendimento, parados;
+    getServicos([['status', 'pendente']]).then((count)=>pendentes=count)
+    getServicos([['status', 'pendente'], ['atendimento', true]]).then((count)=>atendimento=count)
+    getServicos([['status', 'pendente'], ['atendimento', false]]).then((count)=>parados=count)
 
     $:hidden = !pendentes
 </script>
@@ -22,16 +18,14 @@
     <a class='action button' sveltekit:prefetch href='/abrir_os'>Abrir Chamado</a>
     <a class='action button' sveltekit:prefetch href='/servicos'>Ver Chamados<div class='counter' class:hidden style:--count={'"' + pendentes + '"'}/></a>
     <ul>
-        <li>{novos} abertos hoje</li>
+        <li>{pendentes} pendentes</li>
         <li>{parados} parados</li>
         <li>{atendimento} em atendimento</li>
     </ul>
     <div class='divider'/>
-    <ul>
-        <li>{vencidos} venceram</li>
-        <li>{hoje} vencem hoje</li>
+    <!--ul>
         <li>Vencem essa semana</li>
-    </ul>
+    </ul-->
 </div>
 
 <style>
