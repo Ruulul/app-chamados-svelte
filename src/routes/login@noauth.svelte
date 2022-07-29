@@ -38,9 +38,7 @@
 		</label>
 		<input placeholder='Senha' id='senha' required bind:value={senha} type='password'/>
 		<span>{error || ''}</span>
-		<div>
-			<button class='action button' type='submit'>Conectar</button>
-		</div>
+		<button class='action button' type='submit'>Conectar</button>
 	</form>
 	<span class='recupera-senha'>Esqueceu sua senha? <br><a href='/alterasenha'>Clique aqui para recuperar sua senha</a></span>
 </main>
@@ -64,13 +62,6 @@
 	main * {
 		margin: 0.5em 0;
 	}
-	div {
-		position: relative;
-		top: unset;
-		left: unset;
-		width: 100%;
-		height: 2em;
-	}
 	label {
 		width: 0;
 		height: 0;
@@ -86,6 +77,8 @@
 	button {
 		font-size: medium;
 		text-transform: uppercase;
+		width: 100%;
+		height: 2em;
 	}
 	form {
 		display: grid;
@@ -93,5 +86,6 @@
 	}
 	.recupera-senha {
 		font-size: small;
+		margin-top: 0.5em;
 	}
 </style>
