@@ -2,7 +2,7 @@
 	export async function load () {
 		return {
 			stuff: {
-				title: 'Abrir chamado'
+				title: 'Novo Cadastro'
 			},
 		}
 	}
@@ -12,7 +12,7 @@
 	import Filtro from '$lib/components/Filtro.svelte';
 	import { user } from '$lib/stores/user';
 	import { filiais_validas, filial } from '$lib/utils/filial';
-	import { abrirOs } from '$lib/utils/servicos.js';
+    import { abrirOS as abrirOs } from '$lib/utils/cadastros';
 	let assunto = '', mensagem = '';
 	let addFiles, anexos;
 	$: console.log(mensagem)
@@ -34,59 +34,57 @@
 		await abrirOs(os).then(()=>history.back())
 	}
 	</script>
-        <h1>Abrir Chamado</h1>
+<h1>Novo Cadastro</h1>
 <div class='filled container'>
     <div class='wrapper'>
         <table> 
             <tr>
                 <th>
-                    Cliente:
-                </th>
-                <td>
-                    {$user.nome}
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Departamento:
-                </th>
-                <td>
-                    {$user.dept}
-                </td>
-            </tr>
-            <tr>
-                <th>
                     Filial:
                 </th>
                 <td>
-					<Filtro options={$filiais_validas} bind:value={$filial} label=''/>
+                    <Filtro options={$filiais_validas} bind:value={$filial} label=''/>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Produto:
+                </th>
+                <td>
+                    <Filtro 
+                        label=''
+                        options={[
+                            'Sementes',
+                            'Serviços',
+                            'Outros',
+                        ]}
+                    />
                 </td>
             </tr>
         </table>
         <div class='campo'>
         <h2>Anexo</h2>
-			<Anexos bind:addFiles bind:files={anexos}/>
+            <Anexos bind:addFiles bind:files={anexos}/>
         </div>
 
     </div>
     <form class='container' on:submit|preventDefault={onSubmit}>
         <div class='campo filled container assunto'>
-			Assunto: 
             <span contenteditable bind:innerHTML={assunto}/>
-            <span class='placeholder'>Explique de forma concisa aqui</span>
-		</div>
-        <div>
-			<pre 
-				class='campo filled container descr' 
-				contenteditable bind:innerHTML={mensagem} 
-				on:input={({data})=>{if (data == '\x13') assunto += '\n<br>'}}
-				on:paste|preventDefault={({clipboardData:{files}})=>addFiles(files)}/>
-            <span class='placeholder'>Explique de forma detalhada aqui</span>
+            <span class='placeholder'>Nome do Produto</span>
         </div>
-			<div class='buttons'>
-					<input type=submit value='Abrir chamado' class='action button'>
-			</div>
-	</form>
+        <div>
+            <pre 
+                class='campo filled container descr' 
+                contenteditable bind:innerHTML={mensagem} 
+                on:input={({data})=>{if (data == '\x13') assunto += '\n<br>'}}
+                on:paste|preventDefault={({clipboardData:{files}})=>addFiles(files)}/>
+            <span class='placeholder'>Motivo da Requisição</span>
+        </div>
+            <div class='buttons'>
+                    <input type=submit value='Abrir chamado' class='action button'>
+            </div>
+    </form>
 </div>
 <style>
 	[contenteditable] {

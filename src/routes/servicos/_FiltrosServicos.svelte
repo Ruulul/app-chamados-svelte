@@ -43,6 +43,7 @@
     <span class='underline tooltip'>
         <Filtro 
             label=''
+            placeholder='todos'
             options={
                 [
                     {value: 'pendente', label: 'Pendente'}, 
@@ -159,6 +160,7 @@
         width: 10em;
         margin-left: 0;
         cursor: unset;
+        display: block;
     }
     span {
         display: flex;

@@ -1,18 +1,19 @@
 <script>
-    import { getServicosCount as getServicos } from "$lib/utils/servicos";
+    import { user } from "$lib/stores/user";
+    import { getCadastrosCount as getCadastros } from '$lib/utils/cadastros'
     let pendentes, atendimento, parados;
-    getServicos([['status', 'pendente']]).then((count)=>pendentes=count)
-    getServicos([['status', 'pendente'], ['atendimento', true]]).then((count)=>atendimento=count)
-    getServicos([['status', 'pendente'], ['atendimento', false]]).then((count)=>parados=count)
+    getCadastros([['status', 'pendente']]).then(count=>pendentes=count)
+    getCadastros([['status', 'pendente'], ['atendimento', true]]).then((count)=>atendimento=count)
+    getCadastros([['status', 'pendente'], ['atendimento', false]]).then((count)=>parados=count)
 
     $:hidden = !pendentes
 </script>
 
 <div class='outlined container'>
-    <h3>Suporte Técnico</h3>
+    <h3>Cadastros</h3>
     <div class='divider'/>
-    <a class='action button' sveltekit:prefetch href='/abrir_os'>Novo Chamado</a>
-    <a class='action button' sveltekit:prefetch href='/servicos'>Ver Chamados<div class='counter' class:hidden style:--count={'"' + pendentes + '"'}/></a>
+    <a class='action button' sveltekit:prefetch href='/solicitacao/cadastro'>Novo Chamado</a>
+    <a class='action button' sveltekit:prefetch href='/cadastros'>Ver Chamados<div class='counter' class:hidden style:--count={'"' + pendentes + '"'}/></a>
     <ul>
         <li>{pendentes} pendentes</li>
         <li>{parados} parados</li>

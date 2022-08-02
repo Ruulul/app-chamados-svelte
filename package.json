@@ -4,6 +4,7 @@
   "scripts": {
     "caddy": "cd caddy && .\\caddy adapt && .\\caddy start && cd ..",
     "dev": "pnpm run caddy && vite dev",
+    "stop": "cd caddy && .\\caddy stop && cd ..",
     "build": "vite build",
     "package": "svelte-kit package",
     "preview": "pnpm run caddy && vite preview",
@@ -29,6 +30,7 @@
     "@fortawesome/free-solid-svg-icons": "5",
     "insane": "^2.6.2",
     "marked": "^4.0.17",
-    "svelte-fa": "^3.0.3"
+    "svelte-fa": "^3.0.3",
+    "svelte-paginate": "^0.0.1"
   }
 }

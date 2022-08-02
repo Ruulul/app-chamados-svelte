@@ -9,10 +9,12 @@
 </script>
 <script>
 	import CardChamadosPendentes from './_CardChamadosPendentes.svelte'
+import CardPedidosCadastro from './_CardPedidosCadastro.svelte';
 	import MuralAvisos from './_MuralAvisos.svelte';
 </script>
 <div>
 	<CardChamadosPendentes/>
+	<CardPedidosCadastro/>
 	<MuralAvisos/>
 </div>
 <style>
