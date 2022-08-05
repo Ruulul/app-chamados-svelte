@@ -10,15 +10,15 @@
 
 <div class='outlined container'>
     <h3>Suporte Técnico</h3>
-    <div class='divider'/>
-    <a class='action button' sveltekit:prefetch href='/abrir_os'>Novo Chamado</a>
-    <a class='action button' sveltekit:prefetch href='/servicos'>Ver Chamados<div class='counter' class:hidden style:--count={'"' + pendentes + '"'}/></a>
-    <ul>
+    <div class='divider'/><ul>
         <li>{pendentes} pendentes</li>
         <li>{parados} parados</li>
         <li>{atendimento} em atendimento</li>
     </ul>
     <div class='divider'/>
+    <a class='action button' sveltekit:prefetch href='/abrir_os'>Novo Chamado</a>
+    <a class='action button' sveltekit:prefetch href='/servicos'>Ver Chamados<div class='counter' class:hidden style:--count={'"' + pendentes + '"'}/></a>
+    
     <!--ul>
         <li>Vencem essa semana</li>
     </ul-->

@@ -25,9 +25,6 @@
             Filial
         </th>
         <th>
-            Sla
-        </th>
-        <th>
             ID
         </th>
         <th>
@@ -41,9 +38,6 @@
         </th>
         <th>
             Abertura
-        </th>
-        <th>
-            Fechamento
         </th>
         <th class='filtro'/>
     </thead>
@@ -75,7 +69,7 @@
                     {cadastro.log[0].titulo}
                 </td>
                 <td>
-                    {cadastro.createdAt}
+                    {cadastro.createdAt.split('T')[0].split('-').reverse().join('/')}
                 </td>
             </tr>
         </a>
@@ -84,6 +78,10 @@
 </table>
 </div>
 <style>
+    table {
+        justify-content: center;
+        text-align: center;
+    }
     a {
         display: contents;
     }

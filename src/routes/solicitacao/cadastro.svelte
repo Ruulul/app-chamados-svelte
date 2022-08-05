@@ -35,7 +35,7 @@
                 titulo,
                 descr
             },
-            unidade,
+            unidade: departamento_id===17 ? '' : unidade,
             filial,
             status: 'pendente',
             email,
@@ -60,7 +60,7 @@
             </tr>
             <tr>
                 <th>
-                    Tipo de Produto:
+                    Tipo:
                 </th>
                 <td>
                     <Filtro 
@@ -68,13 +68,13 @@
                         options={[
                             {label:'Sementes', value:23},
                             {label:'Serviços', value:17},
-                            {label:'Outros', value:25},
+                            {label:'Produtos', value:25},
                         ]}
                         bind:value={departamento_id}
-                    /> <span>{email}</span>
+                    />
                 </td>
             </tr>
-            <tr>
+            <tr class:hidden={departamento_id===17} >
                 <th>
                     Unidade:
                 </th>
@@ -108,6 +108,9 @@
     </form>
 </div>
 <style>
+    .hidden {
+        display: none;
+    }
 	[contenteditable] {
 		font-family: monospace;
 	}

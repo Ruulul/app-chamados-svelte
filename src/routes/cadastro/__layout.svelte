@@ -11,6 +11,7 @@
 </script>
 <script>
     import { page } from '$app/stores'
+    import { user } from '$lib/stores/user';
     import { getUnique, getDepts, getOpcoes, updateProcesso, nextEtapa } from '$lib/utils/cadastros';
     import { getUser } from '$lib/utils/db';
     import { setContext } from 'svelte';
@@ -36,8 +37,14 @@
     $: getUser($cadastro?.idUsuario).then(user=>cliente=user)
 
     let canEdit = false
-    $: if (cliente) canEdit = !cliente?.dept.includes(depts?.find(dept=>dept.id===$cadastro.dept))
-
+    $: if (cliente && depts) {
+        console.log`${cliente}${depts}${$cadastro}`
+        canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$cadastro.etapa.dept)?.departamento)
+        console.log(`we can${!canEdit ? "'t" : ''} edit`)
+    } else {
+        console.log(`aaaaaaaaaaaaaaaaaaaaaa`)
+    }
+    $: console.log(canEdit)
     function onChange() {
         updating = true
         if (status === 'finalizado')

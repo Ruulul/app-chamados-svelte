@@ -5,7 +5,7 @@
     import { user } from '$lib/stores/user.js'
     import { parseMD } from '$lib/utils/utils'
     import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
-    import { addMensagem } from '$lib/utils/cadastros';
+    import { addMensagem, getUnique } from '$lib/utils/cadastros';
 
     const cadastro = getContext('cadastro')
     let value = ''
@@ -29,7 +29,12 @@
     {/each}
 </div>
 <textarea bind:value/>
-<button on:click={()=>addMensagem($cadastro, mensagem).then(()=>window.location.reload())} class='action button'>Nova mensagem</button>
+<button on:click={()=>
+    addMensagem($cadastro, mensagem)
+    .then(()=>getUnique('processos', $cadastro.Tag, $cadastro.id))
+    .then(cadastro.set)
+    .then(()=>value='')
+    } class='action button'>Nova mensagem</button>
 
 <style>
     .messages {
