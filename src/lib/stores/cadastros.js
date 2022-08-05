@@ -1,5 +1,5 @@
 import { goto } from "$app/navigation";
-import { getCadastros } from "/utils/cadastros";
+import { getMany } from "$lib/utils/cadastros";
 import { get, writable } from "svelte/store";
 
 export const cadastros = createCadastros()
@@ -23,7 +23,7 @@ function createCadastros () {
     async function setCadastros (set) {
         let filtro = get(filtros)
         let {cadastros, limit, page} = filtro
-        getCadastros(cadastros, {limit, page})
+        getMany('processos','cadastro_produto',cadastros, {limit, page})
             .then((oss)=>{
                 if (oss=='Não autorizado') goto('/login')
                 set(oss)

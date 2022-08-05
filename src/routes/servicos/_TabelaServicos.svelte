@@ -1,16 +1,16 @@
 <script>
     import { onDestroy } from 'svelte';
     import LinhaTabelaServicos from './_LinhaTabelaServicos.svelte';
+    import { filtros } from '$lib/stores/servicos';
+    import { getServicos,} from '$lib/utils/servicos';
     export let sort;
-    export let servicos;
-    export let countPages;
-    export let page;
-    
+    let servicos = [];
+
+    $: getServicos($filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>servicos=oss)
+
     let agora = Date.now()/1000
     let handlerAgora = setInterval(()=>agora=Date.now()/1000, 1000)
-    
     onDestroy(()=>clearInterval(handlerAgora))
-
 
 </script>
 <div class='filled container'>
@@ -50,13 +50,6 @@
         {/each}
     </tbody>
 </table>
-<!--ul>
-    {#each Array.from({length: 10}, (_, i)=>i+1) as index}
-        <li>
-            {index}
-        </li>
-    {/each}
-</ul-->
 </div>
 <style>
     th {

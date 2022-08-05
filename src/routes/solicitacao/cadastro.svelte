@@ -11,27 +11,39 @@
 	import Anexos from '$lib/components/Anexos.svelte';
 	import Filtro from '$lib/components/Filtro.svelte';
 	import { user } from '$lib/stores/user';
-	import { filiais_validas, filial } from '$lib/utils/filial';
-    import { abrirOS as abrirOs } from '$lib/utils/cadastros';
-	let assunto = '', mensagem = '';
+    import { filiais_validas } from '$lib/utils/filial';
+    import { post, getDepts, getOpcoes,  } from '$lib/utils/cadastros';
+	let titulo = '', descr = '', unidade = '', departamento_id, departamentos=[];
+    let unidades = [], filiais = [], filial = '';
 	let addFiles, anexos;
-	$: console.log(mensagem)
+    getDepts('cadastro_produto').then(depts=>{
+        departamentos=depts
+        departamento_id=departamentos[0].id
+    })
+    $: email = departamentos?.find(departamento=>departamento.id===departamento_id)?.email.valor
+    getOpcoes('etapa', 'cadastro_produto','unidade').then(data=>{
+        unidades=data
+        unidade=unidades[0]
+    })
+    $: $filiais_validas, getOpcoes('processo', 'cadastro_produto', 'filial').then(data=>{
+        filiais = data.filter(item=>$filiais_validas.includes(item));
+        filial = filiais[0]
+    })
 	async function onSubmit() {
 		let os = {
-			assunto,
-			chat: [
-				{
-					autorId: $user.id,
-					mensagem
-				}
-			],
-			anexos,
-			autorId: $user.id,
-			usuarioId: $user.id,				//Alterar depois para suportes
-			departamento: $user.dept			//	''		''		''		''
+			mensagem: {
+                titulo,
+                descr
+            },
+            unidade,
+            filial,
+            status: 'pendente',
+            email,
+            dept: departamento_id
 		}
 
-		await abrirOs(os).then(()=>history.back())
+		await post('processos', 'cadastro_produto', os).then(()=>history.back())
+        .catch(console.error)
 	}
 	</script>
 <h1>Novo Cadastro</h1>
@@ -43,26 +55,35 @@
                     Filial:
                 </th>
                 <td>
-                    <Filtro options={$filiais_validas} bind:value={$filial} label=''/>
+                    <Filtro options={filiais} bind:value={filial} label=''/>
                 </td>
             </tr>
             <tr>
                 <th>
-                    Produto:
+                    Tipo de Produto:
                 </th>
                 <td>
                     <Filtro 
                         label=''
                         options={[
-                            'Sementes',
-                            'Serviços',
-                            'Outros',
+                            {label:'Sementes', value:23},
+                            {label:'Serviços', value:17},
+                            {label:'Outros', value:25},
                         ]}
-                    />
+                        bind:value={departamento_id}
+                    /> <span>{email}</span>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Unidade:
+                </th>
+                <td>
+                    <Filtro options={unidades} bind:value={unidade} label=''/>
                 </td>
             </tr>
         </table>
-        <div class='campo'>
+        <div class='campo'> 
         <h2>Anexo</h2>
             <Anexos bind:addFiles bind:files={anexos}/>
         </div>
@@ -70,14 +91,14 @@
     </div>
     <form class='container' on:submit|preventDefault={onSubmit}>
         <div class='campo filled container assunto'>
-            <span contenteditable bind:innerHTML={assunto}/>
+            <span contenteditable bind:innerHTML={titulo}/>
             <span class='placeholder'>Nome do Produto</span>
         </div>
         <div>
             <pre 
                 class='campo filled container descr' 
-                contenteditable bind:innerHTML={mensagem} 
-                on:input={({data})=>{if (data == '\x13') assunto += '\n<br>'}}
+                contenteditable bind:innerHTML={descr} 
+                on:input={({data})=>{if (data == '\x13') titulo += '\n<br>'}}
                 on:paste|preventDefault={({clipboardData:{files}})=>addFiles(files)}/>
             <span class='placeholder'>Motivo da Requisição</span>
         </div>

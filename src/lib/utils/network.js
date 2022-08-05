@@ -5,7 +5,7 @@ const server = origin + '/api/'//'https://45.177.254.161:5000/api/'
 const api =  (filial) => server + filial
 import { browser } from '$app/env'
 import { filial as filial_store } from './filial.js'
-export { requestGet, requestPost }
+export { requestGet, requestPost, requestPut }
 
 let filial = '0101'
 filial_store.subscribe((value)=>filial=value)
@@ -41,6 +41,20 @@ let init = {
 	return request(path, filial_requisicao, {	
 		...options, 
 		method: 'POST',
+		body: JSON.stringify(body)
+	})	
+}
+
+/**
+ * Realiza requisições PUT na API.
+ * @param {string} path 
+ * @param {Object} options 
+ * @returns {Promise}
+ */
+ function requestPut(path, body, filial_requisicao=filial, options={}) {
+	return request(path, filial_requisicao, {	
+		...options, 
+		method: 'PUT',
 		body: JSON.stringify(body)
 	})	
 }

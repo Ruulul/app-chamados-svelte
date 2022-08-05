@@ -1,10 +1,10 @@
 <script>
     import { user } from "$lib/stores/user";
-    import { getCadastrosCount as getCadastros } from '$lib/utils/cadastros'
+    import { getCount as getCadastros } from '$lib/utils/cadastros'
     let pendentes, atendimento, parados;
-    getCadastros([['status', 'pendente']]).then(count=>pendentes=count)
-    getCadastros([['status', 'pendente'], ['atendimento', true]]).then((count)=>atendimento=count)
-    getCadastros([['status', 'pendente'], ['atendimento', false]]).then((count)=>parados=count)
+    getCadastros('processos','cadastro_produto',[['status', 'pendente']]).then(count=>pendentes=count)
+    getCadastros('processos','cadastro_produto',[['status', 'pendente'], ['atendimento', true]]).then((count)=>atendimento=count)
+    getCadastros('processos','cadastro_produto',[['status', 'pendente'], ['atendimento', false]]).then((count)=>parados=count)
 
     $:hidden = !pendentes
 </script>

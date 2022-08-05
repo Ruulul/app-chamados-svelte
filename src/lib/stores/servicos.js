@@ -1,6 +1,6 @@
 import { goto } from "$app/navigation";
-import { getServicos } from "$lib/utils/servicos";
-import { get, writable } from "svelte/store";
+import { getServicos, getServicosCount, getServicosPageCount } from "$lib/utils/servicos";
+import { get, readable, writable } from "svelte/store";
 
 export const servicos = createServicos()
 
@@ -9,6 +9,9 @@ export const filtros = writable({
     limit:5,
     page:1
     })
+
+export const count = writable(0);
+export const pages = writable(0);
 
 function createServicos () {
     const { subscribe, set } = writable([], function start (set) {
@@ -32,5 +35,10 @@ function createServicos () {
                 console.log(e)
                 set([])
             })
+        console.log(filtro)
+        await Promises.all([
+            getServicosCount(chamados).then(count.set),
+            getServicosPageCount(chamados, limit).then(pages.set)
+        ]);
     }
 }

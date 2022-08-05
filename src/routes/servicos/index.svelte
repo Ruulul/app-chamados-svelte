@@ -8,7 +8,7 @@
 	}
 </script>
 <script>
-    import { servicos, filtros } from '$lib/stores/servicos';
+    import { filtros, count, pages } from '$lib/stores/servicos';
     import Tabela from './_TabelaServicos.svelte'
     import Filtros from './_FiltrosServicos.svelte'
     import { getServicosPageCount } from '$lib/utils/servicos';
@@ -16,6 +16,8 @@
 
     let status = 'pendente'
     let countPages;
+    getServicosPageCount($filtros.chamados, $filtros.limit).then(count=>countPages=count)
+    $: console.log(countPages, $count, $pages)
     let tipo = ''
     let sort = (a, b)=>b.id-a.id
     let filial = ''
@@ -29,8 +31,10 @@
     } else {
         $filtros.chamados = []
     }
-    $: getServicosPageCount($filtros.chamados, $filtros.limit).then(count=>countPages=count)
 </script>
-<Tabela {sort} servicos={$servicos} {countPages} bind:page={$filtros.page}>
+<Tabela {sort}>
     <Filtros bind:tipo bind:status bind:sort bind:filial />
 </Tabela>
+<ul>
+    {countPages} {$count} {$pages}
+</ul>
