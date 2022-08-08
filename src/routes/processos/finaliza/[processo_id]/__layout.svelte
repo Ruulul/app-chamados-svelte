@@ -16,48 +16,36 @@
     import { getUser } from '$lib/utils/db';
     import { setContext } from 'svelte';
     import { writable } from 'svelte/store';
-    let cadastro = writable(), cliente, depts, status_opcoes = [], status = '', updating = false
-    setContext('cadastro', cadastro)
-    getUnique('processos', 'cadastro_produto', $page.params.cadastro_id)
+    let processo = writable(), cliente, depts, status_opcoes = [], status = '', updating = false
+    setContext('processo', processo)
+    getUnique('processos', 'finaliza', $page.params.processo_id)
     .then(data=>{
-        $cadastro=data;
-        status=
-            data.etapa.Tag==='cadastro_produto'
-                ? data.etapa.campos.find(({campo})=>campo==='status').valor
-                : data.etapa.campos.find(({campo})=>campo==='finalizado').valor
+        $processo=data;
+        console.log(data)
+        status=data.etapa.campos.find(({campo})=>campo==='finalizado').valor
         status = status.toString()
     })
-    $: etapa = $cadastro?.etapa.Tag
-    getDepts('cadastro_produto').then(data=>depts=data)
-    $: if (etapa === 'cadastro_produto')
-        getOpcoes('etapa', etapa,'status').then(data=>status_opcoes=data)
-    else if (etapa === 'finaliza')
-        getOpcoes('etapa', etapa, 'finaliza').then(data=>status_opcoes=data.map(s=>s.toString()))
-    $: console.log(status, status_opcoes)
-    $: getUser($cadastro?.idUsuario).then(user=>cliente=user)
+    $: etapa = $processo?.etapa.Tag
+    getDepts('finaliza').then(data=>depts=data)
+    $: console.log(etapa)
+    $: getOpcoes('etapa', etapa, 'finalizado').then(data=>(console.log(data),status_opcoes=data.map(s=>s.toString())))
+    $: getUser($processo?.idUsuario).then(user=>cliente=user)
 
     let canEdit = false
     $: if (cliente && depts) {
-        console.log`${cliente}${depts}${$cadastro}`
-        canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$cadastro.etapa.dept)?.departamento)
-        console.log(`we can${!canEdit ? "'t" : ''} edit`)
-    } else {
-        console.log(`aaaaaaaaaaaaaaaaaaaaaa`)
+        canEdit = !$user.dept.includes(depts?.find(dept=>dept.id===$processo.etapa.dept)?.departamento)
     }
     $: console.log(canEdit)
     function onChange() {
         updating = true
         if (status === 'finalizado')
-            return nextEtapa($cadastro)
-                .then(()=>updating = false)
-                .then(()=>history.back())
-        return updateProcesso($cadastro, {status})
+        return updateProcesso($processo, {status})
             .then(()=>updating = false)
     }
 </script>
 <div class='filled container'>
     <div class='wrapper'>
-        <h1>Chamado {$cadastro?.id}</h1>
+        <h1>Chamado {$processo?.id}</h1>
         <table> 
             <tr>
                 <th>
@@ -72,15 +60,7 @@
                     Produto:
                 </th>
                 <td>
-                    {$cadastro?.log[0].titulo}
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Unidade:
-                </th>
-                <td>
-                    {$cadastro?.etapa.campos.find(campo=>campo.campo==='unidade')?.valor}
+                    {$processo?.log[0].titulo}
                 </td>
             </tr>
             <tr>
@@ -88,21 +68,23 @@
                     Descrição:
                 </th>
                 <td>
-                    {$cadastro?.log[0].descr}
+                    {$processo?.log[0].descr}
                 </td>
             </tr>
-            <tr>
+            <tr class:hidden={canEdit}>
                 <th>
-                    Status:
+                    Finalizar?
                 </th>
                 <td>
-                    <span class:hidden={canEdit}>
-                        {status}</span>
-                    <select class:updating class:hidden={!canEdit} bind:value={status} on:change={onChange}>
-                        {#each status_opcoes as opcao}
-                            <option>{opcao}</option>
-                        {/each}
-                    </select>
+                    <button>OK</button>
+                </td>
+            </tr>
+            <tr class:hidden={!canEdit}>
+                <th>
+                    Status
+                </th>
+                <td>
+                    {status==true ? 'finalizado' : 'pendente'}
                 </td>
             </tr>
         </table>

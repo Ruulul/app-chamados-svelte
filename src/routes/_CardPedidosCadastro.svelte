@@ -17,8 +17,8 @@
         <li>{atendimento} em atendimento</li>
     </ul>
     <div class='divider'/>
-    <a class='action button' sveltekit:prefetch href='/solicitacao/cadastro'>Novo Chamado</a>
-    <a class='action button' sveltekit:prefetch href='/cadastros'>Ver Chamados<div class='counter' class:hidden style:--count={'"' + pendentes + '"'}/></a>
+    <a class='action button' sveltekit:prefetch href='/processos/cadastro_produto/novo'>Novo Chamado</a>
+    <a class='action button' sveltekit:prefetch href='/processos/cadastro_produto'>Ver Chamados<div class='counter' class:hidden style:--count={'"' + pendentes + '"'}/></a>
     
     <!--ul>
         <li>Vencem essa semana</li>
