@@ -16,7 +16,7 @@
     font-size: small;
 }
 :focus-visible {
-    --focus-border-color: rgb(245, 255, 64);
+    --focus-border-color: var(--dark);
     outline: var(--focus-border-color) solid;
 }
 
