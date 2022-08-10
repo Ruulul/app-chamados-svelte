@@ -43,6 +43,7 @@
     }
     div {
         height: 40%;
+        flex: 1;
     }
     tr.readed {
         opacity: 0.5

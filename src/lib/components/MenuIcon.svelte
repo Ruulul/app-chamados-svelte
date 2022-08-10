@@ -19,5 +19,5 @@
 	size='lg'
 	fw
 	primaryColor="var(--dark)"
-	scale='1.2'
+	scale='2'
 	/>

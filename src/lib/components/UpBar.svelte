@@ -17,14 +17,14 @@
 	<nav>
 	{#each itemsAll as items}
 		{#each items as [name, href, action]}
+		<a href={action?'#':href}>
 			<li title={name} on:click={action}>
-				<a href={action?'#':href}>
-					<Icon {href}/>
-				</a>
+				<Icon {href}/>
 			</li>
+		</a>
 		{/each}
 		{#if itemsAll.indexOf(items)===0}
-		<li class="logo third">
+		<li class="logo">
 			<Logo/>
 		</li>
 		{/if}
@@ -33,7 +33,8 @@
 <style>
 	li:not(.logo) {
 		margin: 1em 2em;
-		width: 1.5em;
+		width: 4em;
+		height: 4em;
 		list-style-type: none;
 		padding: 0.5em;
 		border: var(--dark) solid;
@@ -46,15 +47,13 @@
 		display: flex;
 		position: relative;
 		justify-content: flex-end;
+		width: 97.5vw;
 	}
 	.logo {
-		place-content: center;
+		place-content: left;
 		display: grid;
 		position: absolute;
-		left: 0;
-	}
-	.third {
-		width: 33vw;
-		height: 100%;
+		left: 1em;
+		top: 1em;
 	}
 </style>

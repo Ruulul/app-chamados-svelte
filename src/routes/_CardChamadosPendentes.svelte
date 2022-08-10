@@ -16,15 +16,16 @@
         <li>{atendimento} em atendimento</li>
     </ul>
     <div class='divider'/>
-    <a class='action button' sveltekit:prefetch href='/processos/abrir_os/novo'>Novo Chamado</a>
-    <a class='action button' sveltekit:prefetch href='/processos/abrir_os'>Ver Chamados<div class='counter' class:hidden style:--count={'"' + pendentes + '"'}/></a>
-    
+    <a class='action button' sveltekit:prefetch href='/processos/abrir_os/novo'>Novo Chamado</a> 
     <!--ul>
         <li>Vencem essa semana</li>
     </ul-->
 </div>
 
 <style>
+    .outlined.container {
+        flex: 0;
+    }
     h3 {
         font-weight: lighter;
         margin-top: 0;

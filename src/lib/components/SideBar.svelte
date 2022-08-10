@@ -21,28 +21,31 @@
 <style>
 	nav {
 		float: left;
-		padding: 0;
+		padding: 2em;
 		background: var(--grey);
 		height: 100vh;
-		width: fit-content;
+		width: 5em;
 		margin-right: 1em;
 		margin-left: -0.5em;
 		margin-top: -0.5em;
 		border-radius: 0 1em 1em 0;
-		padding: 0 0.5em;
+		display: grid;
+
 	}
 	nav::after {
 		content: var(--small-logo);
+		justify-self: center;
 		position: absolute;
-		bottom: 1em;
-		left: 5%;
+		bottom: 2em;
 	}
 	li {
 		display: flex;
 		margin: 1em;
 		padding: 0.5em;
 		width: fit-content;
+		height: fit-content;
 		justify-content: end;
+		justify-self: center;
 	}
 	div {
 		position: relative;

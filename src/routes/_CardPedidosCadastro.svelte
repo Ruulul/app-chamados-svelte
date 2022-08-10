@@ -18,14 +18,15 @@
     </ul>
     <div class='divider'/>
     <a class='action button' sveltekit:prefetch href='/processos/cadastro_produto/novo'>Novo Chamado</a>
-    <a class='action button' sveltekit:prefetch href='/processos/cadastro_produto'>Ver Chamados<div class='counter' class:hidden style:--count={'"' + pendentes + '"'}/></a>
-    
     <!--ul>
         <li>Vencem essa semana</li>
     </ul-->
 </div>
 
 <style>
+    .outlined.container {
+        flex: 0;
+    }
     h3 {
         font-weight: lighter;
         margin-top: 0;
