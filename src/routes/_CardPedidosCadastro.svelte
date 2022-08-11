@@ -26,6 +26,7 @@
 <style>
     .outlined.container {
         flex: 0;
+        height: fit-content;
     }
     h3 {
         font-weight: lighter;

@@ -138,9 +138,12 @@ async function addMensagem (id, mensagem) {
 	let servicos = []
 	let filiais = get(filiais_validas);
 	let path = '/servicos?' + filtros.reduce((pv, cv, i)=>pv+(i?'&':'')+'filtro='+cv[0]+','+cv[1], '') + `&page=${page}&limit=${limit}`
+	if (filtros.map(i=>i[0]).includes('filialId'))
+	return await requestGet(path).then(({page})=>page)
+	console.log("filial não encontrada nos filtros")
 	for (let filial of filiais) {
 		servicos = [...servicos, ...await requestGet(path, filial).then(({page})=>page)
-				.catch(console.error)]
+				.catch(()=>[])]
 	}
 	return servicos
 }

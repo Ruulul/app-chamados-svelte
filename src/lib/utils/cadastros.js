@@ -16,11 +16,11 @@ async function post (model, tag, os) {
     return await requestPost(`/${model}/${tag}`, os)
 }
 async function getUnique (model, tag, id) {
-    return await requestGet(`/${model}/${tag}/` + id).then(data=>(console.log(data), data))
+    return await requestGet(`/${model}/${tag}/` + id)
         .catch(console.error)
 }
 async function getMany (model, tag) {
-    return await requestGet(`/${model}/${tag}`).then(data=>(console.log(data),data))
+    return await requestGet(`/${model}/${tag}`)
         .catch(console.error)
 }
 async function getOpcoes (model, tag, campo) {

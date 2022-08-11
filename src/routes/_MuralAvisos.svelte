@@ -1,6 +1,7 @@
 <script>
     import { notifications } from "$lib/stores/notifications";
     import { flip } from 'svelte/animate'
+    import Filtros from "./_Filtros.svelte";
 </script>
 
 <div class='filled container'>
@@ -8,9 +9,12 @@
         {#await fetch('https://api.hgbrasil.com/weather?woeid=457294&fields=only_results,temp,description,currently,humidity&key={KEY}').then(response=>response.toJSON()) then json}
             {JSON.stringify(json)}
         {/await}-->
-    <h2>
-        Mural de avisos
-    </h2>
+    <div class=title>
+        <h2>
+            Mural de avisos
+        </h2>
+        <Filtros />
+    </div>
     <table>
         <thead>
             <th>
@@ -21,23 +25,30 @@
             </th>
         </thead>
         <tbody>
-            {#each $notifications as {id, name, type, pop, read, readed}(id)}
-            <tr class:readed animate:flip>
-                <td>
-                    {id} - {name}
-                </td>
-                <td>
-                    {type}
-                </td>
-                <button on:click={pop}>Delete</button>
-                <button class:readed on:click={read}>Ler</button>
-            </tr>
+            {#each $notifications as {id, titulo, type}}
+                <tr>
+                    <a href={type==='suporte técnico' ? `/servico/${id}` : `/processos/${type}/${id}`}>
+                        <td>
+                            {id} - {titulo}
+                        </td>
+                        <td>
+                            {type}
+                        </td>
+                    </a>
+                </tr>
             {/each}
         </tbody>
     </table>
 </div>
 
 <style>
+    .title {
+        flex-flow: row;
+        width: 100%;
+    }
+    a {
+        display: contents;
+    }
     * {
         font-weight: lighter;
     }
@@ -50,5 +61,9 @@
     }
     button.readed {
         display: none;
+    }
+    tr :not(:first-child) {
+        padding-top: 1em;
+        text-align: center;
     }
 </style>

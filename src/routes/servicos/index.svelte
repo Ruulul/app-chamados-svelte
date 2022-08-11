@@ -21,16 +21,6 @@
     let tipo = ''
     let sort = (a, b)=>b.id-a.id
     let filial = ''
-    $: if (status || tipo || filial) {
-        let filtro = [];
-        if (status) filtro.push(['status', status == 'atendimento' ? 'pendente' : status])
-        if (status == 'atendimento') filtro.push(['atendimento', true])
-        if (tipo) filtro.push(['tipo', tipo])
-        console.log(filtro)
-        $filtros.chamados = filtro
-    } else {
-        $filtros.chamados = []
-    }
 </script>
 <Tabela {sort}>
     <Filtros bind:tipo bind:status bind:sort bind:filial />

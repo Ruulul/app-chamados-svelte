@@ -3,10 +3,21 @@
     import { tipos_os } from '$lib/stores/local_db.js'
     import { filiais_validas_por_id } from '$lib/utils/filial';
     import Tooltip from '$lib/components/Tooltip.svelte';
+    import { filtros } from '$lib/stores/servicos';
     export let tipo
     export let status
     export let sort
     export let filial = ''
+    $: if (status || tipo || filial) {
+        let filtro = [];
+        if (status) filtro.push(['status', status == 'atendimento' ? 'pendente' : status])
+        if (status == 'atendimento') filtro.push(['atendimento', true])
+        if (tipo) filtro.push(['tipo', tipo])
+        console.log(filtro)
+        $filtros.chamados = filtro
+    } else {
+        $filtros.chamados = []
+    }
     let activeSort = ''
     let visible = false;
     $: console.log(visible)

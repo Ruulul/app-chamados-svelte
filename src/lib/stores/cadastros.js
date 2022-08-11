@@ -14,7 +14,7 @@ function createCadastros () {
     const { subscribe, set } = writable([], function start (set) {
         console.log("Start cadastros")
         setCadastros(set)
-        let handle = setInterval(()=>setServicos(set), 1000)
+        let handle = setInterval(()=>setCadastros(set), 10000)
         return ()=>clearInterval(handle)
     })
 

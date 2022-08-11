@@ -1,41 +1,28 @@
 import { scopedStore } from "$lib/utils/utils";
-import { get, writable } from "svelte/store";
+import { derived, get, writable } from "svelte/store";
+import { cadastros } from "./cadastros";
+import { servicos } from "./servicos";
 
 export const notifications = createNotifications()
 
 function createNotifications() {
-    const { set, subscribe, update } = scopedStore([])
+    const { subscribe } = derived([cadastros, servicos],  function define ([c, s]) {
+            let n = []
+            n = [...n, ...(Array.isArray(c) ? c.map(s=>({...s, titulo: s.log[0].titulo, type: s.Tag})) : [])]
+            n = [...n, ...(Array.isArray(s) ? s.map(s=>({...s, titulo: s.assunto, type: 'suporte técnico'})) : (console.log(s), []))]
+            sanitize(n)
+            return n
+        })
     return {
-        subscribe,
-        flush () {
-            set([])
-        },
-        push (new_notification) {
-            let notifications_id = get(this).map(n=>n.id)
-            let id;
-            if (new_notification.id)
-            id = new_notification.id
-            else id = notifications_id.length > 0 ? Math.max(...notifications_id) + 1 : 0
-            update(
-                n=>[...n, 
-                    {
-                        ...new_notification, 
-                        id, 
-                        pop:()=>this.pop(id), 
-                        readed: false, 
-                        read(){
-                            update(n=>{
-                                let index = n.findIndex(n=>n.id===id)
-                                if (index >= 0) n[index].readed = true
-                                return n;
-                            })
-                        }
-                    }
-                ]
-            )
-        },
-        pop (id) {
-            update(n=>n.filter(n=>n.id!=id))
+        subscribe
+    }
+
+    function sanitize (n) {
+        for (let i of n) {
+            n = n.filter(s=>s.id!=i.id)
+            n.push(i)
         }
+        n.sort((a, b)=>a.id - b.id)
+        return n
     }
 }
