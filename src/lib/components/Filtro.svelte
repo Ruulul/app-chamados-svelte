@@ -9,9 +9,10 @@
     export let label = 'Filtro';
     export let options = ['Escolha...'];
     export let value = 
-        typeof options[0] === 'string' 
+        typeof options[0] === 'string' || !options[0]
             ? multiple ? [options[0]] : options[0] 
             : multiple ? [options[0].value] : options[0].value;
+    export let placeholder = ''
     export let style = '';
     export let style_button = '';
     export let style_label = '';
@@ -20,6 +21,8 @@
     $: generated_css_select = geraCSS(style);
     $: generated_css_option = geraCSS(style_button);
     $: generated_css_label  = geraCSS(style_label);
+
+    $: show_placeholder = !value
 </script>
 
 <label style={generated_css_label} for="filtro">{label}</label>

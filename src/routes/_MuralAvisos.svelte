@@ -1,5 +1,5 @@
 <script>
-    import { notifications } from "$lib/stores/notifications";
+    import { processos } from "$lib/stores/notifications";
     import { flip } from 'svelte/animate'
     import Filtros from "./_Filtros.svelte";
 </script>
@@ -25,14 +25,14 @@
             </th>
         </thead>
         <tbody>
-            {#each $notifications as {id, titulo, type}}
+            {#each $processos as {id, log, Tag}}
                 <tr>
-                    <a href={type==='suporte técnico' ? `/servico/${id}` : `/processos/${type}/${id}`}>
+                    <a href=/processos/{Tag}/{id}>
                         <td>
-                            {id} - {titulo}
+                            {id} - {log[0].titulo}
                         </td>
                         <td>
-                            {type}
+                            {Tag}
                         </td>
                     </a>
                 </tr>

@@ -8,13 +8,12 @@
 	}
 </script>
 <script>
-	import CardChamadosPendentes from './_CardChamadosPendentes.svelte';
-	import CardPedidosCadastro from './_CardPedidosCadastro.svelte';
+	import CardProcesso from './_CardProcesso.svelte';
 	import MuralAvisos from './_MuralAvisos.svelte';
 </script>
 <div class=main>
-		<CardChamadosPendentes/>
-		<CardPedidosCadastro/>
+		<CardProcesso Tag='suporte_tecnico' titulo='Suporte Técnico'/>
+		<CardProcesso Tag='cadastro_produto' titulo='Cadastro de Produto'/>
 	<MuralAvisos/>
 </div>
 <style>

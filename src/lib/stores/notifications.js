@@ -1,28 +1,40 @@
-import { scopedStore } from "$lib/utils/utils";
-import { derived, get, writable } from "svelte/store";
-import { cadastros } from "./cadastros";
-import { servicos } from "./servicos";
+import { goto } from "$app/navigation";
+import { getMany, getCount } from "$lib/utils/cadastros";
+import { get, readable, writable } from "svelte/store";
 
-export const notifications = createNotifications()
+export const processos = createProcessos()
 
-function createNotifications() {
-    const { subscribe } = derived([cadastros, servicos],  function define ([c, s]) {
-            let n = []
-            n = [...n, ...(Array.isArray(c) ? c.map(s=>({...s, titulo: s.log[0].titulo, type: s.Tag})) : [])]
-            n = [...n, ...(Array.isArray(s) ? s.map(s=>({...s, titulo: s.assunto, type: 'suporte técnico'})) : (console.log(s), []))]
-            sanitize(n)
-            return n
-        })
-    return {
-        subscribe
-    }
+export const filtros = writable({
+    chamados:[['status', 'pendente']],
+    limit:5,
+    page:1
+    })
 
-    function sanitize (n) {
-        for (let i of n) {
-            n = n.filter(s=>s.id!=i.id)
-            n.push(i)
-        }
-        n.sort((a, b)=>a.id - b.id)
-        return n
+export const count = writable(0);
+export const pages = writable(0);
+
+function createProcessos () {
+    const { subscribe, set } = writable([], function start (set) {
+        console.log("Start servicos")
+        setProcessos(set)
+        let handle = setInterval(()=>setProcessos(set), 3000)
+        return ()=>clearInterval(handle)
+    })
+
+    return { subscribe, async update(){return await setServicos(set)} }
+
+    async function setProcessos (set) {
+        let filtro = get(filtros)
+        let {chamados, limit, page} = filtro
+        await getMany('processos')
+            .then((oss)=>{
+                if (oss=='Não autorizado') return goto('/login')
+                set(oss)
+                count.set(oss.length)
+            })
+            .catch((e)=>{
+                console.log(e)
+                set([])
+            })
     }
 }

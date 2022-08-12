@@ -19,7 +19,7 @@ async function getUnique (model, tag, id) {
     return await requestGet(`/${model}/${tag}/` + id)
         .catch(console.error)
 }
-async function getMany (model, tag) {
+async function getMany (model, tag = '') {
     return await requestGet(`/${model}/${tag}`)
         .catch(console.error)
 }

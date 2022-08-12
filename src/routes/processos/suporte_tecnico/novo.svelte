@@ -12,26 +12,39 @@
 	import Filtro from '$lib/components/Filtro.svelte';
 	import { user } from '$lib/stores/user';
 	import { filiais_validas, filial } from '$lib/utils/filial';
-	import { abrirOs } from '$lib/utils/servicos.js';
+	import { post } from '$lib/utils/cadastros.js';
 	let assunto = '', mensagem = '';
 	let addFiles, anexos;
 	$: console.log(mensagem)
 	async function onSubmit() {
 		let os = {
 			assunto,
-			chat: [
+			mensagem:
 				{
-					autorId: $user.id,
-					mensagem
+					idUsuario: $user.id,
+					descr: mensagem,
+                    titulo: assunto
 				}
-			],
+			,
 			anexos,
-			autorId: $user.id,
 			usuarioId: $user.id,				//Alterar depois para suportes
-			departamento: $user.dept			//	''		''		''		''
+			departamento: $user.dept,			//	''		''		''		''
+            filial: $filial,
+            status: 'pendente',
+            categoria: 'A. D.',
+            prioridade: 'A. D.',
+            suporteId: 0,
+            dept: 
+                $filial === '0101' 
+                    ? 9
+                : $filial === '0201'
+                    ? 22
+                : $filial === '0401'
+                    ? 29
+                : undefined,
 		}
 
-		await abrirOs(os).then(()=>history.back())
+		await post('processos', 'suporte_tecnico', os).then(()=>history.back())
 	}
 	</script>
         <h1>Abrir Chamado</h1>
