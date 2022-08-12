@@ -11,12 +11,11 @@
 <script>
     import Fa from 'svelte-fa';
     import {faPen} from '@fortawesome/free-solid-svg-icons';
-    import { servicos } from '$lib/stores/servicos';
+    import { processos } from '$lib/stores/notifications'
     import { onDestroy, setContext } from 'svelte';
     import { getUser, } from '$lib/utils/db.js'
-    import { updateServico } from '$lib/utils/servicos';
+    import { updateProcesso } from '$lib/utils/cadastros';
     import { user } from '$lib/stores/user.js'
-    import { fade } from 'svelte/transition';
     import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     import { page } from '$app/stores'
     import { writable } from 'svelte/store';
@@ -24,8 +23,8 @@
 
     let atendente='', nome='Sem usuário', dept='Sem usuário'
     let servico_store = writable({})
-    let servico = $servicos.find(({id})=>id==$page.params.servico_id)
-    $: servico_new = $servicos.find(({id})=>id==$page.params.servico_id)
+    let servico = $processos.find(({id})=>id==$page.params.servico_id)
+    $: servico_new = $processos.find(({id})=>id==$page.params.servico_id)
     $: if (servico_new?.updatedAt !== servico?.updatedAt) servico = servico_new
     $: if (servico) servico_store.set(servico)
     
@@ -61,14 +60,14 @@
     $: servico?.updatedAt, setAtendente()
     $: servico?.usuarioId, setNomeAndDept()
     function setAtendente () {
-        let id = servico?.atendenteId
+        let id = servico?.idAtendente
         if (id)
             if (id == $user.id)
                 atendente=$user.nome
             else getUser(id).then(({nome})=>(atendente=nome, nome))
     }
     function setNomeAndDept () {
-        let id = servico?.usuarioId
+        let id = servico?.idUsuario
         if (id)
             getUser(id).then(({nome : gettedNome, dept : gettedDept})=>{
                 nome = gettedNome;

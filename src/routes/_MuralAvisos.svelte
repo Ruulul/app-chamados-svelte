@@ -13,7 +13,6 @@
         <h2>
             Mural de avisos
         </h2>
-        <Filtros />
     </div>
     <table>
         <thead>

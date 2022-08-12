@@ -2,7 +2,7 @@
     import { getContext } from 'svelte'
     import { goto } from '$app/navigation'
     import { getUser } from '$lib/utils/db.js'
-    import { updateServico } from '$lib/utils/servicos';
+    import { updateProcesso } from '$lib/utils/cadastros';
     import { user } from '$lib/stores/user.js'
     import { parseMD } from '$lib/utils/utils'
     import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
@@ -43,29 +43,26 @@
         if (novo_status)
             update = {status: novo_status, [metadado_hora[novo_status]]:(new Date()).toISOString()}
         if (update)
-            updateServico($servico.id, update, novo_status === 'fechado' ? 'closed' : undefined)
-                .then(servico.set)
-                .then(function(){if(novo_status==='fechado')window.history.back()})
+            undefined
     }
 
 </script>
 <div class='campo filled container assunto'>
     Assunto:
-    {$servico.assunto}
+    {$servico.log[0].titulo}
 </div>
 <div class='messages'>
-    {#each $servico?.chat.sort((a, b)=>b.id-a.id) || [] as {autorId, mensagem, metadados}}
-    {@const filename = metadados.find(({nome})=>nome=='anexo')?.valor}
+    {#each $servico?.log.sort((a, b)=>b.id-a.id) || [] as {idUsuario, titulo, descr, metadados}}
         <div class='campo filled container'>
             <h3>
-                {#await getUser(autorId)}
+                {#await getUser(idUsuario)}
                     Carregando...
                 {:then {nome}}
                 {nome || 'Sem atendente'}
                 {/await}
             </h3>
-            {@html parseMD(mensagem)}
-            <ExibeArquivo {filename} sem_arquivo=''/>
+            <h3>{titulo}</h3>
+            {@html parseMD(descr)}
         </div>
     {/each}
 </div>

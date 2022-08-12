@@ -4,9 +4,9 @@
 	let items =
 		[
 			['Home', '/'],
-			['Configurações', '/config'],
+			//['Configurações', '/config'],
 		]
-	if ($user.cargo == "admin") items.push(['Usuários', '/usuarios']);
+	//if ($user.cargo == "admin") items.push(['Usuários', '/usuarios']);
 </script>
 <nav title='Barra lateral'>
 	{#each items as [title, href]}

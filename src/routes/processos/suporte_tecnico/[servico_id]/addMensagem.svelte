@@ -1,5 +1,5 @@
 <script>
-    import { addMensagem } from '$lib/utils/servicos.js'
+    import { addMensagem } from '$lib/utils/cadastros.js'
     import { parseMD } from '$lib/utils/utils';
     import { user } from '$lib/stores/user.js'
     import { getContext } from 'svelte';
@@ -17,8 +17,9 @@
 
     function onSubmit () {
         let mensagem = {
-            autorId: $user.id,
-            mensagem: value,
+            idUsuario: $user.id,
+            descr: value,
+            titulo: 'msg',
             anexo: files[0]
         }
         if (value.length > 0)
