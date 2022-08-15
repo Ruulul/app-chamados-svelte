@@ -83,28 +83,28 @@
 
     </div>
     <form class='container' on:submit|preventDefault={onSubmit}>
-        <div class='campo filled container assunto'>
-			Assunto: 
-            <span contenteditable bind:innerHTML={assunto}/>
-            <span class='placeholder'>Explique de forma concisa aqui</span>
-		</div>
-        <div>
-			<pre 
-				class='campo filled container descr' 
-				contenteditable bind:innerHTML={mensagem} 
-				on:input={({data})=>{if (data == '\x13') assunto += '\n<br>'}}
-				on:paste|preventDefault={({clipboardData:{files}})=>addFiles(files)}/>
-            <span class='placeholder'>Explique de forma detalhada aqui</span>
+        <label>
+            Assunto
+            <input class='campo filled container assunto' 
+            bind:value={assunto}/>
+        </label>
+        <label>
+            Descrição
+            <textarea
+            class='campo filled container descr' 
+            bind:value={mensagem} 
+            on:paste|preventDefault={({clipboardData:{files}})=>addFiles(files)}/>
+        </label>
+        <div class='buttons'>
+            <input type=submit value='Abrir chamado' class='action button'>
         </div>
-			<div class='buttons'>
-					<input type=submit value='Abrir chamado' class='action button'>
-			</div>
-	</form>
+    </form>
 </div>
 <style>
-	[contenteditable] {
-		font-family: monospace;
-	}
+    label {
+        display: flex;
+        flex-flow: column;
+    }
 	h1 {
 		text-align: center;
 		font-size: medium;
@@ -158,6 +158,7 @@
 		min-width: 15em;
 		min-height: 10em;
         margin: auto;
+        resize: none;
     }
     .placeholder {
         position: absolute;

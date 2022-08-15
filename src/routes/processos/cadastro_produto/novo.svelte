@@ -90,30 +90,31 @@
 
     </div>
     <form class='container' on:submit|preventDefault={onSubmit}>
-        <div class='campo filled container assunto'>
-            <span contenteditable bind:innerHTML={titulo}/>
-            <span class='placeholder'>Nome do Produto</span>
+        <label>
+            Nome do produto
+            <input class='campo filled container assunto' 
+            bind:value={titulo}/>
+        </label>
+        <label>
+            Descrição
+            <textarea 
+            class='campo filled container descr' 
+            bind:value={descr} 
+            on:paste|preventDefault={({clipboardData:{files}})=>addFiles(files)}/>
+        </label>
+        <div class='buttons'>
+            <input type=submit value='Abrir chamado' class='action button'>
         </div>
-        <div>
-            <pre 
-                class='campo filled container descr' 
-                contenteditable bind:innerHTML={descr} 
-                on:input={({data})=>{if (data == '\x13') titulo += '\n<br>'}}
-                on:paste|preventDefault={({clipboardData:{files}})=>addFiles(files)}/>
-            <span class='placeholder'>Motivo da Requisição</span>
-        </div>
-            <div class='buttons'>
-                    <input type=submit value='Abrir chamado' class='action button'>
-            </div>
     </form>
 </div>
 <style>
+    label {
+        display: flex;
+        flex-flow: column;
+    }
     .hidden {
         display: none;
     }
-	[contenteditable] {
-		font-family: monospace;
-	}
 	h1 {
 		text-align: center;
 		font-size: medium;
@@ -141,10 +142,6 @@
 	.container * {
 		margin-top: 1em;
 	}
-	.assunto span {
-		margin-top: 0;
-		min-width: 10em;
-	}
     .campo {
         font-size: small;
         --fill-color: white;
@@ -155,11 +152,6 @@
         margin: 0;
         margin-bottom: 1em;
         width: auto;
-        display: flex;
-        flex-flow: row;
-    }
-    .assunto span {
-        border-radius: 2em;
     }
 	.descr {
         max-height: 30em;
@@ -167,18 +159,7 @@
 		min-width: 15em;
 		min-height: 10em;
         margin: auto;
-    }
-    .placeholder {
-        position: absolute;
-        pointer-events: none;
-        top: 1em;
-        left: 10em;
-        background-color: white;
-        opacity: 0;
-        transition: opacity 0.5s;
-    }
-    :focus:empty + span.placeholder {
-        opacity: 1;
+        resize: none;
     }
     .action.button {
         text-transform: uppercase;
