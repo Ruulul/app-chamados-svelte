@@ -132,10 +132,6 @@
 	.container * {
 		margin-top: 1em;
 	}
-	.assunto span {
-		margin-top: 0;
-		min-width: 10em;
-	}
     .campo {
         font-size: small;
         --fill-color: white;
@@ -149,9 +145,6 @@
         display: flex;
         flex-flow: row;
     }
-    .assunto span {
-        border-radius: 2em;
-    }
 	.descr {
         max-height: 30em;
 		align-self: flex-end;
@@ -159,18 +152,6 @@
 		min-height: 10em;
         margin: auto;
         resize: none;
-    }
-    .placeholder {
-        position: absolute;
-        pointer-events: none;
-        top: 1em;
-        left: 10em;
-        background-color: white;
-        opacity: 0;
-        transition: opacity 0.5s;
-    }
-    :focus:empty + span.placeholder {
-        opacity: 1;
     }
     .action.button {
         text-transform: uppercase;
