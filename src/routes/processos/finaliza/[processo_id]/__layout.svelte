@@ -18,7 +18,7 @@
     import { writable } from 'svelte/store';
     let processo = writable(), cliente, depts, status_opcoes = [], status = '', updating = false
     setContext('processo', processo)
-    getUnique('processos', 'finaliza', $page.params.processo_id)
+    getUnique('processo', 'finaliza', $page.params.processo_id)
     .then(data=>{
         $processo=data;
         console.log(data)

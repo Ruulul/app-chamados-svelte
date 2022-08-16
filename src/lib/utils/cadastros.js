@@ -42,13 +42,13 @@ async function getCount (model, tag, filtros) {
 async function getProcessosPageCount () {}
 
 async function updateProcesso (processo, update) {
-        return requestPut(`/processos/${processo.Tag}/${processo.id}/etapas/${processo.etapa.Tag}/${processo.etapa.id}`, update)
+        return requestPut(`/processo/${processo.Tag}/${processo.id}/etapa/${processo.etapa.Tag}/${processo.etapa.id}`, update)
 }
 async function nextEtapa (processo) {
     if (processo.Tag === 'cadastro_produto')
-    return requestPost(`/processos/${processo.Tag}/${processo.id}/etapas/4`, {finalizado: false})
+    return requestPost(`/processo/${processo.Tag}/${processo.id}/etapa/4`, {finalizado: false})
 }
 
 async function addMensagem (processo, mensagem) {
-    return requestPost(`/processos/${processo.Tag}/${processo.id}/etapas/${processo.etapa.Tag}/${processo.etapa.id}/mensagem`, mensagem)
+    return requestPost(`/processo/${processo.Tag}/${processo.id}/etapa/${processo.etapa.Tag}/${processo.etapa.id}/mensagem`, mensagem)
 }

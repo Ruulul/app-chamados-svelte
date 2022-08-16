@@ -45,7 +45,7 @@
                 : undefined,
 		}
 
-		await post('processos', 'suporte_tecnico', os).then(()=>history.back())
+		await post('processo', 'suporte_tecnico', os).then(()=>history.back())
 	}
 </script>
 

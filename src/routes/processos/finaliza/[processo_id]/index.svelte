@@ -31,7 +31,7 @@
 <textarea bind:value/>
 <button on:click={()=>
     addMensagem($processo, mensagem)
-    .then(()=>getUnique('processos', $processo.Tag, $processo.id))
+    .then(()=>getUnique('processo', $processo.Tag, $processo.id))
     .then(processo.set)
     .then(()=>value='')
     } class='action button'>Nova mensagem</button>

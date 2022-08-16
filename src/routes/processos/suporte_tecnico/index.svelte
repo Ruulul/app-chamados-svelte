@@ -5,12 +5,12 @@
     export let sort;
     let cadastros = [], depts = [];
 
-    $: getMany('processos', 'suporte_tecnico',$filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
+    $: getMany('processo', 'suporte_tecnico',$filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
     getDepts('abrir_os').then(data=>depts=data)
 
     let agora = Date.now()/1000
     let handlerAgora = setInterval(()=>{
-        getMany('processos', 'suporte_tecnico',$filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
+        getMany('processo', 'suporte_tecnico',$filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
         agora=Date.now()/1000
     }, 1000)
     onDestroy(()=>clearInterval(handlerAgora))

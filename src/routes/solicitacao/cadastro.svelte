@@ -42,7 +42,7 @@
             dept: departamento_id
 		}
 
-		await post('processos', 'cadastro_produto', os).then(()=>history.back())
+		await post('processo', 'cadastro_produto', os).then(()=>history.back())
         .catch(console.error)
 	}
 	</script>

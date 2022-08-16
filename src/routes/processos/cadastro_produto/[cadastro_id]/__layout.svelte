@@ -18,7 +18,7 @@
     import { writable } from 'svelte/store';
     let cadastro = writable(), cliente, depts, status_opcoes = [], status = '', updating = false
     setContext('cadastro', cadastro)
-    getUnique('processos', 'cadastro_produto', $page.params.cadastro_id)
+    getUnique('processo', 'cadastro_produto', $page.params.cadastro_id)
     .then(data=>{
         $cadastro=data;
         status=data.etapa.campos.find(({campo})=>campo==='status').valor

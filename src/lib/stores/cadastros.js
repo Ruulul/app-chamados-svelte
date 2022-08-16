@@ -23,7 +23,7 @@ function createCadastros () {
     async function setCadastros (set) {
         let filtro = get(filtros)
         let {cadastros, limit, page} = filtro
-        getMany('processos','cadastro_produto',cadastros, {limit, page})
+        getMany('processo','cadastro_produto',cadastros, {limit, page})
             .then((oss)=>{
                 if (oss=='Não autorizado') goto('/login')
                 set(oss)
