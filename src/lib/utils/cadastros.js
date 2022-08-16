@@ -13,7 +13,12 @@ export {
 }
 
 async function post (model, tag, os) {
-    return await requestPost(`/${model}/${tag}`, os)
+    let { anexos } = os;
+    delete os.anexos;
+    let processo = await requestPost(`/${model}/${tag}`, os);
+    if (anexos)
+    await Promise.all(anexos.map(anexo=>requestPost(`/${model}/${tag}/${processo.id}/anexo`, anexo))).catch(console.error);
+    return processo
 }
 async function getUnique (model, tag, id) {
     return await requestGet(`/${model}/${tag}/` + id)

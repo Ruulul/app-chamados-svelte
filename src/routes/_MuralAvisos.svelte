@@ -31,7 +31,15 @@
                             {id} - {log[0].titulo}
                         </td>
                         <td>
-                            {Tag}
+                            {Tag.split('_')
+                            .map((/**@type {string}*/s)=>
+                                Array.prototype
+                                .reduce.call(s, (pv, cv, index)=>{
+                                    if (index === 0)
+                                        cv = cv.toUpperCase()
+                                    return pv + cv
+                                }, ""))
+                            .join(' ')}
                         </td>
                     </a>
                 </tr>

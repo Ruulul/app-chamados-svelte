@@ -6,7 +6,7 @@
     let cadastros = [], depts = [];
 
     $: getMany('processos', 'suporte_tecnico',$filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
-    getDepts('cadastro_produto').then(datap=>depts=datap)
+    getDepts('abrir_os').then(data=>depts=data)
 
     let agora = Date.now()/1000
     let handlerAgora = setInterval(()=>{
