@@ -4,6 +4,7 @@ export {
     post,
     getUnique,
     getMany,
+    getCampo,
     getOpcoes,
     getDepts,
     getCount,
@@ -16,8 +17,16 @@ async function post (model, tag, os) {
     let { anexos } = os;
     delete os.anexos;
     let processo = await requestPost(`/${model}/${tag}`, os);
-    if (anexos)
-    await Promise.all(anexos.map(anexo=>requestPost(`/${model}/${tag}/${processo.id}/anexo`, anexo))).catch(console.error);
+    if (anexos) {
+        let processoMeta = await requestGet(`/meta/processo/${tag}`)
+        let etapaMeta = processoMeta.etapas.find(etapa=>!etapa.prev)
+        let etapa = await requestGet(`/processo/${processo.Tag}/${processo.id}/etapa/${etapaMeta.Tag}/${processo.idEtapaAtual}`)
+        console.log(etapa)
+        let msg = etapa.log[0]
+        let model = 'log'
+        console.log({etapa, msg, model, tag})
+        await Promise.all(anexos.map(anexo=>requestPost(`/${model}/${msg.Tag}/${msg.id}/campo/anexo`, anexo))).catch(console.error);
+    }
     return processo
 }
 async function getUnique (model, tag, id) {
@@ -26,6 +35,10 @@ async function getUnique (model, tag, id) {
 }
 async function getMany (model, tag = '') {
     return await requestGet(`/${model}/${tag}`)
+        .catch(console.error)
+}
+async function getCampo (model, tag, id, campo) {
+    return await requestGet(`/${model}/${tag}/${id}/campo/${campo}`)
         .catch(console.error)
 }
 async function getOpcoes (model, tag, campo) {

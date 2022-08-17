@@ -26,7 +26,7 @@ function createProcessos () {
     async function setProcessos (set) {
         let filtro = get(filtros)
         let {chamados, limit, page} = filtro
-        await getMany('processos')
+        await getMany('processo')
             .then((oss)=>{
                 if (oss=='Não autorizado') return goto('/login')
                 set(oss)

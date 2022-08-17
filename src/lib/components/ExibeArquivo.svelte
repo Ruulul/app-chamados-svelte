@@ -15,6 +15,10 @@
     export let alt = ''
 
     /**
+     * O arquivo, se já disponível
+     */
+    export let data = undefined
+    /**
      * Texto para ser exibido quando o arquivo não é encontrado
      */
     export let sem_arquivo = 'Sem arquivo'
@@ -30,7 +34,21 @@
       */
     export let style = {}
 </script>
-{#if String(filename) !== 'undefined'}
+{#if data}
+    {#if data !== 'Não autorizado'}
+        {#if data.includes('image')}
+            <img {alt} src={data}  style={geraCSS(style)}/>
+        {:else}
+            <object title='anexo' {alt} data={data} style={geraCSS(style)}>
+                Não pudemos exibir
+            </object>
+        {/if}
+
+        {#if abrir}
+            <a href={data} target='_blank'>{abrir}</a>
+        {/if}
+    {/if}
+{:else if String(filename) !== 'undefined'}
     {#await getFile(filename)}
         {carregando}
     {:then arquivo}

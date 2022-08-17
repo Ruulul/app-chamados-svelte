@@ -16,10 +16,8 @@
 	import { post } from '$lib/utils/cadastros.js';
 	let titulo = '', descr = '';
 	let anexos;
-	$: console.log(mensagem)
 	async function onSubmit() {
 		let os = {
-			assunto,
 			mensagem:
 				{
 					idUsuario: $user.id,

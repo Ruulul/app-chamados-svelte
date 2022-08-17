@@ -14,16 +14,21 @@
     import { processos } from '$lib/stores/notifications'
     import { onDestroy, setContext } from 'svelte';
     import { getUser, } from '$lib/utils/db.js'
-    import { updateProcesso } from '$lib/utils/cadastros';
+    import { updateProcesso, getUnique, getCampo } from '$lib/utils/cadastros';
     import { user } from '$lib/stores/user.js'
     import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     import { page } from '$app/stores'
     import { writable } from 'svelte/store';
     import { TimeFromSeconds } from '$lib/utils/utils';
 
-    let atendente='', nome='Sem usuário', dept='Sem usuário'
+    let atendente='', nome='Sem usuário', dept='Sem usuário', anexos = []
     let servico_store = writable({})
     let servico = $processos.find(({id})=>id==$page.params.servico_id)
+    $: etapa = servico?.etapa.Tag
+    $: if (servico?.idEtapaAtual) 
+        getUnique('etapa', etapa, servico?.idEtapaAtual)
+        .then((data)=>getCampo('log', data.log[0].Tag, data.log[0].id, 'anexo'))
+        .then(files=>anexos=files)
     $: servico_new = $processos.find(({id})=>id==$page.params.servico_id)
     $: if (servico_new?.updatedAt !== servico?.updatedAt) servico = servico_new
     $: if (servico) servico_store.set(servico)
@@ -142,7 +147,9 @@
         </table>
         <div class='campo'>
         <h2>Anexo</h2>
-            <ExibeArquivo filename={servico.anexo} />
+            {#each anexos as {id, data, title}(id)}
+                <ExibeArquivo filename={title} {data}/>
+            {/each}
         </div>
 
     </div>

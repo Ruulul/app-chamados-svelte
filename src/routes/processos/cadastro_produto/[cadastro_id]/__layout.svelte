@@ -11,12 +11,13 @@
 </script>
 <script>
     import { page } from '$app/stores'
+import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     import { user } from '$lib/stores/user';
-    import { getUnique, getDepts, getOpcoes, updateProcesso, nextEtapa } from '$lib/utils/cadastros';
+    import { getUnique, getCampo, getDepts, getOpcoes, updateProcesso, nextEtapa } from '$lib/utils/cadastros';
     import { getUser } from '$lib/utils/db';
     import { setContext } from 'svelte';
     import { writable } from 'svelte/store';
-    let cadastro = writable(), cliente, depts, status_opcoes = [], status = '', updating = false
+    let cadastro = writable(), cliente, depts, status_opcoes = [], status = '', updating = false, anexos = []
     setContext('cadastro', cadastro)
     getUnique('processo', 'cadastro_produto', $page.params.cadastro_id)
     .then(data=>{
@@ -25,10 +26,13 @@
         status = status.toString()
     })
     $: etapa = $cadastro?.etapa.Tag
+    $: if ($cadastro?.idEtapaAtual) 
+        getUnique('etapa', etapa, $cadastro?.idEtapaAtual)
+        .then((data)=>getCampo('log', data.log[0].Tag, data.log[0].id, 'anexo'))
+        .then(files=>anexos=files)
     getDepts('cadastro_produto').then(data=>depts=data)
     $: getOpcoes('etapa', etapa,'status').then(data=>status_opcoes=data)
     $: getUser($cadastro?.idUsuario).then(user=>cliente=user)
-
     let canEdit = false
     $: if (cliente && depts) {
         console.log`${cliente}${depts}${$cadastro}`
@@ -98,6 +102,9 @@
         </table>
         <div class='campo'>
         <h2>Anexo</h2>
+            {#each anexos as {id, data, title}(id)}
+                <ExibeArquivo filename={title} {data}/>
+            {/each}
         </div>
 
     </div>
