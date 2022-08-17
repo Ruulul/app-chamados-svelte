@@ -1,4 +1,6 @@
 <script>
+import ExibeArquivo from "./ExibeArquivo.svelte";
+
     export let files = [];
 	
 	export async function addFiles(fileArray) {
@@ -43,40 +45,12 @@
 <label for="arquivos">Arquivos</label>
 <input id="arquivos" on:input={({target:{files}})=>addFiles(files)} type='file' multiple/>
 {#each Array.from(files) as file (file.digest)}
-	<div class="file-wrapper">
-		<span>{file.title} (Approx. {Math.floor(file.data.split(';base64,')[1].length/4 * 3 / 1024)} kB)
-			<br/>
-			{#if file.data.slice(0, 20).includes('image')}
-			<img alt='' src={file.data}/>
-			{:else}
-			<object alt='' title='anexo' data={file.data}>
-				Não pudemos exibir
-			</object>
-			{/if}
-		</span>
+	<ExibeArquivo {...file}>
 		<button class="remove-file action button" on:click={()=>removeFile(file.digest)}>X</button>
-	</div>
+	</ExibeArquivo>
 {/each}
 
 <style>
-	img {
-		width: 0;
-		transition: width 0.2s;
-		align-self: center;
-	}
-	.file-wrapper :hover img {
-		width: 100%;
-	}
-
-	.file-wrapper {
-		display: flex;
-		flex-flow: row;
-		border: none;
-		width: 100%;
-		justify-content: space-between;
-		margin: 0 -2em 0 -2em;
-	}
-
 	.remove-file {
 		font-family: monospace;
 		margin: auto;
