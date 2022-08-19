@@ -138,6 +138,7 @@ async function addMensagem (id, mensagem) {
 	let servicos = []
 	let filiais = get(filiais_validas);
 	let path = '/servicos?' + filtros.reduce((pv, cv, i)=>pv+(i?'&':'')+'filtro='+cv[0]+','+cv[1], '') + `&page=${page}&limit=${limit}`
+	console.log(path)
 	if (filtros.map(i=>i[0]).includes('filialId'))
 	return await requestGet(path).then(({page})=>page)
 	console.log("filial não encontrada nos filtros")
@@ -158,8 +159,17 @@ async function getServicosCount (filtros) {
 	return servicos
 }
 async function getServicosPageCount (filtros,limit) {
-	let count = await getServicosCount(filtros)
-	return Math.ceil(count/limit)
+	let path = '/servicos?' + filtros.reduce((pv, cv, i)=>pv+(i?'&':'')+'filtro='+cv[0]+','+cv[1], '') + '&page=1&limit=0'
+	if (filtros.map(i=>i[0]).includes('filialId'))
+	return Math.ceil((await requestGet(path).then(({count})=>count).catch(()=>0)) / limit)
+	let filiais = get(filiais_validas);
+	let count = 0;
+	for (let filial of filiais) {
+		let count_filial = await requestGet(path, filial).then(({count})=>count).catch(()=>0)
+		console.log(count, count_filial)
+		count = Math.max(count, Math.ceil(count_filial/limit));
+	}
+	return count;
 }
 /**
  * Obtém o id sequencial da Ordem de Serviço a ser aberta.

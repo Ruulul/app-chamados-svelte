@@ -8,6 +8,7 @@ import taken from '$lib/email_templates/taken.svelte'
 import released from '$lib/email_templates/released.svelte'
 import closed from '$lib/email_templates/closed.svelte'
 import { origin } from './network'
+import { formatTag } from './utils'
 const SecureToken = "59fa2524-23b0-4dc1-af39-82ac290ca35c";
 /** Objeto de envio de emails */
 const Email = {
@@ -73,26 +74,27 @@ const propsMap = {
 	closed	: ['idOS', 'nome']
 }
 const from_email = "suporte.ti@ourobrancoagronegocios.com.br"
+const From = from_email
 export { from_email as email_suporte }
 
 /**
  * Envia email
  * @param {EmailTypes} tipo Tipo do email a ser mandado
- * @param {string | string[]} para Array de emails que irá receber
+ * @param {string | string[]} To Array de emails que irá receber
  * @param {Object} props Lista de props para hidratar o template de email
  */
-export async function sendEmail (tipo, para, props) {
+export async function sendEmail (tipo, To, props) {
 	if (EmailTypes.includes(tipo))
 	return Email.send(
 		{
 			SecureToken,
-			From: from_email,
-			To: para,
+			From,
+			To,
 			Subject: 'Gold Seed - ' + createSubject(tipo, props),
-			Body: getBody(tipo, props) + abrirNovaAba(props.idOS)
+			Body: getBody(tipo, props) + abrirNovaAba(props.idOS, props.tag)
 		}
 	)
-	throw new Error('Tipo inválido')
+	return new Error('Tipo inválido')
 }
 
 /**
@@ -100,11 +102,11 @@ export async function sendEmail (tipo, para, props) {
  * @param {EmailTypes} tipo 
  * @param {Object} props 
  */
- function createSubject(tipo, {idOS}) {
+ function createSubject(tipo, {idOS, tag}) {
 	if (tipo === 'open')
-		return `Chamado aberto com código ${idOS}`
+		return `${formatTag(tag)} aberto com código ${idOS}`
 	else
-		return `Chamado ${idOS} - ${subjectMap[tipo]}`
+		return `${formatTag(tag)} ${idOS} - ${subjectMap[tipo]}`
 }
 /**
  * 
@@ -126,10 +128,10 @@ function getBody(tipo, props) {
 	}
 }
 
-function abrirNovaAba (idOS) {
+function abrirNovaAba (idOS, tag) {
 	return `
 		<br><br>
-		<a href='${origin}/servico/${idOS}' target='_blank'>Abrir OS em nova aba</a>
+		<a href='${origin}/processo/${tag}/${idOS}' target='_blank'>Abrir OS em nova aba</a>
 	`
 }
 

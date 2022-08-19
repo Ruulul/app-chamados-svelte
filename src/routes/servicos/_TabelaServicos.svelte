@@ -1,12 +1,8 @@
 <script>
     import { onDestroy } from 'svelte';
     import LinhaTabelaServicos from './_LinhaTabelaServicos.svelte';
-    import { filtros } from '$lib/stores/servicos';
-    import { getServicos,} from '$lib/utils/servicos';
+    import { servicos } from '$lib/stores/servicos'
     export let sort;
-    let servicos = [];
-
-    $: getServicos($filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>servicos=oss)
 
     let agora = Date.now()/1000
     let handlerAgora = setInterval(()=>agora=Date.now()/1000, 1000)
@@ -45,7 +41,7 @@
         <th class='filtro'/>
     </thead>
     <tbody>
-        {#each servicos.sort(sort) as servico(servico.id)}
+        {#each $servicos.sort(sort) as servico(servico.id)}
             <LinhaTabelaServicos {agora} id={servico.id}/>
         {/each}
     </tbody>

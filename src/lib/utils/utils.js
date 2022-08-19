@@ -112,3 +112,15 @@ export function TimeFromSeconds (seconds) {
         ${Math.floor(seconds/86400)}d ${(Math.floor(seconds/3600) % 24).toString().padStart(2, '0')}h${(Math.floor(seconds/60)%60).toString().padStart(2, '0')}min
     `
 }
+
+export function formatTag (tag) {
+  return tag.split('_')
+  .map((/**@type {string}*/s)=>
+      Array.prototype
+      .reduce.call(s, (pv, cv, index)=>{
+          if (index === 0)
+              cv = cv.toUpperCase()
+          return pv + cv
+      }, ""))
+  .join(' ')
+}

@@ -13,6 +13,7 @@
     import Novo from '../novo_template.svelte';
     import { filiais_validas } from '$lib/utils/filial';
     import { post, getDepts, getOpcoes,  } from '$lib/utils/cadastros';
+    import { sendEmail } from '$lib/utils/email';
 	let titulo = '', descr = '', anexos=[], unidade = '', departamento_id, departamentos=[];
     let unidades = [], filiais = [], filial = '';
     getDepts('cadastro_produto').then(depts=>{
@@ -24,9 +25,13 @@
         unidades=data
         unidade=unidades[0]
     })
+    let filiais_encoded = ''
     $: $filiais_validas, getOpcoes('processo', 'cadastro_produto', 'filial').then(data=>{
         filiais = data.filter(item=>$filiais_validas.includes(item));
-        filial = filiais[0]
+        let new_encoded = JSON.stringify(filiais)
+        if (filiais_encoded != new_encoded)
+            filial = filiais[0]
+        filiais_encoded = new_encoded
     })
 	async function onSubmit() {
 		let os = {
@@ -42,7 +47,9 @@
             anexos
 		}
 
-		await post('processo', 'cadastro_produto', os).then(()=>history.back())
+		await post('processo', 'cadastro_produto', os)
+        .then((os)=>sendEmail('open', email, { idOS: os.id, assunto: titulo, tag: os.Tag }))
+        .then(()=>history.back())
         .catch(console.error)
 	}
 	</script>

@@ -55,7 +55,7 @@
 </div>
 <div class='messages'>
     {#each $servico?.chat.sort((a, b)=>b.id-a.id) || [] as {autorId, mensagem, metadados}}
-    {@const filename = metadados.find(({nome})=>nome=='anexo')?.valor}
+    {@const title = metadados.find(({nome})=>nome=='anexo')?.valor}
         <div class='campo filled container'>
             <h3>
                 {#await getUser(autorId)}
@@ -65,7 +65,7 @@
                 {/await}
             </h3>
             {@html parseMD(mensagem)}
-            <ExibeArquivo {filename} sem_arquivo=''/>
+            <ExibeArquivo {title} sem_arquivo=''/>
         </div>
     {/each}
 </div>

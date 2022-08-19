@@ -25,7 +25,6 @@
 <style>
     .outlined.container {
         flex-shrink: 0;
-        height: fit-content;
         gap: 0.5em;
         padding: 2em;
         width: 10%;

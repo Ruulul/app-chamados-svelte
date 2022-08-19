@@ -11,28 +11,22 @@
 <script>
     import Fa from 'svelte-fa';
     import {faPen} from '@fortawesome/free-solid-svg-icons';
-    import { processos } from '$lib/stores/notifications'
     import { onDestroy, setContext } from 'svelte';
     import { getUser, } from '$lib/utils/db.js'
-    import { updateProcesso, getUnique, getCampo } from '$lib/utils/cadastros';
+    import { servicos } from '$lib/stores/servicos';
+    import { updateServico } from '$lib/utils/servicos';
     import { user } from '$lib/stores/user.js'
     import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     import { page } from '$app/stores'
     import { writable } from 'svelte/store';
     import { TimeFromSeconds } from '$lib/utils/utils';
 
-    let atendente='', nome='Sem usuário', dept='Sem usuário', anexos = []
+    let atendente='', nome='Sem usuário', dept='Sem usuário'
     let servico_store = writable({})
-    let servico = $processos.find(({id})=>id==$page.params.servico_id)
-    $: etapa = servico?.etapa.Tag
-    $: if (servico?.idEtapaAtual) 
-        getUnique('etapa', etapa, servico?.idEtapaAtual)
-        .then((data)=>getCampo('log', data.log[0].Tag, data.log[0].id, 'anexo'))
-        .then(files=>anexos=files)
-    $: servico_new = $processos.find(({id})=>id==$page.params.servico_id)
+    let servico = $servicos.find(({id})=>id==$page.params.servico_id)
+    $: servico_new = $servicos.find(({id})=>id==$page.params.servico_id)
     $: if (servico_new?.updatedAt !== servico?.updatedAt) servico = servico_new
     $: if (servico) servico_store.set(servico)
-    
     setContext('servico', servico_store)
     setAtendente()
 
@@ -41,7 +35,7 @@
             atendimento: false,
             atendenteId: ''
         }
-        updateProcesso(servico.id, update)
+        updateServico(servico.id, update, 'released')
     }
 
     function assumeChamado () {
@@ -50,7 +44,7 @@
             atendenteId: $user.id,
             assumido_em: (new Date()).toISOString()
         }
-        updateProcesso(servico.id, update)
+        updateServico(servico.id, update, 'taken')
     }
 
     let agora = 0
@@ -65,14 +59,18 @@
     $: servico?.updatedAt, setAtendente()
     $: servico?.usuarioId, setNomeAndDept()
     function setAtendente () {
-        let id = servico?.idAtendente
+        let id = servico?.atendenteId
+        console.log(id)
         if (id)
             if (id == $user.id)
                 atendente=$user.nome
-            else getUser(id).then(({nome})=>(atendente=nome, nome))
+            else 
+                getUser(id)
+                .then(s=>(console.log(s),s))
+                .then(({nome})=>atendente=nome)
     }
     function setNomeAndDept () {
-        let id = servico?.idUsuario
+        let id = servico?.usuarioId
         if (id)
             getUser(id).then(({nome : gettedNome, dept : gettedDept})=>{
                 nome = gettedNome;
@@ -147,9 +145,7 @@
         </table>
         <div class='campo'>
         <h2>Anexo</h2>
-            {#each anexos as {id, data, title}(id)}
-                <ExibeArquivo title={title.split('-')[1]} {data}/>
-            {/each}
+                <ExibeArquivo title={servico.anexo} alt=''/>
         </div>
 
     </div>

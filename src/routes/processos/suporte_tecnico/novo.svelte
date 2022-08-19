@@ -13,9 +13,34 @@
     import Novo from '../novo_template.svelte';
 	import { user } from '$lib/stores/user';
 	import { filiais_validas, filial } from '$lib/utils/filial';
-	import { post } from '$lib/utils/cadastros.js';
+	import { post, getDepts } from '$lib/utils/cadastros.js';
+    import { sendEmail } from '$lib/utils/email'
 	let titulo = '', descr = '';
-	let anexos;
+	let anexos, email = 'suporte.ti@ourobrancoagronegocios.com.br';
+    //let departamentos = []
+    //let departamento_id
+    //getDepts('abrir_os').then(depts=>{
+    //    departamentos=depts
+    //    departamento_id=departamentos[0].id
+    //})
+    //$: switch($filial) {
+    //    case '0101':
+    //        console.log("in switch 01")
+    //        departamento_id = 9
+    //        break;
+    //    case '0201':
+    //        console.log("in switch 02")
+    //        departamento_id = 22
+    //        break;
+    //    case '0401':
+    //        console.log("in switch 04")
+    //        departamento_id = 29
+    //        break;
+    //    default:
+    //        console.log($filial)
+    //}
+    //$: departamento_id, email = departamentos?.find(departamento=>departamento.id===departamento_id)?.email.valor
+    //$: console.log(email)
 	async function onSubmit() {
 		let os = {
 			mensagem:
@@ -43,7 +68,10 @@
                 : undefined,
 		}
 
-		await post('processo', 'suporte_tecnico', os).then(()=>history.back())
+		await post('processo', 'suporte_tecnico', os)
+        .then((os)=>sendEmail('open', email, { idOS: os.id, assunto: titulo, tag: os.Tag }))
+        .then(()=>history.back())
+        .catch(console.error)
 	}
 </script>
 

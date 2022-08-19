@@ -26,16 +26,19 @@ function createServicos () {
     async function setServicos (set) {
         let filtro = get(filtros)
         let {chamados, limit, page} = filtro
-        await getServicos(chamados, {limit, page})
-            .then((oss)=>{
-                if (oss=='Não autorizado') return goto('/login')
-                set(oss)
-            })
-            .catch((e)=>{
-                console.log(e)
-                set([])
-            })
+        console.log("Setting services with", JSON.stringify(filtro))
+
         await Promise.all([
+            getServicos(chamados, {limit, page})
+                .then((oss)=>{
+                    console.log(oss)
+                    if (oss=='Não autorizado') return goto('/login')
+                    set(oss)
+                })
+                .catch((e)=>{
+                    console.error(e)
+                    set([])
+                }),
             getServicosCount(chamados).then(count.set),
             getServicosPageCount(chamados, limit).then(pages.set)
         ]);

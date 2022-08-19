@@ -1,31 +1,24 @@
 <script>
-    import { getServicosCount as getServicos } from "$lib/utils/servicos";
-    let pendentes, atendimento, parados;
-    getServicos([['status', 'pendente']]).then((count)=>pendentes=count)
-    getServicos([['status', 'pendente'], ['atendimento', true]]).then((count)=>atendimento=count)
-    getServicos([['status', 'pendente'], ['atendimento', false]]).then((count)=>parados=count)
-
-    $:hidden = !pendentes
+    import Fa from 'svelte-fa'
+    import { faEye as faEye } from '@fortawesome/free-solid-svg-icons'
 </script>
-
 <div class='outlined container'>
-    <h3>Suporte Técnico</h3>
-    <div class='divider'/><ul>
-        <li>{pendentes} pendentes</li>
-        <li>{parados} parados</li>
-        <li>{atendimento} em atendimento</li>
-    </ul>
-    <div class='divider'/>
-    <a class='action button' sveltekit:prefetch href='/processos/abrir_os/novo'>Novo Chamado</a> 
-    <!--ul>
-        <li>Vencem essa semana</li>
-    </ul-->
+    <a sveltekit:prefetch href='/servicos'>
+        <h3>Suporte Técnico <br>
+            (Arquivo) 
+            <Fa icon={faEye}/> 
+        </h3>
+    </a>
 </div>
 
 <style>
     .outlined.container {
-        flex: 0;
-        height: fit-content;
+        padding: 2.5em;
+        padding-top: 2em;
+        width: fit-content;
+        flex: none;
+        display: block;
+        margin: auto;
     }
     h3 {
         font-weight: lighter;
@@ -47,31 +40,6 @@
         transform: rotate(45deg);
     }
     a {
-        position: relative;
+        width: 100%;
     }
-    .counter {
-		position: absolute;
-		width: 0;
-		height: 0;
-        right: 5%;
-        top: -25%;
-	}
-    .counter::after {
-        content: var(--count);
-		position: absolute;
-		font-size: small;
-		background-color: darkred;
-		color: white;
-		transition: width 0.2s, height 0.2s, font-size 0.2s;
-		width: 1.5em;
-		height: 1.5em;
-		border-radius: 2em;
-		display: grid;
-		place-content: center;
-    }
-	.counter.hidden::after {
-		width: 0;
-		height: 0;
-		font-size: 0;
-	}
 </style>
