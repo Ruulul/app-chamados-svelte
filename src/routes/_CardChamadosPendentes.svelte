@@ -13,12 +13,8 @@
 
 <style>
     .outlined.container {
-        padding: 2.5em;
-        padding-top: 2em;
         width: fit-content;
-        flex: none;
-        display: block;
-        margin: auto;
+        height: fit-content;
     }
     h3 {
         font-weight: lighter;

@@ -53,7 +53,7 @@
         .catch(console.error)
 	}
 	</script>
-<Novo {onSubmit} bind:anexos bind:titulo bind:descr>
+<Novo {onSubmit} titulo_label='Produto' bind:anexos bind:titulo bind:descr>
     <h1>Novo Cadastro</h1>
     <table> 
         <tr>

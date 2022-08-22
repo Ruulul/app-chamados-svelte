@@ -1,7 +1,9 @@
 <script>
     import Anexos from '$lib/components/Anexos.svelte'
     export let titulo = ''
+    export let titulo_label = 'Assunto'
     export let descr = ''
+    export let descr_label = 'Descrição'
     export let anexos = []
     export let onSubmit
     let addFiles;
@@ -16,12 +18,12 @@
     </div>
     <form class='container' on:submit|preventDefault={onSubmit}>
         <label>
-            Assunto
+            {titulo_label}
             <input class='campo filled container assunto' 
             bind:value={titulo}/>
         </label>
         <label>
-            Descrição
+            {descr_label}
             <textarea
             class='campo filled container descr' 
             bind:value={descr} 

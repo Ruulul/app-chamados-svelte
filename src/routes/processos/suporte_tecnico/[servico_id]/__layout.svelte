@@ -147,7 +147,7 @@
         </table>
         <div class='campo'>
         <h2>Anexo</h2>
-            {#each anexos as {id, data, title}(id)}
+            {#each anexos as {data, title}}
                 <ExibeArquivo title={title.split('-')[1]} {data}/>
             {/each}
         </div>

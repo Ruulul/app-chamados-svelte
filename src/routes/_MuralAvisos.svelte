@@ -53,14 +53,7 @@ import { formatTag } from "$lib/utils/utils";
         font-weight: lighter;
     }
     div {
-        height: 40%;
         flex: 1;
-    }
-    tr.readed {
-        opacity: 0.5
-    }
-    button.readed {
-        display: none;
     }
     tr :not(:first-child) {
         padding-top: 1em;

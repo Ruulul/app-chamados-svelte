@@ -14,21 +14,19 @@ import CardChamadosPendentes from './_CardChamadosPendentes.svelte';
 	import MuralAvisos from './_MuralAvisos.svelte';
 </script>
 <div class=main>
-		<CardChamadosPendentes/>
-		<CardProcesso Tag='suporte_tecnico' titulo='Suporte Técnico'/>
-		<CardProcesso Tag='cadastro_produto' titulo='Cadastro de Produto'/>
+	<CardChamadosPendentes/>
+	<CardProcesso Tag='suporte_tecnico' titulo='Suporte Técnico'/>
+	<CardProcesso Tag='cadastro_produto' titulo='Cadastro de Produto'/>
 	<MuralAvisos/>
 </div>
 <style>
 	div {
 		flex-flow: row;
+	}
+	.main {
 		margin: 0;
 		width: 100%;
-		gap: 5em;
-	}
-	.container {
-		gap: 2em;
-		padding: 0;
-		padding-right: 2em;
+		gap: 1em;
+		align-items: flex-start;
 	}
 </style>
