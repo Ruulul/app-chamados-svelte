@@ -3,12 +3,26 @@ import "../app.css";
 import SideBar from '$lib/components/SideBar.svelte'
 import UpBar from '$lib/components/UpBar.svelte'
 import { user } from '$lib/stores/user.js'
+import { filial } from '$lib/utils/filial.js'
 import { goto } from '$app/navigation'
 import { page, navigating } from '$app/stores'
 import { browser } from '$app/env'
 
 $: loading = !!$navigating
 
+let style;
+if (browser) style = document.documentElement.style
+$: if (browser) switch ($filial) {
+	case '0101':
+		style.setProperty('--logo-filial', 'var(--logo-filial-ob)')
+		break;
+	case '0201':
+		style.setProperty('--logo-filial', 'var(--logo-filial-sm)')
+		break;
+	case '0401':
+		style.setProperty('--logo-filial', 'var(--logo-filial-ms)')
+		break;
+}
 function auth() {
 	return new Promise(
 		async function (resolve) {

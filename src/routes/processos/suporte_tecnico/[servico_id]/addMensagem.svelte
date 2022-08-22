@@ -23,7 +23,7 @@
             anexo: files[0]
         }
         if (value.length > 0)
-        addMensagem($servico.id, mensagem)
+        addMensagem($servico, mensagem)
             .then(chat=>$servico.chat = chat)
             .then(voltar)
     }

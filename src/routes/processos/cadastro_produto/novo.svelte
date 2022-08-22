@@ -11,11 +11,11 @@
 <script>
 	import Filtro from '$lib/components/Filtro.svelte';
     import Novo from '../novo_template.svelte';
-    import { filiais_validas } from '$lib/utils/filial';
+	import { filiais_validas, filial } from '$lib/utils/filial';
     import { post, getDepts, getOpcoes,  } from '$lib/utils/cadastros';
     import { sendEmail } from '$lib/utils/email';
 	let titulo = '', descr = '', anexos=[], unidade = '', departamento_id, departamentos=[];
-    let unidades = [], filiais = [], filial = '';
+    let unidades = [], filiais = [];
     getDepts('cadastro_produto').then(depts=>{
         departamentos=depts
         departamento_id=departamentos[0].id
@@ -30,7 +30,7 @@
         filiais = data.filter(item=>$filiais_validas.includes(item));
         let new_encoded = JSON.stringify(filiais)
         if (filiais_encoded != new_encoded)
-            filial = filiais[0]
+            $filial = filiais[0]
         filiais_encoded = new_encoded
     })
 	async function onSubmit() {
@@ -40,7 +40,7 @@
                 descr
             },
             unidade: departamento_id===17 ? '' : unidade,
-            filial,
+            filial: $filial,
             status: 'pendente',
             email,
             dept: departamento_id,
@@ -61,7 +61,7 @@
                 Filial:
             </th>
             <td>
-                <Filtro options={filiais} bind:value={filial} label=''/>
+                <Filtro options={filiais} bind:value={$filial} label=''/>
             </td>
         </tr>
         <tr>

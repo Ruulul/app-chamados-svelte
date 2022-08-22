@@ -40,9 +40,9 @@
 	    	<span>{title} (Approx. {Math.floor(data.split(';base64,')[1].length/4 * 3 / 1024)} kB)
 	    		<br/>
 	    		{#if data.slice(0, 20).includes('image')}
-	    		    <img alt='' src={data}/>
+	    		    <img {alt} src={data}/>
 	    		{:else}
-	    		<object alt='' title='anexo' data={data}>
+	    		<object {alt} title='anexo' data={data}>
 	    			Não pudemos exibir
 	    		</object>
 	    		{/if}
@@ -62,9 +62,9 @@
 	    	<span>{title} (Approx. {Math.floor(arquivo.split(';base64,')[1].length/4 * 3 / 1024)} kB)
 	    		<br/>
 	    		{#if arquivo.slice(0, 20).includes('image')}
-	    		    <img alt='' src={arquivo}/>
+	    		    <img {alt} src={arquivo}/>
 	    		{:else}
-	    		<object alt='' title='anexo' data={arquivo}>
+	    		<object {alt} title='anexo' data={arquivo}>
 	    			Não pudemos exibir
 	    		</object>
 	    		{/if}

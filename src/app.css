@@ -8,7 +8,10 @@
     --texto: grey;
     --logo: url('/logo-gold seed 1.svg');
     --small-logo: url('/logo-gold seed-folha 1.svg');
-    --logo-filial: url('/logo da sementes mana.jpeg');
+    --logo-filial-sm: url('/logo da sementes mana.jpeg');
+    --logo-filial-ob: url('/logo da ouro branco.jpg');
+    --logo-filial-ms: url('/logo da mana service.png');
+    --logo-filial: var(--logo-filial-ob);
 }
 * {
     font-family: 'ABeeZee', sans-serif;
