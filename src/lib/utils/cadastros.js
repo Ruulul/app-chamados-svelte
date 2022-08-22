@@ -43,7 +43,7 @@ async function getCampo (model, tag, id, campo) {
 }
 async function getOpcoes (model, tag, campo) {
     let campos = await requestGet(`/meta/${model}/${tag}/campos`)
-    return campos.find(({campoMeta})=>campoMeta===campo)?.opcoes || []
+    return campos?.find(({campoMeta})=>campoMeta===campo)?.opcoes || []
 }
 async function getDepts (tag) {
     let meta = await requestGet(`/meta/etapa/${tag}`)
@@ -52,10 +52,9 @@ async function getDepts (tag) {
 async function getCount (model, tag, filtros) {
     return (await getMany(model, tag)).length
 }
-async function getProcessosPageCount () {}
 
 async function updateProcesso (processo, update) {
-        return requestPut(`/processo/${processo.Tag}/${processo.id}/etapa/${processo.etapa.Tag}/${processo.etapa.id}`, update)
+        return requestPut(`/etapa/${processo.etapa.Tag}/${processo.etapa.id}`, update)
 }
 async function nextEtapa (processo) {
     if (processo.Tag === 'cadastro_produto')

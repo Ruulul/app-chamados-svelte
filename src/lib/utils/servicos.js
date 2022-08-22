@@ -82,7 +82,7 @@ async function updateServico (id, update, flag) {
 			console.log(os)
 			const { nome, email } = await getUser(os.usuarioId || os.autorId)
 			const { nome : nomeSuporte, email : emailSuporte } = await getUser(os.atendenteId)
-			if (flag) sendEmail(flag, [email, emailSuporte], {idOS: os.id, nome, nomeSuporte, ...update})
+			if (flag) sendEmail(flag, [email, emailSuporte], {idOS: os.id, nome, nomeSuporte, ...update, tag: 'suporte_tecnico'})
 			return os
 		})
 		.catch(console.error)

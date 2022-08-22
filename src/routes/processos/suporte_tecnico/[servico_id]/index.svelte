@@ -52,7 +52,10 @@
     {$servico.log[0].titulo}
 </div>
 <div class='messages'>
-    {#each $servico?.log.sort((a, b)=>b.id-a.id) || [] as {idUsuario, titulo, descr, metadados}}
+    {#each $servico?.log.sort((a, b)=>b.id-a.id) || [] as {idUsuario, titulo, descr, createdAt, metadados}}
+        {@const data_array = createdAt.split('T')}
+        {@const data = data_array[0].split('-').reverse().join('/')}
+        {@const hora = data_array[1].split('.')[0]}
         <div class='campo filled container'>
             <h3>
                 {#await getUser(idUsuario)}
@@ -63,6 +66,7 @@
             </h3>
             <h3>{titulo}</h3>
             {@html parseMD(descr)}
+            <dd>{data + ' ' + hora}</dd>
         </div>
     {/each}
 </div>

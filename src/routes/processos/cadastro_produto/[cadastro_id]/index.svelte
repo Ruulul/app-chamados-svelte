@@ -1,6 +1,5 @@
 <script>
     import { getContext } from 'svelte'
-    import { goto } from '$app/navigation'
     import { getUser } from '$lib/utils/db.js'
     import { user } from '$lib/stores/user.js'
     import { parseMD } from '$lib/utils/utils'
@@ -22,10 +21,22 @@
     {$cadastro?.log[0].titulo}
 </div>
 <div class='messages'>
-    {#each log as {descr}}
-    <div class='campo'>
-        {@html parseMD(descr)}
-    </div>
+    {#each $cadastro?.log.sort((a, b)=>b.id-a.id) || [] as {idUsuario, titulo, descr, createdAt, metadados}}
+        {@const data_array = createdAt.split('T')}
+        {@const data = data_array[0].split('-').reverse().join('/')}
+        {@const hora = data_array[1].split('.')[0]}
+        <div class='campo filled container'>
+            <h3>
+                {#await getUser(idUsuario)}
+                    Carregando...
+                {:then {nome}}
+                {nome || 'Sem atendente'}
+                {/await}
+            </h3>
+            <h3>{titulo}</h3>
+            {@html parseMD(descr)}
+            <dd>{data + ' ' + hora}</dd>
+        </div>
     {/each}
 </div>
 <textarea bind:value/>

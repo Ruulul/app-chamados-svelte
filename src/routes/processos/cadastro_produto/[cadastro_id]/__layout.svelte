@@ -17,13 +17,13 @@ import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     import { getUser } from '$lib/utils/db';
     import { setContext } from 'svelte';
     import { writable } from 'svelte/store';
-    let cadastro = writable(), cliente, depts, status_opcoes = [], status = '', updating = false, anexos = []
+    let cadastro = writable(), campos = {}, cliente, depts, status_opcoes = [], status = '', updating = false, anexos = []
     setContext('cadastro', cadastro)
     getUnique('processo', 'cadastro_produto', $page.params.cadastro_id)
     .then(data=>{
         $cadastro=data;
-        status=data.etapa.campos.find(({campo})=>campo==='status').valor
-        status = status.toString()
+        campos = data ? Object.fromEntries(data.etapa.campos) : {}
+        status = campos["status"]
     })
     $: etapa = $cadastro?.etapa.Tag
     $: if ($cadastro?.idEtapaAtual) 
@@ -33,20 +33,17 @@ import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     getDepts('cadastro_produto').then(data=>depts=data)
     $: getOpcoes('etapa', etapa,'status').then(data=>status_opcoes=data)
     $: getUser($cadastro?.idUsuario).then(user=>cliente=user)
+
     let canEdit = false
-    $: if (cliente && depts) {
-        console.log`${cliente}${depts}${$cadastro}`
-        canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$cadastro.etapa.dept)?.departamento)
-    }
-    $: console.log(canEdit)
+    $: canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$cadastro.etapa.dept)?.departamento)
     function onChange() {
         updating = true
-        if (status === 'finalizado')
+        if (status === 'fechado')
             return nextEtapa($cadastro)
-                .then(()=>updating = false)
                 .then(()=>history.back())
         return updateProcesso($cadastro, {status})
-            .then(()=>updating = false)
+            .then(()=>getUnique('processo', 'cadastro_produto', $page.params.cadastro_id))
+            .then(cadastro.set)
     }
 </script>
 <div class='filled container'>
@@ -74,7 +71,7 @@ import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
                     Unidade:
                 </th>
                 <td>
-                    {$cadastro?.etapa.campos.find(campo=>campo.campo==='unidade')?.valor}
+                    {campos["unidade"]}
                 </td>
             </tr>
             <tr>
@@ -103,7 +100,7 @@ import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
         <div class='campo'>
         <h2>Anexo</h2>
             {#each anexos as {data, title}}
-                <ExibeArquivo title={title.split('-')[1]} {data}/>
+                <ExibeArquivo title={title?.split('-')[1]} {data}/>
             {/each}
         </div>
 
