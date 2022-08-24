@@ -53,7 +53,7 @@
 		display: block;
 	}
 	main {
-		position: block;
+		display: block;
 		width: 20%;
 		height: fit-content;
 		margin: auto;

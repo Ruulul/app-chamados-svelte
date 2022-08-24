@@ -10,15 +10,15 @@
 <script>
 	const nova_categoria = 'AC - INTERNAL GOLD SEED';
 	import Filtro from '$lib/components/Filtro.svelte';
-	import { servicos } from '$lib/stores/servicos';
+	import { cadastros } from '$lib/stores/cadastros';
 	import { filial, filiais_validas_por_id } from '$lib/utils/filial';
-	import { getPrazo, updateServico } from '$lib/utils/servicos.js';
+	import { getCampo, getOpcoes, getUnique, updateProcesso } from '$lib/utils/cadastros.js';
 	import { tipos_os, categorias_os } from '$lib/stores/local_db.js';
 	import { page } from '$app/stores';
 import { config } from '$lib/utils/db';
 	let tipo = '', categoria = '', prioridade = 0, nova_categoria_dialog
-	let servico = $servicos.find(servico=>servico.id==$page.params.chamado_id);
-	$: new_servico = $servicos.find(servico=>servico.id==$page.params.chamado_id);
+	let servico = $cadastros.find(servico=>servico.id==$page.params.chamado_id);
+	$: new_servico = $cadastros.find(servico=>servico.id==$page.params.chamado_id);
 	$: if (servico?.updatedAt != new_servico?.updatedAt) servico = new_servico
 
 	$: $filial = $filiais_validas_por_id[servico?.filialId];
@@ -30,12 +30,11 @@ import { config } from '$lib/utils/db';
 	async function onSubmit() {
 		let prazo = await getPrazo(prioridade || servico.prioridade, servico.createdAt)
 		let update = {
-			tipo,
-			categoria,
+			categoria: tipo + '-' + categoria,
 			prioridade,
 			prazo
 		}
-		await updateServico($page.params.chamado_id, update).then(()=>history.back());
+		await updateProcesso(servico, update).then(()=>history.back());
 	}
 
 	

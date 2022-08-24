@@ -1,5 +1,5 @@
 <script>
-    import { addMensagem } from '$lib/utils/cadastros.js'
+    import { addMensagem, getUnique } from '$lib/utils/cadastros.js'
     import { parseMD } from '$lib/utils/utils';
     import { user } from '$lib/stores/user.js'
     import { getContext } from 'svelte';
@@ -24,8 +24,10 @@
         }
         if (value.length > 0)
         addMensagem($servico, mensagem)
-            .then(chat=>$servico.chat = chat)
+            .then(()=>getUnique('processo', 'suporte_tecnico', $servico.id))
+            .then(servico.set)
             .then(voltar)
+            .catch(()=>{})
     }
 </script>
 <form on:submit|preventDefault={onSubmit}>

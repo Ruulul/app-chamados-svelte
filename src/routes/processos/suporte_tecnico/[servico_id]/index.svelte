@@ -46,13 +46,14 @@
             undefined
     }
 
+    $: console.log($servico?.log)
 </script>
 <div class='campo filled container assunto'>
     Assunto:
-    {$servico.log[0].titulo}
+    {$servico && $servico.log ? $servico.log[0].titulo : 'Carregando'}
 </div>
 <div class='messages'>
-    {#each $servico?.log.sort((a, b)=>b.id-a.id) || [] as {idUsuario, titulo, descr, createdAt, metadados}}
+    {#each $servico?.log?.sort((a, b)=>b.id-a.id) || [] as {idUsuario, titulo, descr, createdAt, metadados}}
         {@const data_array = createdAt.split('T')}
         {@const data = data_array[0].split('-').reverse().join('/')}
         {@const hora = data_array[1].split('.')[0]}

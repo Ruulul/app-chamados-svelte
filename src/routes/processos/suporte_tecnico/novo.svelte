@@ -54,7 +54,7 @@
 			idUsuario: $user.id,				//Alterar depois para suportes
 			dept: $user.dept,			//	''		''		''		''
             filial: $filial,
-            status: 'pendente',
+            status: 'em analise',
             categoria: 'A. D.',
             prioridade: 'A. D.',
             suporteId: 0,

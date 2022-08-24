@@ -23,15 +23,21 @@
 
     let atendente='', nome='Sem usuário', dept='Sem usuário', anexos = []
     let servico = writable({})
-    $servico = $processos.find(({id})=>id==$page.params.servico_id)
-    $: etapa = $servico?.etapa.Tag
+    let etapa = ''
+    const getServico = ()=>getUnique('processo', 'suporte_tecnico', $page.params.servico_id)
+        .then(data=>{
+            console.log(data)
+            servico.set(data)
+            etapa = data.etapa.Tag
+        })
+    getServico()
     $: if ($servico?.idEtapaAtual) 
         getUnique('etapa', etapa, $servico?.idEtapaAtual)
         .then(data=>getCampo('log', data.log[0].Tag, data.log[0].id, 'anexo'))
         .then(files=>anexos=files)
         .catch(()=>{})
     $: servico_new = $processos.find(({id})=>id==$page.params.servico_id)
-    $: if (servico_new?.updatedAt !== $servico?.updatedAt) $servico = servico_new
+    $: if (servico_new?.updatedAt !== $servico?.updatedAt) getServico()
     $: console.log($servico)
     
     setContext('servico', servico)
@@ -65,7 +71,7 @@
     onDestroy(()=>clearInterval(handler_agora))
     $: abertura = $servico ? (new Date($servico.createdAt).getTime()/1000) : 0
     $: sla = Math.floor(agora - abertura)
-    $: campos_etapa = $servico ? Object.fromEntries($servico?.etapa.campos) : {}
+    $: campos_etapa = $servico?.etapa ? Object.fromEntries($servico?.etapa.campos) : {}
 
     $: isSuporte = $user.tipo=='suporte'
     $: canRelease = campos_etapa["suporteId"] == $user.id && $servico?.status !== 'fechado'
@@ -80,15 +86,15 @@
     $: getOpcoes('etapa', etapa, 'status').then(opcoes=>status_opcoes=opcoes)
 
     function setAtendente () {
-        console.log("Setting atendente")
-        console.log(campos_etapa)
-        let id = campos_etapa["suporteId"]
-        console.log(`atendenteId: ${id}`)
-        console.log(`$user.nome: ${$user.nome}`)
-        if (id)
-            if (id == $user.id)
-                atendente=$user.nome
-            else getUser(id).then(user=>(atendente=user.nome, user)).then(console.log)
+       console.log("Setting atendente")
+       console.log(campos_etapa)
+       let id = campos_etapa["suporteId"]
+       console.log(`atendenteId: ${id}`)
+       console.log(`$user.nome: ${$user.nome}`)
+       if (id)
+           if (id == $user.id)
+               atendente=$user.nome
+           else getUser(id).then(user=>(atendente=user.nome, user)).then(console.log)
     }
     function setNomeAndDept () {
         let id = $servico?.idUsuario
@@ -128,7 +134,7 @@
                     Abertura:
                 </th>
                 <td>
-                    {$servico.createdAt.split('T')[0].split('-').reverse().join('/')}
+                    {$servico?.createdAt?.split('T')[0].split('-').reverse().join('/')}
                 </td>
             </tr>
             <tr class:hidden={!(!!atendente || isSuporte)}>
@@ -138,7 +144,7 @@
                 <td>
                     <span class:hidden={!atendente}>{atendente}</span>
                     <button on:click={assumeChamado} class:hidden={!(!atendente && isSuporte)}>Assumir chamado?</button>
-                    <button on:click={liberaChamado} class:hidden={!(canRelease)}>Liberar chamado</button>
+                    <button on:click={liberaChamado} class:hidden={!canRelease} class=hidden> Liberar chamado</button>
                 </td>
             </tr>
             <tr>
@@ -172,7 +178,7 @@
                 <td>
                     <span class:hidden={canEdit}>
                         {campos_etapa["status"]}</span>
-                    <select class:hidden={!canEdit} bind:value={campos_etapa["status"]} on:change={onChange}>
+                    <select class:hidden={!canEdit}  on:change={onChange}>
                         {#each status_opcoes as opcao}
                             <option>{opcao}</option>
                         {/each}

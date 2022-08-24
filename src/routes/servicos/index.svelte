@@ -17,10 +17,10 @@
     let tipo = ''
     let sort = (a, b)=>b.id-a.id
     let filial = ''
-    $: status, tipo, sort, filial, servicos.update()
 </script>
 <Tabela {sort}>
     <Filtros bind:tipo bind:status bind:sort bind:filial /><br>
+    <div class:hidden={!servicos.is_updating} class=loading>AAAAAAAAAAAAAAAA</div>
     <div>
         <label>
             Página:
@@ -34,6 +34,12 @@
 </Tabela>
 
 <style>
+    .hidden {
+        display: none;
+    }
+    .loading {
+        border-radius: 50%;
+    }
     div, label {
         display: flex;
     }

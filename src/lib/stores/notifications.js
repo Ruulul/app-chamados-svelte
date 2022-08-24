@@ -21,7 +21,7 @@ function createProcessos () {
         return ()=>clearInterval(handle)
     })
 
-    return { subscribe, async update(){return await setServicos(set)} }
+    return { subscribe, async update(){return await setProcessos(set)} }
 
     async function setProcessos (set) {
         let filtro = get(filtros)

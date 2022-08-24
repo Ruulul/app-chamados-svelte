@@ -1,6 +1,6 @@
 <script>
     import { processos } from "$lib/stores/notifications";
-import { formatTag } from "$lib/utils/utils";
+    import { formatTag } from "$lib/utils/utils";
     import { flip } from 'svelte/animate'
     import Filtros from "./_Filtros.svelte";
 </script>
@@ -25,9 +25,9 @@ import { formatTag } from "$lib/utils/utils";
             </th>
         </thead>
         <tbody>
-            {#each $processos as {id, log, Tag}}
+            {#each $processos.filter(processo=>Object.fromEntries(processo.etapa.campos)["status"]!=='finalizado') as {id, etapa: {campos}, log, Tag}}
                 <tr>
-                    <a href=/processos/{Tag}/{id}>
+                    <a href={`/processos/${Tag}/${id}`}>
                         <td>
                             {id} - {log[0].titulo}
                         </td>

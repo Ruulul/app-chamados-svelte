@@ -27,13 +27,13 @@
 
 <label style={generated_css_label} for="filtro">{label}</label>
 {#if multiple}
-<select {required} multiple style={generated_css_select} bind:value id="filtro" on:input>
+<select {required} multiple style={generated_css_select} bind:value id="filtro" on:input on:change>
     {#each options as option}
         <FiltroOption {option} style={generated_css_option}/>
     {/each}
 </select>
 {:else}
-<select {required} style={generated_css_select} bind:value id="filtro" on:input>
+<select {required} style={generated_css_select} bind:value id="filtro" on:input on:change>
     {#each options as option}
         <FiltroOption {option} style={generated_css_option}/>
     {/each}

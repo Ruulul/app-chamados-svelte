@@ -21,15 +21,23 @@ function createServicos () {
         return ()=>clearInterval(handle)
     })
 
-    return { subscribe, async update(){return await setServicos(set)} }
+    return { 
+        subscribe, 
+        is_updating: false,
+        async update(){
+            this.is_updating = true;
+            await setServicos(set);
+            this.is_updating = false;
+        }
+    }
 
     async function setServicos (set) {
         let filtro = get(filtros)
         let {chamados, limit, page} = filtro
         console.log("Setting services with", JSON.stringify(filtro))
-
-        await Promise.all([
-            getServicos(chamados, {limit, page})
+        getServicosCount(chamados).then(count.set),
+        getServicosPageCount(chamados, limit).then(pages.set)
+        await getServicos(chamados, {limit, page})
                 .then((oss)=>{
                     console.log(oss)
                     if (oss=='Não autorizado') return goto('/login')
@@ -38,9 +46,6 @@ function createServicos () {
                 .catch((e)=>{
                     console.error(e)
                     set([])
-                }),
-            getServicosCount(chamados).then(count.set),
-            getServicosPageCount(chamados, limit).then(pages.set)
-        ]);
+                })
     }
 }

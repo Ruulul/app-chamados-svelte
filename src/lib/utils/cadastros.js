@@ -10,7 +10,7 @@ export {
     getCount,
     updateProcesso,
     addMensagem,
-    nextEtapa
+    nextEtapa,
 }
 
 async function post (model, tag, os) {
@@ -43,7 +43,7 @@ async function getCampo (model, tag, id, campo) {
 }
 async function getOpcoes (model, tag, campo) {
     let campos = await requestGet(`/meta/${model}/${tag}/campos`)
-    return campos?.find(({campoMeta})=>campoMeta===campo)?.opcoes || []
+    return Array.isArray(campos) ? campos?.find(({campoMeta})=>campoMeta===campo)?.opcoes : []
 }
 async function getDepts (tag) {
     let meta = await requestGet(`/meta/etapa/${tag}`)

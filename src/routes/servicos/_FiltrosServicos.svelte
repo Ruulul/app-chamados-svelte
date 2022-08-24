@@ -3,7 +3,7 @@
     import { tipos_os } from '$lib/stores/local_db.js'
     import { filiais_validas_por_id } from '$lib/utils/filial';
     import Tooltip from '$lib/components/Tooltip.svelte';
-    import { filtros } from '$lib/stores/servicos';
+    import { filtros, servicos } from '$lib/stores/servicos';
     export let tipo
     export let status
     export let sort
@@ -64,6 +64,7 @@
                 ]
             }
             bind:value={status}
+            on:change={servicos.update}
         />
         <Tooltip>Status</Tooltip>
         <button title='Limpar status' on:click={()=>status=''}>X</button>
@@ -73,6 +74,7 @@
             label='' 
             options={$tipos_os?.map(({tipo})=>tipo) || []}
             bind:value={tipo}
+            on:change={servicos.update}
         />
         <Tooltip>Tipo</Tooltip>
         <button title='Limpar tipo' on:click={()=>tipo=''}>X</button>
@@ -114,6 +116,7 @@
                 ]
             }
             bind:value={sort}
+            on:change={servicos.update}
         />
         <Tooltip>Ordenar por</Tooltip>
         <button title='Limpar filtro' on:click={limpa(limpaOrdena)}>X</button>
@@ -125,6 +128,7 @@
                 Object.entries($filiais_validas_por_id).map(([value, label])=>({value, label}))
             }
             bind:value={filial}
+            on:change={servicos.update}
         />
         <Tooltip>Filial</Tooltip>
         <button title='Limpar filtro' on:click={()=>filial=''}>X</button>
