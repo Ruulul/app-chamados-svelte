@@ -3,6 +3,8 @@
     import { formatTag } from "$lib/utils/utils";
     import { flip } from 'svelte/animate'
     import Filtros from "./_Filtros.svelte";
+    import Fa from "svelte-fa";
+    import { faThumbtack as pin } from '@fortawesome/free-solid-svg-icons';
 </script>
 
 <div class='filled container'>
@@ -12,9 +14,11 @@
         {/await}-->
     <div class=title>
         <h2>
+            <Fa icon={pin}/>
             Mural de avisos
         </h2>
     </div>
+    <div class=divider/>
     <table>
         <thead>
             <th>
@@ -42,6 +46,11 @@
 </div>
 
 <style>
+    .divider {
+        margin-bottom: 1em;
+        width: 100%;
+        height: 0.3em;
+    }
     .title {
         flex-flow: row;
         width: 100%;
@@ -52,8 +61,8 @@
     * {
         font-weight: lighter;
     }
-    div {
-        flex: 1;
+    .filled.container {
+        flex: 0.9;
     }
     tr :not(:first-child) {
         padding-top: 1em;

@@ -44,7 +44,7 @@
     <tbody>
         {#each cadastros.sort(sort) as cadastro(cadastro.id)}
             {@const campos = Object.fromEntries(cadastro.etapa.campos)}
-        <a href={cadastro.etapa.Tag === 'cadastro_produto' ? `${cadastro.id}` : `../finaliza/${cadastro.id}`}>
+        <a href={cadastro.etapa.Tag === 'abrir_os' ? `${cadastro.id}` : `../finaliza/${cadastro.id}`}>
             <tr>
                 <td>
                     {cadastro.campos.find(campo=>campo.campo==='filial').valor}

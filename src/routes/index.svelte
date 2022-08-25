@@ -8,13 +8,10 @@
 	}
 </script>
 <script>
-import CardChamadosPendentes from './_CardChamadosPendentes.svelte';
-
 	import CardProcesso from './_CardProcesso.svelte';
 	import MuralAvisos from './_MuralAvisos.svelte';
 </script>
 <div class=main>
-	<CardChamadosPendentes/>
 	<CardProcesso Tag='suporte_tecnico' titulo='Suporte Técnico'/>
 	<CardProcesso Tag='cadastro_produto' titulo='Cadastro de Produto'/>
 	<MuralAvisos/>
@@ -26,7 +23,6 @@ import CardChamadosPendentes from './_CardChamadosPendentes.svelte';
 	.main {
 		margin: 0;
 		width: 100%;
-		gap: 1em;
 		align-items: flex-start;
 	}
 </style>

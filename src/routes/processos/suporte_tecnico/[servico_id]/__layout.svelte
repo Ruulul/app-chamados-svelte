@@ -104,15 +104,16 @@
                 dept = gettedDept;
             })
     }
-    function onChange() {
-        if (campos_etapa["status"] === 'finalizado')
-            return nextEtapa($servico)
-                .then(()=>history.back())
-                .catch(console.error)
-        return updateProcesso($servico, {status: campos_etapa["status"]})
+    async function onChange() {
+        await updateProcesso($servico, {status: campos_etapa["status"]})
             .then(()=>getUnique('processo', $servico.Tag, $servico.id))
             .then(servico.set)
             .catch(console.error)
+        if (campos_etapa["status"] === 'fechado')
+            await nextEtapa($servico)
+                .then(()=>history.back())
+                .catch(console.error)
+        
     }
 </script>
 {#if $servico}
@@ -178,7 +179,7 @@
                 <td>
                     <span class:hidden={canEdit}>
                         {campos_etapa["status"]}</span>
-                    <select class:hidden={!canEdit}  on:change={onChange}>
+                    <select class:hidden={!canEdit} bind:value={campos_etapa["status"]}  on:change={onChange}>
                         {#each status_opcoes as opcao}
                             <option>{opcao}</option>
                         {/each}
