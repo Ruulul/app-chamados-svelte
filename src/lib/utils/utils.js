@@ -124,3 +124,8 @@ export function formatTag (tag) {
       }, ""))
   .join(' ')
 }
+
+export function filterPendente (processo) {
+  return !['fechado', 'finalizado']
+    .includes(Object.fromEntries(processo.etapa.campos)["status"])
+}

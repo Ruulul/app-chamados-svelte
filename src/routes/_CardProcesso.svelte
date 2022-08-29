@@ -3,10 +3,11 @@
     import Fa from 'svelte-fa'
     import { faEye as faEye, faHeadset } from '@fortawesome/free-solid-svg-icons'
     import { processos } from '$lib/stores/notifications'
+    import { filterPendente } from "$lib/utils/utils";
     let pendentes = 0;
     export let Tag;
     export let titulo;
-    $: pendentes = $processos.filter(processo=>processo.Tag===Tag).length
+    $: pendentes = $processos.filter(processo=>processo.Tag===Tag&&filterPendente(processo)).length
 
     $:hidden = !pendentes
 </script>
@@ -36,7 +37,7 @@
     .outlined.container {
         padding: 2em;
         width: 12%;
-        height: 30em;
+        min-height: 30em;
         justify-content: end;
         gap: 1.5em;
     }

@@ -33,7 +33,7 @@
 
     let canEdit = false
     $: if (cliente && depts) {
-        canEdit = !$user.dept.includes(depts?.find(dept=>dept.id===$processo.etapa.dept)?.departamento)
+        canEdit = !$user.dept.includes(depts?.find(dept=>dept.id===$processo.etapa.dept)?.departamento) || $user.cargo == 'admin'
     }
     $: console.log(canEdit)
     function onChange() {

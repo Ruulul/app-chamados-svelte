@@ -1,5 +1,6 @@
-import { writable } from 'svelte/store'
+import { get, writable } from 'svelte/store'
 import { auth } from '$lib/utils/db.js'
+import { filial, filiais_validas_por_id } from '$lib/utils/filial'
 
 function createUser() {
 	function trackable_promise() {
@@ -22,6 +23,11 @@ function createUser() {
 						: data
 						resolve(perfil)
 						set(perfil)
+
+						let unsub = filial.subscribe(()=>{})
+						if (perfil)
+							filial.set(get(filiais_validas_por_id)[perfil.filialId])
+						unsub()
 					})
 			} catch (e) {
 				console.error(e)

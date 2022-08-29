@@ -23,6 +23,25 @@
 
     let atendente='', nome='Sem usuário', dept='Sem usuário', anexos = []
     let servico = writable({})
+    /**
+     * @type {{
+           dialog: HTMLDialogElement,
+           tipo: string,
+           categoria: string,
+           _categoria: string,
+       }} classificador
+     */
+    let classificador = {
+        dialog: undefined,
+        tipo: '',
+        _categoria: '',
+    }
+    classificador.__defineSetter__('categoria', function (categoria) {
+        this._categoria = categoria
+    })
+    classificador.__defineGetter__('categoria', function () {
+        return this.tipo + ' - ' + this._categoria
+    })
     let etapa = ''
     const getServico = ()=>getUnique('processo', 'suporte_tecnico', $page.params.servico_id)
         .then(data=>{
@@ -80,7 +99,7 @@
     $: campos_etapa, setAtendente()
 
     let canEdit = false
-    $: getDepts(etapa).then(depts=>canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$servico.etapa.dept)?.departamento))
+    $: getDepts(etapa).then(depts=>canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$servico.etapa.dept)?.departamento)) || $user.cargo == 'admin'
 
     let status_opcoes = []
     $: getOpcoes('etapa', etapa, 'status').then(opcoes=>status_opcoes=opcoes)
@@ -104,16 +123,16 @@
                 dept = gettedDept;
             })
     }
-    async function onChange() {
-        await updateProcesso($servico, {status: campos_etapa["status"]})
-            .then(()=>getUnique('processo', $servico.Tag, $servico.id))
-            .then(servico.set)
-            .catch(console.error)
-        if (campos_etapa["status"] === 'fechado')
-            await nextEtapa($servico)
-                .then(()=>history.back())
+    function onChange (campo) {
+        return async ()=>{
+            await updateProcesso($servico, {[campo]: campos_etapa[campo]})
+                .then(getServico)
                 .catch(console.error)
-        
+            if (campo==='status' && campos_etapa[campo] === 'fechado')
+                await nextEtapa($servico)
+                    .then(()=>history.back())
+                    .catch(console.error)
+        }
     }
 </script>
 {#if $servico}
@@ -170,6 +189,26 @@
                 </th>
                 <td>
                     {campos_etapa["categoria"]}
+                    <button class:hidden={!(campos_etapa["categoria"]==="A. D." && canEdit)} on:click={classificador.dialog?.showModal()}>
+                        Classificar
+                    </button>
+                    <dialog class='filled container' bind:this={classificador.dialog}>
+                        <h2>
+                            Classificar chamado
+                        </h2>
+                        <form on:submit|preventDefault={onChange("categoria")}>
+                            <label>
+                                Tipo 
+                                <input bind:value={classificador.tipo}>
+                            </label>
+                            <label>
+                                Categoria
+                                <input bind:value={classificador._categoria} on:change={()=>campos_etapa["categoria"]=classificador.categoria}>
+                            </label>
+                            <input type='submit' value='Enviar'>
+                            <span>{classificador.categoria}</span>
+                        </form>
+                    </dialog>
                 </td>
             </tr>
             <tr>
@@ -179,7 +218,7 @@
                 <td>
                     <span class:hidden={canEdit}>
                         {campos_etapa["status"]}</span>
-                    <select class:hidden={!canEdit} bind:value={campos_etapa["status"]}  on:change={onChange}>
+                    <select class:hidden={!canEdit} bind:value={campos_etapa["status"]}  on:change={onChange("status")}>
                         {#each status_opcoes as opcao}
                             <option>{opcao}</option>
                         {/each}
@@ -205,6 +244,11 @@
     .filled.container {
         margin: auto;
         flex-flow: row;
+    }
+    dialog form, dialog label {
+        display: flex;
+        flex-flow: column;
+        gap: 0.5em;
     }
     .wrapper {
         justify-content: flex-start;

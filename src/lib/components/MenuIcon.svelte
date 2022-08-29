@@ -12,52 +12,52 @@
 		faUsers as sd_usuarios } from '@fortawesome/free-solid-svg-icons';
 	//import { 
 	//	faHome as ol_home, 
-	//	faCog as ol_config, 
+	//	faFlushed as ol_config, 
 	//	faClipboardList as ol_processos, 
 	//	faUser as ol_perfil, 
 	//	faBell as ol_notificacoes,
 	//	faThumbtack as ol_avisos,
 	//	faArrowRight as ol_logout, 
-	//	faUsers as ol_usuarios } from '@fortawesome/free-regular-svg-icons';
+	//	faUsers as ol_usuarios } from '@fortawesome/free-regular-svg-icons/index';
 
 	export let href
 	let icons = {
 		home: {
 			sd: sd_home,
-			ol: sd_home,
+			//ol: ol_home,
 		},
 		config: {
 			sd: sd_config,
-			ol: sd_config,
+			//ol: ol_config,
 		},
 		processos: {
 			sd: sd_processos,
-			ol: sd_processos,
+			//ol: ol_processos,
 		},
 		notificacoes: {
 			sd: sd_notificacoes,
-			ol: sd_notificacoes,
+			//ol: ol_notificacoes,
 		},
 		avisos: {
 			sd: sd_avisos,
-			ol: sd_avisos,
+			//ol: ol_avisos,
 		},
 		perfil: {
 			sd: sd_perfil,
-			ol: sd_perfil,
+			//ol: ol_perfil,
 		},
 		logout: {
 			sd: sd_logout,
-			ol: sd_logout,
+			//ol: sd_logout,
 		},
 		usuarios: {
 			sd: sd_usuarios,
-			ol: sd_usuarios,
+			//ol: sd_usuarios,
 		},
 	}
 	let icon_src = icons[href == '/' ? 'home' : href.split('/')[1]]
-	let is_sd = $page.url.pathname === href
-	let icon = is_sd ? icon_src.sd : icon_src.ol
+	$: is_sd = true//$page.url.pathname === href
+	$: icon = is_sd ? icon_src.sd : icon_src.ol
 	console.log(`icon ${href} going to be ${is_sd ? 'sd' : 'ol'}`)
 </script>
 <Fa {icon}

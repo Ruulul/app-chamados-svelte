@@ -11,7 +11,7 @@
 </script>
 <script>
     import { page } from '$app/stores'
-import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
+    import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     import { user } from '$lib/stores/user';
     import { getUnique, getCampo, getDepts, getOpcoes, updateProcesso, nextEtapa } from '$lib/utils/cadastros';
     import { getUser } from '$lib/utils/db';
@@ -35,7 +35,7 @@ import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     $: getUser($cadastro?.idUsuario).then(user=>cliente=user)
 
     let canEdit = false
-    $: canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$cadastro.etapa.dept)?.departamento)
+    $: canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$cadastro.etapa.dept)?.departamento) || $user.cargo == 'admin'
     function onChange() {
         updating = true
         if (status === 'fechado')

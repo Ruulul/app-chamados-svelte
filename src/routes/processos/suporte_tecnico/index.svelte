@@ -2,6 +2,7 @@
     import { onDestroy } from 'svelte';
     import { filtros } from '$lib/stores/cadastros';
     import { getMany, getDepts } from '$lib/utils/cadastros';
+    import { filterPendente } from '$lib/utils/utils';
     export let sort;
     let cadastros = [], depts = [];
 
@@ -42,7 +43,7 @@
         <th class='filtro'/>
     </thead>
     <tbody>
-        {#each cadastros.sort(sort) as cadastro(cadastro.id)}
+        {#each cadastros.filter(filterPendente).sort(sort) as cadastro(cadastro.id)}
             {@const campos = Object.fromEntries(cadastro.etapa.campos)}
         <a href={cadastro.etapa.Tag === 'abrir_os' ? `${cadastro.id}` : `../finaliza/${cadastro.id}`}>
             <tr>
