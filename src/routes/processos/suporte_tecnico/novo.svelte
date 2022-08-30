@@ -46,8 +46,8 @@
 			mensagem:
 				{
 					idUsuario: $user.id,
+                    titulo,
 					descr,
-                    titulo
 				}
 			,
 			anexos,

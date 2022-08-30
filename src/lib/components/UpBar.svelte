@@ -4,6 +4,8 @@
 	import { auth } from '$lib/utils/db.js'
 	import { goto } from '$app/navigation';
 
+	export let filial_dialog;
+
 	let itemsE =
 		[
 		]
@@ -25,7 +27,7 @@
 		{/each}
 		{#if itemsAll.indexOf(items)===0}
 		<li class="logo">
-			<Logo/>
+			<Logo on:click={()=>filial_dialog.showModal()}/>
 		</li>
 		{/if}
 	{/each}

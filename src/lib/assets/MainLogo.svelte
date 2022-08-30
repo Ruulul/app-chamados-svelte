@@ -1,4 +1,4 @@
-<div/>
+<div on:click/>
 
 <style>
     div {

@@ -3,12 +3,20 @@ import "../app.css";
 import SideBar from '$lib/components/SideBar.svelte'
 import UpBar from '$lib/components/UpBar.svelte'
 import { user } from '$lib/stores/user.js'
-import { filial } from '$lib/utils/filial.js'
+import { filiais_validas, filial } from '$lib/utils/filial.js'
 import { goto } from '$app/navigation'
 import { page, navigating } from '$app/stores'
 import { browser } from '$app/env'
+import { onMount } from "svelte";
 
 $: loading = !!$navigating
+
+/**
+ * @type {?HTMLDialogElement}
+ */
+let escolhe_filial_dialog
+
+let auth_promise = auth()
 
 let style;
 if (browser) style = document.documentElement.style
@@ -23,11 +31,22 @@ $: if (browser) switch ($filial) {
 		style.setProperty('--logo-filial', 'var(--logo-filial-ms)')
 		break;
 }
+
+onMount(()=>{
+	auth_promise.then(()=>{
+		if ($user.filiais.length > 1)
+			escolhe_filial_dialog.showModal()
+		else console.log("Sem múltiplas filiais")
+	})
+})
+
 function auth() {
 	return new Promise(
 		async function (resolve) {
 			if (browser && !$user) 
-				await goto('/login')
+				return await goto('/login')
+			await $user
+			console.log($user)
 			resolve()
 		}
 	)
@@ -38,14 +57,26 @@ function auth() {
 		{$page.stuff.title}
 	</title>
 </svelte:head>
+<dialog class='filled container' bind:this={escolhe_filial_dialog}>
+	<form on:submit|preventDefault={escolhe_filial_dialog.close()}>
+		<label>Selecione a filial
+			<select bind:value={$filial}>
+				{#each $filiais_validas as filial}
+					<option>{filial}</option>
+				{/each}
+			</select>
+		</label>
+		<input type='submit' value='Confirmar'/>
+	</form>
+</dialog>
 {#await Promise.resolve($user)}
 	<h1>Loading...</h1>
 {:then}
-	{#await auth() then}
+	{#await auth_promise then}
 		<a href="#main">Ir para conteúdo principal</a>
 		<div class='grid'>
 			<div class='upbar'>
-				<UpBar/>
+				<UpBar filial_dialog={escolhe_filial_dialog}/>
 			</div>
 			<div class='sidebar'>
 				<SideBar/>
@@ -56,8 +87,12 @@ function auth() {
 		</div>
 	{/await}
 {/await}
-
 <style>
+dialog form, form label {
+	display: flex;
+	flex-flow: column;
+	gap: 1em;
+}
 .grid {
 	display: grid;
 	grid-template-columns: repeat(12, 1fr);
