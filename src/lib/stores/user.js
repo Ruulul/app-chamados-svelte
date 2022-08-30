@@ -3,17 +3,8 @@ import { auth } from '$lib/utils/db.js'
 import { filial, filiais_validas_por_id } from '$lib/utils/filial'
 
 function createUser() {
-	function trackable_promise() {
-		let resolve, reject;
-		const promise = new Promise((res, rej)=>{
-			resolve = res
-			reject = rej
-		})
-		return { promise, resolve, reject }
-	}
-	const { promise, resolve, reject } = trackable_promise()
 	const { subscribe, set, update } = writable(
-		promise,
+		undefined,
 		function start(set) {
 			try {
 				auth.getPerfil()
@@ -21,17 +12,17 @@ function createUser() {
 						let perfil = data === 'Não autorizado'
 						? null
 						: data
-						resolve(perfil)
-						set(perfil)
 
 						let unsub = filial.subscribe(()=>{})
-						if (perfil)
+						if (perfil) {
 							filial.set(get(filiais_validas_por_id)[perfil.filialId])
+							set(perfil)
+						} else set(null)
 						unsub()
 					})
 			} catch (e) {
 				console.error(e)
-				reject(null)
+				set(null)
 			}
 		}
 	);

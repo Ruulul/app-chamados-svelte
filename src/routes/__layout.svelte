@@ -16,7 +16,11 @@ $: loading = !!$navigating
  */
 let escolhe_filial_dialog
 
-let auth_promise = auth()
+let auth_resolve;
+let auth_promise = new Promise((res)=>auth_resolve=res);
+
+$: 	if 		($user) auth_resolve()
+	else if	(browser && $user === null) goto('/login');
 
 let style;
 if (browser) style = document.documentElement.style
@@ -39,24 +43,14 @@ onMount(()=>{
 		else console.log("Sem múltiplas filiais")
 	})
 })
-
-function auth() {
-	return new Promise(
-		async function (resolve) {
-			if (browser && !$user) 
-				return await goto('/login')
-			await $user
-			console.log($user)
-			resolve()
-		}
-	)
-}
 </script>
+
 <svelte:head>
 	<title>
 		{$page.stuff.title}
 	</title>
 </svelte:head>
+
 <dialog class='filled container' bind:this={escolhe_filial_dialog}>
 	<form on:submit|preventDefault={escolhe_filial_dialog.close()}>
 		<label>Selecione a filial
@@ -69,24 +63,24 @@ function auth() {
 		<input type='submit' value='Confirmar'/>
 	</form>
 </dialog>
-{#await Promise.resolve($user)}
+
+{#await auth_promise}
 	<h1>Loading...</h1>
 {:then}
-	{#await auth_promise then}
-		<a href="#main">Ir para conteúdo principal</a>
-		<div class='grid'>
-			<div class='upbar'>
-				<UpBar filial_dialog={escolhe_filial_dialog}/>
-			</div>
-			<div class='sidebar'>
-				<SideBar/>
-			</div>
-			<main id="main">
-				<slot/>
-			</main>
+	<a href="#main">Ir para conteúdo principal</a>
+	<div class='grid'>
+		<div class='upbar'>
+			<UpBar filial_dialog={escolhe_filial_dialog}/>
 		</div>
-	{/await}
+		<div class='sidebar'>
+			<SideBar/>
+		</div>
+		<main id="main">
+			<slot/>
+		</main>
+	</div>
 {/await}
+
 <style>
 dialog form, form label {
 	display: flex;

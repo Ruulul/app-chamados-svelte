@@ -1,10 +1,14 @@
 <script>
     import { onDestroy } from 'svelte';
-    import { filtros } from '$lib/stores/cadastros';
+    import { filtros } from '$lib/stores/cadastros'
     import { getMany, getDepts } from '$lib/utils/cadastros';
     import { filterPendente } from '$lib/utils/utils';
     export let sort;
     let cadastros = [], depts = [];
+
+    let filtros_enum = createEnum(['abertos', 'fechados']);
+    let filtro = filtros.abertos;
+    $: console.log(filtro)
 
     $: getMany('processo', 'suporte_tecnico',$filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
     getDepts('abrir_os').then(data=>depts=data)
@@ -16,9 +20,23 @@
     }, 1000)
     onDestroy(()=>clearInterval(handlerAgora))
 
+    function createEnum(entries) {
+        const enumObject = {};
+        for (const entry of entries) enumObject[entry] = entry;
+        return Object.freeze(enumObject);
+    }
 </script>
 <div class='filled container'>
-    <slot/>
+    <form>
+        <label>
+            Filtrar chamados:
+            <br>
+            <select bind:value={filtro}>
+                <option value={filtros_enum.abertos}>Abertos</option>
+                <option value={filtros_enum.fechados}>Fechados</option>
+            </select>
+        </label>
+    </form>
 <table>
     <caption>Ordens de Serviço</caption>
     <thead class='underline'>
@@ -43,7 +61,14 @@
         <th class='filtro'/>
     </thead>
     <tbody>
-        {#each cadastros.filter(filterPendente).sort(sort) as cadastro(cadastro.id)}
+        {#each 
+            cadastros
+            .filter(processo=>
+                filtro===filtros_enum.abertos
+                    ? (console.log("Filtrando abertos"),filterPendente(processo)) 
+                    : (console.log("Filtando fechados"), !filterPendente(processo)))
+            .sort(sort) 
+        as cadastro(cadastro.id)}
             {@const campos = Object.fromEntries(cadastro.etapa.campos)}
         <a href={cadastro.etapa.Tag === 'abrir_os' ? `${cadastro.id}` : `../finaliza/${cadastro.id}`}>
             <tr>
@@ -76,6 +101,10 @@
 </table>
 </div>
 <style>
+    form {
+        padding-top: 1.5em;
+        padding-left: 1em;
+    }
     table {
         justify-content: center;
         text-align: center;
