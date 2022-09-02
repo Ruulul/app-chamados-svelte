@@ -33,7 +33,7 @@
                 <tr>
                     <a href={`/processos/${Tag}/${id}`}>
                         <td>
-                            {id} - {log[0].titulo}
+                            {id} - {log[0].titulo.toUpperCase()}
                         </td>
                         <td>
                             {formatTag(Tag)}

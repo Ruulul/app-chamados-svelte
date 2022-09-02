@@ -125,11 +125,21 @@
     }
     function onChange (campo) {
         return async ()=>{
+            let filial = $servico.campos.find(({campo})=>campo==='filial').valor;
             await updateProcesso($servico, {[campo]: campos_etapa[campo]})
                 .then(getServico)
                 .catch(console.error)
             if (campo==='status' && campos_etapa[campo] === 'fechado')
-                await nextEtapa($servico)
+                await nextEtapa($servico, { 
+                        dept:
+                        filial === '0101' 
+                            ? 9
+                            : filial === '0201'
+                            ? 22
+                            : filial === '0401'
+                            ? 29
+                            : undefined,
+                    })
                     .then(()=>history.back())
                     .catch(console.error)
         }

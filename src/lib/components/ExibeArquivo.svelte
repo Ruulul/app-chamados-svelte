@@ -35,55 +35,43 @@
     export let style = {}
 </script>
 {#if data}
-    {#if data !== 'Não autorizado'}
-	    <div class="file-wrapper" style={geraCSS(style)}>
+	    <div class:hidden={data === 'Não autorizado'} class="file-wrapper" style={geraCSS(style)}>
 	    	<span>{title} (Approx. {Math.floor(data.split(';base64,')[1].length/4 * 3 / 1024)} kB)
 	    		<br/>
-	    		{#if data.slice(0, 20).includes('image')}
-	    		    <img {alt} src={data}/>
-	    		{:else}
-	    		<object {alt} title='anexo' data={data}>
+                <img class:hidden={!data.slice(0, 20).includes('image')} {alt} src={data}/>
+	    		<object class:hidden={data.split(';base64,')[1].length < 20 || data.slice(0, 20).includes('image')} {alt} title='anexo' {data}>
 	    			Não pudemos exibir
 	    		</object>
-	    		{/if}
 	    	</span>
             <slot/>
 	    </div>
-        {#if abrir}
-            <a href={data} target='_blank'>{abrir}</a>
-        {/if}
-    {/if}
+        <a class:hidden={!(data && abrir)} href={data} target='_blank'>{abrir}</a>
 {:else if String(title) !== 'undefined'}
     {#await getFile(title)}
         {carregando}
-    {:then arquivo}
-        {#if arquivo !== 'Não autorizado'}
-	    <div class="file-wrapper" style={geraCSS(style)}>
-	    	<span>{title} (Approx. {Math.floor(arquivo.split(';base64,')[1].length/4 * 3 / 1024)} kB)
+    {:then data}
+	    <div class:hidden={data === 'Não autorizado'} class="file-wrapper" style={geraCSS(style)}>
+	    	<span>{title} (Approx. {Math.floor(data.split(';base64,')[1].length/4 * 3 / 1024)} kB)
 	    		<br/>
-	    		{#if arquivo.slice(0, 20).includes('image')}
-	    		    <img {alt} src={arquivo}/>
-	    		{:else}
-	    		<object {alt} title='anexo' data={arquivo}>
+                <img class:hidden={!data.slice(0, 20).includes('image')} {alt} src={data}/>
+	    		<object class:hidden={data.slice(0, 20).includes('image')} {alt} title='anexo' {data}>
 	    			Não pudemos exibir
 	    		</object>
-	    		{/if}
 	    	</span>
             <slot/>
 	    </div>
-        {#if abrir}
-            <a href={arquivo} target='_blank'>{abrir}</a>
-        {/if}
-        {:else}
-            {sem_arquivo}
-        {/if}
+        <a class:hidden={!(data && abrir)} href={data} target='_blank'>{abrir}</a>
+        <span class:hidden={data !== 'Não autorizado'}>{sem_arquivo}</span>
     {/await}
 {/if}
 
 <style>
+    .hidden {
+        display: none;
+    }
 	img {
 		width: 0;
-		transition: width 0.2s;
+		transition: width 0.2s 0.25s;
 		align-self: center;
 	}
 	.file-wrapper :hover img {

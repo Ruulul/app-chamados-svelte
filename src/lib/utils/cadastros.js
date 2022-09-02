@@ -56,11 +56,22 @@ async function getCount (model, tag, filtros) {
 async function updateProcesso (processo, update) {
         return requestPut(`/etapa/${processo.etapa.Tag}/${processo.etapa.id}`, update)
 }
-async function nextEtapa (processo) {
-    if (processo.Tag === 'cadastro_produto')
-    return requestPost(`/processo/${processo.Tag}/${processo.id}/etapa/4`, {finalizado: false})
+async function nextEtapa (processo, props) {
+    const initial_props = {
+        finaliza: {
+            status: "em analise",
+        }
+    }
+    let meta_processos = await requestGet('/meta/processo/' + processo.Tag)
+    let meta_etapa_atual = meta_processos.etapas.find(etapa=>etapa.Tag===processo.etapa.Tag)
+    let meta_etapa_next = meta_processos.etapas.find(etapa=>etapa.id===meta_etapa_atual.next)
+    if (meta_etapa_next)
+        return requestPost(`/processo/${processo.Tag}/${processo.id}/etapa/${meta_etapa_atual.next}`, { ...props, ...initial_props[meta_etapa_next.Tag] })
 }
 
 async function addMensagem (processo, mensagem) {
-    return requestPost(`/processo/${processo.Tag}/${processo.id}/etapa/${processo.etapa.Tag}/${processo.etapa.id}/mensagem`, mensagem)
+    let { anexos } = mensagem;
+    delete mensagem.anexos;
+    let new_message = await requestPost(`/processo/${processo.Tag}/${processo.id}/etapa/${processo.etapa.Tag}/${processo.etapa.id}/mensagem`, mensagem)
+    if (anexos) return Promise.all(anexos.forEach(anexo=>requestPost(`/log/${new_message.Tag}/${new_message.id}/campo/anexo`, anexo)))
 }

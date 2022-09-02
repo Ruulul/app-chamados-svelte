@@ -22,9 +22,6 @@
     <caption>Ordens de Serviço</caption>
     <thead class='underline'>
         <th>
-            Filial
-        </th>
-        <th>
             ID
         </th>
         <th>
@@ -46,9 +43,6 @@
             {@const campos = Object.fromEntries(cadastro.etapa.campos)}
         <a href={cadastro.etapa.Tag === 'cadastro_produto' ? `${cadastro.id}` : `../finaliza/${cadastro.id}`}>
             <tr>
-                <td>
-                    {cadastro.campos.find(campo=>campo.campo==='filial').valor}
-                </td>
                 <td>
                     Sla
                 </td>

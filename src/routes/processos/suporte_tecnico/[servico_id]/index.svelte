@@ -2,7 +2,7 @@
     import { getContext } from 'svelte'
     import { goto } from '$app/navigation'
     import { getUser } from '$lib/utils/db.js'
-    import { updateProcesso } from '$lib/utils/cadastros';
+    import { updateProcesso, getCampo, getUnique } from '$lib/utils/cadastros';
     import { user } from '$lib/stores/user.js'
     import { parseMD } from '$lib/utils/utils'
     import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
@@ -31,6 +31,10 @@
     }
 
     const servico = getContext('servico')
+
+    let files = {};
+    $: $servico.log?.forEach(async log => files[log.id] = await getCampo('log', log.Tag, log.id, 'anexo'))
+    $: console.log(files)
     function adicionaMensagem () {
         goto('addMensagem', {
             noscroll: true,
@@ -53,7 +57,7 @@
     {$servico && $servico.log ? $servico.log[0].titulo : 'Carregando'}
 </div>
 <div class='messages'>
-    {#each $servico?.log?.sort((a, b)=>b.id-a.id) || [] as {idUsuario, titulo, descr, createdAt, metadados}}
+    {#each $servico?.log?.sort((a, b)=>b.id-a.id) || [] as {id, idUsuario, titulo, descr, createdAt}}
         {@const data_array = createdAt.split('T')}
         {@const data = data_array[0].split('-').reverse().join('/')}
         {@const hora = data_array[1].split('.')[0]}
@@ -68,6 +72,9 @@
             <h3>{titulo}</h3>
             {@html parseMD(descr)}
             <dd>{data + ' ' + hora}</dd>
+            {#each Array.isArray(files[id]) ? Object.values(files[id]) : [] as {data = 'data:;base64,', title}}
+                <ExibeArquivo {data} title={title?.split('-')[1]}/>
+            {/each}
         </div>
     {/each}
 </div>

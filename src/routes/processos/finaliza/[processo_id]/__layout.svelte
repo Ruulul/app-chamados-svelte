@@ -22,23 +22,23 @@
     .then(data=>{
         $processo=data;
         console.log(data)
-        status=data.etapa.campos.find(({campo})=>campo==='finalizado').valor
+        status=Object.fromEntries(data.etapa.campos)["status"]
         status = status.toString()
     })
     $: etapa = $processo?.etapa.Tag
     getDepts('finaliza').then(data=>depts=data)
     $: console.log(etapa)
-    $: getOpcoes('etapa', etapa, 'finalizado').then(data=>(console.log(data),status_opcoes=data.map(s=>s.toString())))
+    $: getOpcoes('etapa', etapa, 'status').then(data=>(console.log(data),status_opcoes=data.map(s=>s.toString())))
     $: getUser($processo?.idUsuario).then(user=>cliente=user)
 
     let canEdit = false
     $: if (cliente && depts) {
-        canEdit = !$user.dept.includes(depts?.find(dept=>dept.id===$processo.etapa.dept)?.departamento) || $user.cargo == 'admin'
+        canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$processo.etapa.dept)?.departamento) || $user.cargo == 'admin'
     }
     $: console.log(canEdit)
     function onChange() {
         updating = true
-        if (status === 'finalizado')
+        if (status === 'fechado')
         return updateProcesso($processo, {status})
             .then(()=>updating = false)
     }
@@ -71,23 +71,20 @@
                     {$processo?.log[0].descr}
                 </td>
             </tr>
-            <tr class:hidden={canEdit}>
+            <tr>
                 <th>
-                    Finalizar?
+                    Status:
                 </th>
                 <td>
-                    <button>OK</button>
+                    <span class:hidden={canEdit}>
+                        {status}</span>
+                    <select class:updating class:hidden={!canEdit} bind:value={status} on:change={onChange}>
+                        {#each status_opcoes || [] as opcao}
+                            <option>{opcao}</option>
+                        {/each}
+                    </select>
                 </td>
             </tr>
-            <tr class:hidden={!canEdit}>
-                <th>
-                    Status
-                </th>
-                <td>
-                    {status==true ? 'finalizado' : 'pendente'}
-                </td>
-            </tr>
-        </table>
         <div class='campo'>
         <h2>Anexo</h2>
         </div>

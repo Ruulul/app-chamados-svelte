@@ -58,14 +58,6 @@
     <table> 
         <tr>
             <th>
-                Filial:
-            </th>
-            <td>
-                <Filtro options={filiais} bind:value={$filial} label=''/>
-            </td>
-        </tr>
-        <tr>
-            <th>
                 Tipo:
             </th>
             <td>

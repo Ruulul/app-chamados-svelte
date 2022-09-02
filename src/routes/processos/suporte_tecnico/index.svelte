@@ -8,7 +8,6 @@
 
     let filtros_enum = createEnum(['abertos', 'fechados']);
     let filtro = filtros.abertos;
-    $: console.log(filtro)
 
     $: getMany('processo', 'suporte_tecnico',$filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
     getDepts('abrir_os').then(data=>depts=data)
@@ -65,8 +64,9 @@
             cadastros
             .filter(processo=>
                 filtro===filtros_enum.abertos
-                    ? (console.log("Filtrando abertos"),filterPendente(processo)) 
-                    : (console.log("Filtando fechados"), !filterPendente(processo)))
+                    ? filterPendente(processo) 
+                    : !filterPendente(processo)
+            )
             .sort(sort) 
         as cadastro(cadastro.id)}
             {@const campos = Object.fromEntries(cadastro.etapa.campos)}

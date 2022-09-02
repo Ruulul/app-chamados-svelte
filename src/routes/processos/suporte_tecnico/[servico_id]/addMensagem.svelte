@@ -20,7 +20,7 @@
             idUsuario: $user.id,
             descr: value,
             titulo: 'msg',
-            anexo: files[0]
+            anexos: files
         }
         if (value.length > 0)
         addMensagem($servico, mensagem)
@@ -31,10 +31,6 @@
     }
 </script>
 <form on:submit|preventDefault={onSubmit}>
-    <p>
-        Prévia:
-    </p>
-        {@html parsed}
     <textarea class='outlined container' bind:value maxlength="1000" rows='20' cols='60' on:paste={({clipboardData:{files}})=>addFiles(files)}/>
         <br>
         <Anexos bind:files bind:addFiles/>
@@ -53,5 +49,6 @@
     }
     textarea {
         padding: 1em;
+        margin-bottom: 1em;
     }
 </style>

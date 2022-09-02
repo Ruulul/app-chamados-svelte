@@ -18,7 +18,7 @@
 </script>
 <div class='campo filled container assunto'>
     Assunto:
-    {$cadastro?.log[0].titulo}
+    {$cadastro?.log[0]?.titulo}
 </div>
 <div class='messages'>
     {#each $cadastro?.log.sort((a, b)=>b.id-a.id) || [] as {idUsuario, titulo, descr, createdAt, metadados}}

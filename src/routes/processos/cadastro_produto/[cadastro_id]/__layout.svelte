@@ -28,22 +28,24 @@
     $: etapa = $cadastro?.etapa.Tag
     $: if ($cadastro?.idEtapaAtual) 
         getUnique('etapa', etapa, $cadastro?.idEtapaAtual)
-        .then((data)=>getCampo('log', data.log[0].Tag, data.log[0].id, 'anexo'))
+        .then((data)=>getCampo('log', data.log[0]?.Tag, data.log[0]?.id, 'anexo'))
         .then(files=>anexos=files)
     getDepts('cadastro_produto').then(data=>depts=data)
-    $: getOpcoes('etapa', etapa,'status').then(data=>status_opcoes=data)
+    $: console.log(`Getting "etapa/campos/${etapa}/status"`)
+    $: getOpcoes('etapa', etapa, 'status').then(data=>status_opcoes=data)
     $: getUser($cadastro?.idUsuario).then(user=>cliente=user)
 
     let canEdit = false
-    $: canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$cadastro.etapa.dept)?.departamento) || $user.cargo == 'admin'
+    $: canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$cadastro?.etapa.dept)?.departamento) || $user.cargo == 'admin'
     function onChange() {
         updating = true
-        if (status === 'fechado')
+        if (status === 'finalizado')
             return nextEtapa($cadastro)
                 .then(()=>history.back())
         return updateProcesso($cadastro, {status})
             .then(()=>getUnique('processo', 'cadastro_produto', $page.params.cadastro_id))
             .then(cadastro.set)
+            .then(()=>etapa==='finaliza'&&status==='true' ? history.back() : undefined)
     }
 </script>
 <div class='filled container'>
@@ -90,7 +92,7 @@
                     <span class:hidden={canEdit}>
                         {status}</span>
                     <select class:updating class:hidden={!canEdit} bind:value={status} on:change={onChange}>
-                        {#each status_opcoes as opcao}
+                        {#each status_opcoes || [] as opcao}
                             <option>{opcao}</option>
                         {/each}
                     </select>
