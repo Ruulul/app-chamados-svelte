@@ -10,27 +10,32 @@
      * Objeto que mapeia o label do botão de alterar status com o status em si
      */
     const label_por_status = {
-        pendente: 'Resolver chamado',
-        resolvido: 'Fechar chamado',
-        fechado: ''
+        'em analise': 'Adicionar à fila',
+        'pendente': 'Atender chamado',
+        'em atendimento': 'Fechar chamado',
     }
     /**
      * Lista encadeada de status com status.
      */
     const proximo_status = {
-        pendente: 'resolvido',
-        resolvido: 'fechado'
+        'em analise': 'pendente',
+        'pendente': 'em atendimento',
+        'em atendimento': 'fechado',
     }
 
     /**
      * Lista encadeada de status com metadado
      */
     const metadado_hora = {
-        resolvido: 'resolvido_em',
-        fechado: 'fechado_em'
+        'em atendimento': 'inicio_em',
+        'fechado': 'fim_em',
+        'aguardando solicitante': 'pausa_em',
+        'aguardando terceiro': 'pausa_em',
     }
 
     const servico = getContext('servico')
+    $: campos_etapa = $servico?.etapa ? Object.fromEntries($servico?.etapa.campos) : {};
+    $: console.log(campos_etapa)
 
     let files = {};
     $: $servico.log?.forEach(async log => files[log.id] = await getCampo('log', log.Tag, log.id, 'anexo'))
@@ -47,7 +52,7 @@
         if (novo_status)
             update = {status: novo_status, [metadado_hora[novo_status]]:(new Date()).toISOString()}
         if (update)
-            undefined
+            updateProcesso($servico, update);
     }
 
     $: console.log($servico?.log)
@@ -80,10 +85,10 @@
 </div>
 {#if $servico?.status != 'fechado'}
     <div class='buttons'>
-        <button class='action button' on:click={adicionaMensagem}>Adicionar Mensagem</button>
-        {#if [$servico?.atendenteId, $servico?.usuarioId].includes($user.id.toString())}
-            <button class='action button' on:click={atualizaChamado}>{label_por_status[$servico?.status]}</button>
+        {#if [$servico?.atendenteId, $servico?.usuarioId].includes($user.id.toString()) || $user.cargo === 'admin'}
+            <button class='action button' on:click={atualizaChamado}>{label_por_status[campos_etapa.status]}</button>
         {/if}
+        <button class='action button' on:click={adicionaMensagem}>Adicionar Mensagem</button>
     </div>
 {/if}
 
