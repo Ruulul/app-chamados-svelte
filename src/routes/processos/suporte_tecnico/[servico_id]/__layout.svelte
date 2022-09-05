@@ -16,6 +16,7 @@
     import { getUser, } from '$lib/utils/db.js'
     import { updateProcesso, getUnique, getCampo, getDepts, getOpcoes, nextEtapa } from '$lib/utils/cadastros';
     import { user } from '$lib/stores/user.js'
+    import { tipos_os, categorias_por_tipo_os } from '$lib/stores/local_db';
     import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     import { page } from '$app/stores'
     import { writable } from 'svelte/store';
@@ -213,6 +214,7 @@
                     <button class:hidden={!(campos_etapa["categoria"]==="A. D." && canEdit)} on:click={$classificador.dialog?.showModal()}>
                         Classificar
                     </button>
+
                     <dialog class='filled container' bind:this={$classificador.dialog}>
                         <h2>
                             Classificar chamado
@@ -220,16 +222,27 @@
                         <form on:submit|preventDefault={()=>onChange("categoria")().then($classificador.dialog.close.bind($classificador.dialog))}>
                             <label>
                                 Tipo 
+                                <select bind:value={$classificador.tipo}>
+                                    {#each $tipos_os as {tipo}}
+                                        <option>{tipo}</option>
+                                    {/each}
+                                </select>
                                 <input bind:value={$classificador.tipo}>
                             </label>
                             <label>
                                 Categoria
+                                <select bind:value={$classificador._categoria} on:change={()=>campos_etapa["categoria"]=$classificador.categoria}>
+                                    {#each $categorias_por_tipo_os[$classificador.tipo] || [] as categoria}
+                                        <option>{categoria}</option>
+                                    {/each}
+                                </select>
                                 <input bind:value={$classificador._categoria} on:change={()=>campos_etapa["categoria"]=$classificador.categoria}>
                             </label>
                             <input type='submit' value='Enviar'>
                             <span>{$classificador.categoria}</span>
                         </form>
                     </dialog>
+
                 </td>
             </tr>
             <tr>
