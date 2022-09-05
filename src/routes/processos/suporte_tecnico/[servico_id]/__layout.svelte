@@ -104,7 +104,7 @@
     $: campos_etapa, setAtendente()
 
     let canEdit = false
-    $: getDepts(etapa).then(depts=>canEdit = $user?.dept.includes(depts?.find(dept=>dept.id===$servico.etapa.dept)?.departamento)) || $user?.cargo == 'admin'
+    $: getDepts(etapa).then(depts=>canEdit = ($user?.tipo == 'suporte' && $user?.dept.includes(depts?.find(dept=>dept.id===$servico.etapa.dept)?.departamento) || $user?.cargo == 'admin')) 
 
     let status_opcoes = []
     $: getOpcoes('etapa', etapa, 'status').then(opcoes=>status_opcoes=opcoes)
