@@ -128,3 +128,62 @@ export function formatTag (tag) {
 export function filterPendente (processo) {
   return Object.fromEntries(processo.etapa.campos)["status"] !== 'fechado'
 }
+
+/**
+ * Retorna uma data de acordo com a prioridade e com a abertura.
+ * Prioridade 1 - 7 dias;
+ * Prioridade 2 - 3 dias;
+ * Prioridade 3 - 1 dia;
+ * Prioridade 4 - 8 horas;
+ * @typedef {{ campos: string[][]}} ObjWithCamposField 
+ * @param {ObjWithCamposField} obj
+ * @returns {{
+ *  obj: ObjWithCamposField,
+ *  ven: Date?,
+ * }} 
+ */
+export function assignVencimento (obj) {
+  let campos = Object.fromEntries(obj.campos);
+  let return_obj = { obj, ven: null };
+  if (!campos || !('prioridade' in campos) || !('createdAt' in campos)) return return_obj;
+  switch (parseInt(campos.prioridade)) {
+    case 1:
+                        //ms * s * min * h * d
+      let sete_dias_ms = 1000 * 60 * 60 * 24 * 7;
+      return_obj.ven = new Date(Date.now() + sete_dias_ms);
+      break;
+    case 2:
+      let tres_dias_ms = 1000 * 60 * 60 * 24 * 3;
+      return_obj.ven = new Date(Date.now() + tres_dias_ms);
+      break;
+    case 3:
+      let um_dia_ms = 1000 * 60 * 60 * 24 * 1;
+      return_obj.ven = new Date(Date.now() + um_dia_ms);
+      break;
+    case 4:
+      let oito_horas_ms = 1000 * 60 * 60 * 3;
+      return_obj.ven = new Date(Date.now() + oito_horas_ms);
+      break;
+  }
+  return return_obj;
+}
+
+
+    /**
+     * Lista encadeada de status com status.
+     */
+     export const proximo_status = {
+      'em analise': 'pendente',
+      'pendente': 'em atendimento',
+      'em atendimento': 'fechado',
+  }
+
+  /**
+   * Lista de metadado por status
+   */
+  export const metadado_hora = {
+      'em atendimento': 'inicio_em',
+      'fechado': 'fim_em',
+      'aguardando solicitante': 'pausa_em',
+      'aguardando terceiro': 'pausa_em',
+  }

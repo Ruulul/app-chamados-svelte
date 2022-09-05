@@ -20,6 +20,8 @@
     import { page } from '$app/stores'
     import { writable } from 'svelte/store';
     import { TimeFromSeconds } from '$lib/utils/utils';
+    import { proximo_status, metadado_hora,  } from '$lib/utils/utils';
+    console.log(`from layout, ${proximo_status}, ${metadado_hora}`);
 
     let atendente='', nome='Sem usuário', dept='Sem usuário', anexos = []
     let servico = writable({})
@@ -31,15 +33,16 @@
            _categoria: string,
        }} classificador
      */
-    let classificador = {
+    let classificador = writable({}) 
+    $classificador = {
         dialog: undefined,
         tipo: '',
         _categoria: '',
     }
-    classificador.__defineSetter__('categoria', function (categoria) {
+    $classificador.__defineSetter__('categoria', function (categoria) {
         this._categoria = categoria
     })
-    classificador.__defineGetter__('categoria', function () {
+    $classificador.__defineGetter__('categoria', function () {
         return this.tipo + ' - ' + this._categoria
     })
     let etapa = ''
@@ -60,6 +63,8 @@
     $: console.log($servico)
     
     setContext('servico', servico)
+    setContext('getServico', getServico)
+    $: setContext('classificador', classificador)
 
     function liberaChamado () {
         let update = {
@@ -76,7 +81,7 @@
     function assumeChamado () {
         let update = {
             atendimento: true,
-            suporteId: $user.id,
+            suporteId: $user?.id,
             assumido_em: (new Date()).toISOString()
         }
         updateProcesso($servico, update)
@@ -92,14 +97,14 @@
     $: sla = Math.floor(agora - abertura)
     $: campos_etapa = $servico?.etapa ? Object.fromEntries($servico?.etapa.campos) : {}
 
-    $: isSuporte = $user.tipo=='suporte'
-    $: canRelease = campos_etapa["suporteId"] == $user.id && $servico?.status !== 'fechado'
+    $: isSuporte = $user?.tipo=='suporte'
+    $: canRelease = campos_etapa["suporteId"] == $user?.id && $servico?.status !== 'fechado'
 
     $: $servico?.usuarioId, setNomeAndDept()
     $: campos_etapa, setAtendente()
 
     let canEdit = false
-    $: getDepts(etapa).then(depts=>canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$servico.etapa.dept)?.departamento)) || $user.cargo == 'admin'
+    $: getDepts(etapa).then(depts=>canEdit = $user?.dept.includes(depts?.find(dept=>dept.id===$servico.etapa.dept)?.departamento)) || $user?.cargo == 'admin'
 
     let status_opcoes = []
     $: getOpcoes('etapa', etapa, 'status').then(opcoes=>status_opcoes=opcoes)
@@ -109,10 +114,10 @@
        console.log(campos_etapa)
        let id = campos_etapa["suporteId"]
        console.log(`atendenteId: ${id}`)
-       console.log(`$user.nome: ${$user.nome}`)
+       console.log(`$user?.nome: ${$user?.nome}`)
        if (id)
-           if (id == $user.id)
-               atendente=$user.nome
+           if (id == $user?.id)
+               atendente=$user?.nome
            else getUser(id).then(user=>(atendente=user.nome, user)).then(console.log)
     }
     function setNomeAndDept () {
@@ -125,10 +130,12 @@
     }
     function onChange (campo) {
         return async ()=>{
-            let filial = $servico.campos.find(({campo})=>campo==='filial').valor;
-            await updateProcesso($servico, {[campo]: campos_etapa[campo]})
-                .then(getServico)
-                .catch(console.error)
+            let filial = Object.fromEntries($servico.campos)?.filial;
+            let novo_status = proximo_status[campos_etapa.status];
+            let update = {};
+            update[campo] = campos_etapa[campo];
+            if (campo === 'status')
+                update[metadado_hora[novo_status]] = (new Date()).toISOString();
             if (campo==='status' && campos_etapa[campo] === 'fechado')
                 await nextEtapa($servico, { 
                         dept:
@@ -142,6 +149,10 @@
                     })
                     .then(()=>history.back())
                     .catch(console.error)
+            else
+            await updateProcesso($servico, update)
+                .then(getServico)
+                .catch(console.error)
         }
     }
 </script>
@@ -149,7 +160,7 @@
 {#key $servico?.updatedAt}
 <div class='filled container'>
     <div class='wrapper'>
-        <h1>Chamado {$servico.id}</h1>{#if $user.tipo == 'suporte'}<a href='/classificar/{$page.params.servico_id}'><Fa icon={faPen}/></a>{/if}
+        <h1>Chamado {$servico.id}</h1>{#if $user?.tipo == 'suporte'}<a href='/classificar/{$page.params.servico_id}'><Fa icon={faPen}/></a>{/if}
         <table> 
             <tr>
                 <th>
@@ -199,24 +210,24 @@
                 </th>
                 <td>
                     {campos_etapa["categoria"]}
-                    <button class:hidden={!(campos_etapa["categoria"]==="A. D." && canEdit)} on:click={classificador.dialog?.showModal()}>
+                    <button class:hidden={!(campos_etapa["categoria"]==="A. D." && canEdit)} on:click={$classificador.dialog?.showModal()}>
                         Classificar
                     </button>
-                    <dialog class='filled container' bind:this={classificador.dialog}>
+                    <dialog class='filled container' bind:this={$classificador.dialog}>
                         <h2>
                             Classificar chamado
                         </h2>
-                        <form on:submit|preventDefault={onChange("categoria")}>
+                        <form on:submit|preventDefault={()=>onChange("categoria")().then($classificador.dialog.close.bind($classificador.dialog))}>
                             <label>
                                 Tipo 
-                                <input bind:value={classificador.tipo}>
+                                <input bind:value={$classificador.tipo}>
                             </label>
                             <label>
                                 Categoria
-                                <input bind:value={classificador._categoria} on:change={()=>campos_etapa["categoria"]=classificador.categoria}>
+                                <input bind:value={$classificador._categoria} on:change={()=>campos_etapa["categoria"]=$classificador.categoria}>
                             </label>
                             <input type='submit' value='Enviar'>
-                            <span>{classificador.categoria}</span>
+                            <span>{$classificador.categoria}</span>
                         </form>
                     </dialog>
                 </td>

@@ -3,11 +3,13 @@
     import Fa from 'svelte-fa'
     import { faEye as faEye, faHeadset } from '@fortawesome/free-solid-svg-icons'
     import { processos } from '$lib/stores/notifications'
-    import { filterPendente } from "$lib/utils/utils";
+    import { filterPendente, assignVencimento } from "$lib/utils/utils";
     let pendentes = 0;
     export let Tag;
     export let titulo;
-    $: pendentes = $processos.filter(processo=>processo.Tag===Tag&&filterPendente(processo)).length
+    $: por_tag = $processos.filter(processo=>processo.Tag === Tag);
+    $: pendentes = por_tag.filter(filterPendente)
+    $: por_vencimento = pendentes.map(({etapa})=>assignVencimento(etapa))
 
     $:hidden = !pendentes
 </script>
@@ -18,7 +20,7 @@
     <div class='divider'/>
     <a class='action button' sveltekit:prefetch href='/processos/{Tag}/novo'>Abrir Chamado</a>
     <ul>
-        <li>{pendentes} pendentes</li>
+        <li>{pendentes.length} pendentes</li>
         <li>0 parados</li>
         <li>0 em atendimento</li>
     </ul>

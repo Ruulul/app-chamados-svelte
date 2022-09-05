@@ -2,10 +2,11 @@
     import { getContext } from 'svelte'
     import { goto } from '$app/navigation'
     import { getUser } from '$lib/utils/db.js'
-    import { updateProcesso, getCampo, getUnique } from '$lib/utils/cadastros';
+    import { updateProcesso, getCampo, getUnique, nextEtapa } from '$lib/utils/cadastros';
     import { user } from '$lib/stores/user.js'
     import { parseMD } from '$lib/utils/utils'
     import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
+    import { metadado_hora, proximo_status } from '$lib/utils/utils';
     /**
      * Objeto que mapeia o label do botão de alterar status com o status em si
      */
@@ -14,26 +15,10 @@
         'pendente': 'Atender chamado',
         'em atendimento': 'Fechar chamado',
     }
-    /**
-     * Lista encadeada de status com status.
-     */
-    const proximo_status = {
-        'em analise': 'pendente',
-        'pendente': 'em atendimento',
-        'em atendimento': 'fechado',
-    }
-
-    /**
-     * Lista encadeada de status com metadado
-     */
-    const metadado_hora = {
-        'em atendimento': 'inicio_em',
-        'fechado': 'fim_em',
-        'aguardando solicitante': 'pausa_em',
-        'aguardando terceiro': 'pausa_em',
-    }
 
     const servico = getContext('servico')
+    const getServico = getContext('getServico')
+    const classificador = getContext('classificador')
     $: campos_etapa = $servico?.etapa ? Object.fromEntries($servico?.etapa.campos) : {};
     $: console.log(campos_etapa)
 
@@ -46,16 +31,34 @@
         })
     }
 
-    function atualizaChamado () {
-        let novo_status = proximo_status[$servico.status]
+    async function atualizaChamado () {
+        let novo_status = proximo_status[campos_etapa.status]
+        let filial = Object.fromEntries($servico.campos)?.filial;
         let update;
         if (novo_status)
-            update = {status: novo_status, [metadado_hora[novo_status]]:(new Date()).toISOString()}
-        if (update)
-            updateProcesso($servico, update);
+            update = {status: novo_status, [metadado_hora[novo_status]]:(new Date()).toISOString()};
+        if (novo_status === 'em atendimento')
+            update.suporteId = $user.id;
+        await updateProcesso($servico, update)
+            .then(getServico)
+            .catch(console.error)
+        if (novo_status === 'fechado')
+            await nextEtapa($servico, { 
+                    dept:
+                    filial === '0101' 
+                        ? 9
+                        : filial === '0201'
+                        ? 22
+                        : filial === '0401'
+                        ? 29
+                        : undefined,
+                })
+                .then(()=>history.back())
+                .catch(console.error)
     }
 
     $: console.log($servico?.log)
+    $: a_classificar = campos_etapa.categoria === 'A. D.'
 </script>
 <div class='campo filled container assunto'>
     Assunto:
@@ -86,7 +89,7 @@
 {#if $servico?.status != 'fechado'}
     <div class='buttons'>
         {#if [$servico?.atendenteId, $servico?.usuarioId].includes($user.id.toString()) || $user.cargo === 'admin'}
-            <button class='action button' on:click={atualizaChamado}>{label_por_status[campos_etapa.status]}</button>
+            <button class='action button' on:click={a_classificar ? $classificador.dialog.showModal.bind($classificador.dialog) : atualizaChamado}>{a_classificar ? 'Classificar' : label_por_status[campos_etapa.status]}</button>
         {/if}
         <button class='action button' on:click={adicionaMensagem}>Adicionar Mensagem</button>
     </div>

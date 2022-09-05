@@ -27,7 +27,7 @@
     })
     let filiais_encoded = ''
     $: $filiais_validas, getOpcoes('processo', 'cadastro_produto', 'filial').then(data=>{
-        filiais = data.filter(item=>$filiais_validas.includes(item));
+        filiais = data?.filter(item=>$filiais_validas.includes(item));
         let new_encoded = JSON.stringify(filiais)
         if (filiais_encoded != new_encoded)
             $filial = filiais[0]
@@ -44,7 +44,7 @@
             status: 'pendente',
             email,
             dept: departamento_id,
-            anexos
+            anexos,
 		}
 
 		await post('processo', 'cadastro_produto', os)
