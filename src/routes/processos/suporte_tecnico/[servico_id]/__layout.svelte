@@ -227,7 +227,7 @@
                                         <option>{tipo}</option>
                                     {/each}
                                 </select>
-                                <input bind:value={$classificador.tipo}>
+                                <input placeholder="Use isso se não encontrar sua opção acima" bind:value={$classificador.tipo}>
                             </label>
                             <label>
                                 Categoria
@@ -236,7 +236,7 @@
                                         <option>{categoria}</option>
                                     {/each}
                                 </select>
-                                <input bind:value={$classificador._categoria} on:change={()=>campos_etapa["categoria"]=$classificador.categoria}>
+                                <input placeholder="Use isso se não encontrar sua opção acima" bind:value={$classificador._categoria} on:change={()=>campos_etapa["categoria"]=$classificador.categoria}>
                             </label>
                             <input type='submit' value='Enviar'>
                             <span>{$classificador.categoria}</span>
