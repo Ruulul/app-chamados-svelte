@@ -13,24 +13,24 @@
   },
   "devDependencies": {
     "@fortawesome/free-regular-svg-icons": "5.1.0",
-    "@octokit/core": "^4.0.4",
-    "@octokit/rest": "^19.0.3",
-    "@playwright/test": "^1.21.0",
+    "@octokit/core": "^4.0.5",
+    "@octokit/rest": "^19.0.4",
+    "@playwright/test": "^1.25.1",
     "@sveltejs/adapter-auto": "next",
     "@sveltejs/adapter-static": "1.0.0-next.38",
     "@sveltejs/kit": "1.0.0-next.385",
-    "autoprefixer": "^10.4.7",
-    "postcss": "^8.4.14",
+    "autoprefixer": "^10.4.8",
+    "postcss": "^8.4.16",
     "postcss-load-config": "^4.0.1",
-    "svelte": "^3.44.0",
+    "svelte": "^3.50.0",
     "svelte-preprocess": "^4.10.7",
     "vite": "3.0.0"
   },
   "type": "module",
   "dependencies": {
-    "@fortawesome/free-solid-svg-icons": "5",
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "insane": "^2.6.2",
-    "marked": "^4.0.17",
+    "marked": "^4.1.0",
     "svelte-fa": "^3.0.3",
     "svelte-paginate": "^0.0.1"
   }

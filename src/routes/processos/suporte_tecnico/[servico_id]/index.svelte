@@ -89,7 +89,7 @@
 {#if $servico?.status != 'fechado'}
     <div class='buttons'>
         {#if [$servico?.atendenteId, $servico?.usuarioId].includes($user.id.toString()) || $user.cargo === 'admin'}
-            <button class='action button' on:click={a_classificar ? $classificador.dialog.showModal.bind($classificador.dialog) : atualizaChamado}>{a_classificar ? 'Classificar' : label_por_status[campos_etapa.status]}</button>
+            <button class='action button' on:click={a_classificar ? $classificador.dialog.showModal.bind($classificador.dialog) : atualizaChamado}>{a_classificar ? 'Classificar e Assumir' : label_por_status[campos_etapa.status]}</button>
         {/if}
         <button class='action button' on:click={adicionaMensagem}>Adicionar Mensagem</button>
     </div>

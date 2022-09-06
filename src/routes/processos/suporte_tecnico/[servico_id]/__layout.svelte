@@ -1,6 +1,7 @@
 <script context='module'>
+    import { updateProcesso, getUnique, getCampo, getDepts, getOpcoes, nextEtapa } from '$lib/utils/cadastros';
 	export async function load ({params}) {
-		return {
+        return {
 			stuff: {
 				title: `Chamado ${params.servico_id}`
 			}
@@ -14,7 +15,6 @@
     import { processos } from '$lib/stores/notifications'
     import { onDestroy, setContext } from 'svelte';
     import { getUser, } from '$lib/utils/db.js'
-    import { updateProcesso, getUnique, getCampo, getDepts, getOpcoes, nextEtapa } from '$lib/utils/cadastros';
     import { user } from '$lib/stores/user.js'
     import { tipos_os, categorias_por_tipo_os } from '$lib/stores/local_db';
     import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
@@ -49,6 +49,11 @@
     let etapa = ''
     const getServico = ()=>getUnique('processo', 'suporte_tecnico', $page.params.servico_id)
         .then(data=>{
+            if (data.etapa.Tag === 'finaliza') {
+                let new_link = `/processos/finaliza/${$page.params.servico_id}`
+                window.location.href = new_link
+                console.log(new_link)
+            }
             console.log(data)
             servico.set(data)
             etapa = data.etapa.Tag
@@ -137,6 +142,8 @@
             update[campo] = campos_etapa[campo];
             if (campo === 'status')
                 update[metadado_hora[novo_status]] = (new Date()).toISOString();
+            if (campo === 'categoria')
+                update.suporteId = $user.id
             if (campo==='status' && campos_etapa[campo] === 'fechado')
                 await nextEtapa($servico, { 
                         dept:
@@ -185,8 +192,6 @@
                 </th>
                 <td>
                     <span class:hidden={!atendente}>{atendente}</span>
-                    <button on:click={assumeChamado} class:hidden={!(!atendente && isSuporte)}>Assumir chamado?</button>
-                    <button on:click={liberaChamado} class:hidden={!canRelease} class=hidden> Liberar chamado</button>
                 </td>
             </tr>
             <tr>
@@ -211,9 +216,6 @@
                 </th>
                 <td>
                     {campos_etapa["categoria"]}
-                    <button class:hidden={!(campos_etapa["categoria"]==="A. D." && canEdit)} on:click={$classificador.dialog?.showModal()}>
-                        Classificar
-                    </button>
 
                     <dialog class='filled container' bind:this={$classificador.dialog}>
                         <h2>

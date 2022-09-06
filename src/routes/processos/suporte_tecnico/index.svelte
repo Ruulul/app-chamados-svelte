@@ -1,17 +1,16 @@
 <script>
     import { onDestroy } from 'svelte';
     import { filtros } from '$lib/stores/cadastros'
-    import { getMany, getDepts } from '$lib/utils/cadastros';
+    import { getMany } from '$lib/utils/cadastros';
     import { filterPendente } from '$lib/utils/utils';
     export let sort;
-    let cadastros = [], depts = [];
+    let cadastros = [];
 
     let filtros_enum = createEnum(['abertos', 'fechados']);
     let filtro = filtros.abertos;
 
-    $: getMany('processo', 'suporte_tecnico',$filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
-    getDepts('abrir_os').then(data=>depts=data)
-
+    $: getMany('processo', 'suporte_tecnico', $filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
+    
     let agora = Date.now()/1000
     let handlerAgora = setInterval(()=>{
         getMany('processo', 'suporte_tecnico',$filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
@@ -49,9 +48,6 @@
             Status
         </th>
         <th>
-            Departamento
-        </th>
-        <th>
             Assunto
         </th>
         <th>
@@ -70,10 +66,11 @@
             .sort(sort) 
         as cadastro(cadastro.id)}
             {@const campos = Object.fromEntries(cadastro.etapa.campos)}
+            {@const campos_processo = Object.fromEntries(cadastro.campos)}
         <a href={cadastro.etapa.Tag === 'abrir_os' ? `${cadastro.id}` : `../finaliza/${cadastro.id}`}>
             <tr>
                 <td>
-                    {cadastro.campos.find(campo=>campo.campo==='filial').valor}
+                    {campos_processo.filial}
                 </td>
                 <td>
                     {cadastro.id}
@@ -84,9 +81,6 @@
                         : campos.finalizado==='true'
                             ? 'finalizado' 
                             : 'aguardando finalização'}
-                </td>
-                <td>
-                    {depts.find(dept=>dept.id===cadastro.etapa.dept)?.departamento}
                 </td>
                 <td>
                     {cadastro.log[0].titulo}

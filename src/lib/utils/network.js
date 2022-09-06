@@ -2,7 +2,7 @@
 
 export const origin = 'https://10.0.0.5:5000'
 const server = origin + '/api/'//'https://45.177.254.161:5000/api/'
-const api =  (filial) => server + filial
+export const api =  (filial) => server + filial
 import { browser } from '$app/env'
 import { filial as filial_store } from './filial.js'
 export { requestGet, requestPost, requestPut }
