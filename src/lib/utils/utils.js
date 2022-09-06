@@ -135,7 +135,7 @@ export function filterPendente (processo) {
  * Prioridade 2 - 3 dias;
  * Prioridade 3 - 1 dia;
  * Prioridade 4 - 8 horas;
- * @typedef {{ campos: string[][]}} ObjWithCamposField 
+ * @typedef {{ createdAt: string, campos: string[][]}} ObjWithCamposField 
  * @param {ObjWithCamposField} obj
  * @returns {{
  *  obj: ObjWithCamposField,
@@ -145,24 +145,26 @@ export function filterPendente (processo) {
 export function assignVencimento (obj) {
   let campos = Object.fromEntries(obj.campos);
   let return_obj = { obj, ven: null };
-  if (!campos || !('prioridade' in campos) || !('createdAt' in campos)) return return_obj;
+  if (!campos || !('prioridade' in campos) || !('createdAt' in obj)) return return_obj;
+  let createdDate = new Date(obj.createdAt);
+  let createdTimestamp = createdDate.getMilliseconds();
   switch (parseInt(campos.prioridade)) {
     case 1:
                         //ms * s * min * h * d
       let sete_dias_ms = 1000 * 60 * 60 * 24 * 7;
-      return_obj.ven = new Date(Date.now() + sete_dias_ms);
+      return_obj.ven = new Date(createdTimestamp + sete_dias_ms);
       break;
     case 2:
       let tres_dias_ms = 1000 * 60 * 60 * 24 * 3;
-      return_obj.ven = new Date(Date.now() + tres_dias_ms);
+      return_obj.ven = new Date(createdTimestamp + tres_dias_ms);
       break;
     case 3:
       let um_dia_ms = 1000 * 60 * 60 * 24 * 1;
-      return_obj.ven = new Date(Date.now() + um_dia_ms);
+      return_obj.ven = new Date(createdTimestamp + um_dia_ms);
       break;
     case 4:
       let oito_horas_ms = 1000 * 60 * 60 * 3;
-      return_obj.ven = new Date(Date.now() + oito_horas_ms);
+      return_obj.ven = new Date(createdTimestamp + oito_horas_ms);
       break;
   }
   return return_obj;

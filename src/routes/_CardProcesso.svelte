@@ -5,9 +5,13 @@
     import { processos } from '$lib/stores/notifications'
     import { filterPendente, assignVencimento } from "$lib/utils/utils";
     let pendentes = 0;
+    /**Tag da etapa filtrada*/
     export let Tag;
+    /**
+     * Título a ser apresentado no card
+     */
     export let titulo;
-    $: por_tag = $processos.filter(processo=>processo.Tag === Tag);
+    $: por_tag = $processos.filter(processo=>processo.etapa.Tag === Tag);
     $: pendentes = por_tag.filter(filterPendente)
     $: por_vencimento = pendentes.map(({etapa})=>assignVencimento(etapa))
 

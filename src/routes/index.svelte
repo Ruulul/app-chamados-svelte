@@ -12,7 +12,7 @@
 	import MuralAvisos from './_MuralAvisos.svelte';
 </script>
 <div class=main>
-	<CardProcesso Tag='suporte_tecnico' titulo='Suporte Técnico'/>
+	<CardProcesso Tag='abrir_os' titulo='Suporte Técnico'/>
 	<CardProcesso Tag='cadastro_produto' titulo='Cadastro de Produto'/>
 	<MuralAvisos/>
 </div>

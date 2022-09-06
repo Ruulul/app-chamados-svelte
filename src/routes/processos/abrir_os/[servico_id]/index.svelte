@@ -7,6 +7,7 @@
     import { parseMD } from '$lib/utils/utils'
     import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     import { metadado_hora, proximo_status } from '$lib/utils/utils';
+import { sendEmail } from '$lib/utils/email';
     /**
      * Objeto que mapeia o label do botão de alterar status com o status em si
      */
@@ -40,6 +41,10 @@
         if (novo_status === 'em atendimento')
             update.suporteId = $user.id;
         await updateProcesso($servico, update)
+            .then(async function(){
+                if (novo_status.toLowerCase().includes("aguardando"))
+                    sendEmail('on_hold', (await getUser($servico.idUsuario)).email, { idOS: $servico.id, status: novo_status });
+            })
             .then(getServico)
             .catch(console.error)
         if (novo_status === 'fechado')

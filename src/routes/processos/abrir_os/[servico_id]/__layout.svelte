@@ -22,6 +22,7 @@
     import { writable } from 'svelte/store';
     import { TimeFromSeconds } from '$lib/utils/utils';
     import { proximo_status, metadado_hora,  } from '$lib/utils/utils';
+    import { sendEmail } from '$lib/utils/email'
     console.log(`from layout, ${proximo_status}, ${metadado_hora}`);
 
     let atendente='', nome='Sem usuário', dept='Sem usuário', anexos = []
@@ -142,6 +143,8 @@
             update[campo] = campos_etapa[campo];
             if (campo === 'status')
                 update[metadado_hora[novo_status]] = (new Date()).toISOString();
+            if (novo_status.toLowerCase().includes("aguardando"))
+                sendEmail('on_hold', (await getUser($servico.idUsuario)).email, { idOS: $servico.id, status: novo_status });
             if (campo === 'categoria')
                 update.suporteId = $user.id
             if (campo==='status' && campos_etapa[campo] === 'fechado')

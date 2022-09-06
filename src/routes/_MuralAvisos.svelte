@@ -29,14 +29,14 @@
             </th>
         </thead>
         <tbody>
-            {#each $processos.filter(filterPendente) as {id, etapa: {campos}, log, Tag}}
+            {#each $processos.filter(filterPendente) as {id, etapa: {Tag}, log, Tag: process_tag}}
                 <tr>
                     <a href={`/processos/${Tag}/${id}`}>
                         <td>
                             {id} - {log[0].titulo.toUpperCase()}
                         </td>
                         <td>
-                            {formatTag(Tag)}
+                            {formatTag(process_tag)}
                         </td>
                     </a>
                 </tr>
