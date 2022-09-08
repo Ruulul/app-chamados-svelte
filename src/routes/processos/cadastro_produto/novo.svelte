@@ -16,7 +16,7 @@
     import { sendEmail } from '$lib/utils/email';
 	let titulo = '', descr = '', anexos=[], unidade = '', departamento_id, departamentos=[];
     let unidades = [], filiais = [];
-    getDepts('cadastro_produto').then(depts=>{
+    getDepts('cadastro_produto', 'cadastro_produto').then(depts=>{
         departamentos=depts
         departamento_id=departamentos[0].id
     })

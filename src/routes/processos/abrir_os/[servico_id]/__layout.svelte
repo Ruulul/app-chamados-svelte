@@ -33,6 +33,7 @@
            tipo: string,
            categoria: string,
            _categoria: string,
+           prioridade: number,
        }} classificador
      */
     let classificador = writable({}) 
@@ -40,6 +41,7 @@
         dialog: undefined,
         tipo: '',
         _categoria: '',
+        prioridade: 0,
     }
     $classificador.__defineSetter__('categoria', function (categoria) {
         this._categoria = categoria
@@ -72,31 +74,7 @@
     setContext('servico', servico)
     setContext('getServico', getServico)
     $: setContext('classificador', classificador)
-
-    function liberaChamado () {
-        let update = {
-            atendimento: false,
-            suporteId: ''
-        }
-        updateProcesso($servico, update)
-            .then(()=>getUnique('processo', $servico.Tag, $servico.id))
-            .then(servico.set)
-            .then(()=>atendente='')
-            .catch(console.error)
-    }
-
-    function assumeChamado () {
-        let update = {
-            atendimento: true,
-            suporteId: $user?.id,
-            assumido_em: (new Date()).toISOString()
-        }
-        updateProcesso($servico, update)
-            .then(()=>getUnique('processo', $servico.Tag, $servico.id))
-            .then(servico.set)
-            .catch(console.error)
-    }
-
+ 
     let agora = 0
     let handler_agora = setInterval(()=>agora=Date.now()/1000, 1000)
     onDestroy(()=>clearInterval(handler_agora))
@@ -105,13 +83,12 @@
     $: campos_etapa = $servico?.etapa ? Object.fromEntries($servico?.etapa.campos) : {}
 
     $: isSuporte = $user?.tipo=='suporte'
-    $: canRelease = campos_etapa["suporteId"] == $user?.id && $servico?.status !== 'fechado'
 
     $: $servico?.usuarioId, setNomeAndDept()
     $: campos_etapa, setAtendente()
 
     let canEdit = false
-    $: getDepts(etapa).then(depts=>canEdit = ($user?.tipo == 'suporte' && $user?.dept.includes(depts?.find(dept=>dept.id===$servico.etapa.dept)?.departamento) || $user?.cargo == 'admin')) 
+    $: getDepts('suporte_tecnico', etapa).then(depts=>canEdit = ($user?.tipo == 'suporte' && $user?.dept.includes(depts?.find(dept=>dept.id===$servico.etapa.dept)?.departamento) || $user?.cargo == 'admin')) 
 
     let status_opcoes = []
     $: getOpcoes('etapa', etapa, 'status').then(opcoes=>status_opcoes=opcoes)
@@ -224,7 +201,13 @@
                         <h2>
                             Classificar chamado
                         </h2>
-                        <form on:submit|preventDefault={()=>onChange("categoria")().then($classificador.dialog.close.bind($classificador.dialog))}>
+                        <form on:submit|preventDefault={()=>Promise.all([onChange("categoria")(), onChange("prioridade")()]).then($classificador.dialog.close.bind($classificador.dialog))}>
+                            <label>
+                                Prioridade
+                                <select bind:value={$classificador.prioridade} on:change={()=>campos_etapa["prioridade"]=$classificador.prioridade}>
+
+                                </select>
+                            </label>
                             <label>
                                 Tipo 
                                 <select bind:value={$classificador.tipo}>

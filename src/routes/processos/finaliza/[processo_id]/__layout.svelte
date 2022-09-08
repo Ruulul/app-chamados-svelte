@@ -12,35 +12,61 @@
 <script>
     import { page } from '$app/stores'
     import { user } from '$lib/stores/user';
-    import { getUnique, getDepts, getOpcoes, updateProcesso, nextEtapa } from '$lib/utils/cadastros';
+    import { getUnique, getDepts, getDept, getOpcoes, updateProcesso, getEtapas } from '$lib/utils/cadastros';
     import { getUser } from '$lib/utils/db';
+    import { sendEmail } from '$lib/utils/email';
     import { setContext } from 'svelte';
     import { writable } from 'svelte/store';
     let processo = writable(), cliente, depts, status_opcoes = [], status = '', updating = false
     setContext('processo', processo)
-    getUnique('processo', 'finaliza', $page.params.processo_id)
+    const getProcesso = () => getUnique('processo', 'finaliza', $page.params.processo_id)
     .then(data=>{
         $processo=data;
         console.log(data)
         status=Object.fromEntries(data.etapa.campos)["status"]
-        status = status.toString()
     })
+    getProcesso()
     $: etapa = $processo?.etapa.Tag
-    getDepts('finaliza').then(data=>depts=data)
+    $: getDepts($processo?.Tag, 'finaliza').then(data=>depts=data)
     $: console.log(etapa)
     $: getOpcoes('etapa', etapa, 'status').then(data=>(console.log(data),status_opcoes=data.map(s=>s.toString())))
     $: getUser($processo?.idUsuario).then(user=>cliente=user)
 
     let canEdit = false
-    $: if (cliente && depts) {
-        canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$processo.etapa.dept)?.departamento) || $user.cargo == 'admin'
-    }
+    $: canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$processo.etapa.dept)?.departamento) || $user.cargo == 'admin'
+    $: console.log({user_dept: $user.dept, depts})
     $: console.log(canEdit)
     function onChange() {
         updating = true
-        if (status === 'fechado')
         return updateProcesso($processo, {status})
+            .then(()=>notificaEnvolvidos($processo))
+            .then(getProcesso)
             .then(()=>updating = false)
+    }
+
+    async function notificaEnvolvidos(processo) {
+        const template = 
+            status === 'fechado' ? 'closed' :
+            status === 'rejeitado' ? 'rejected' : 
+            null
+        if (!template) return;
+        const emails = await getEmailsEnvolvidos(processo)
+        sendEmail(template, emails, {idOS: processo.id})
+    }
+
+    async function getEmailsEnvolvidos(processo) {
+        const usuario = await getUser(processo.idUsuario);
+        const etapas = await getEtapas(processo.idEtapaAtual);
+        let emails = [usuario.email];
+        
+        for (let etapa of etapas) {
+            let dept = await getDept(etapa.dept);
+            if (!dept) continue;
+            if (dept.campos.email)
+                emails.push(dept.campos.email);
+        }
+
+        return emails;
     }
 </script>
 <div class='filled container'>

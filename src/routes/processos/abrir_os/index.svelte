@@ -3,6 +3,7 @@
     import { filtros } from '$lib/stores/cadastros'
     import { getMany } from '$lib/utils/cadastros';
     import { filterPendente } from '$lib/utils/utils';
+    import { getUser } from '$lib/utils/db';
     export let sort;
     let cadastros = [];
 
@@ -10,10 +11,15 @@
     let filtro = filtros.abertos;
 
     $: getMany('processo', 'suporte_tecnico', $filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
+
+    let usuarios = {}
     
     let agora = Date.now()/1000
     let handlerAgora = setInterval(()=>{
-        getMany('processo', 'suporte_tecnico',$filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
+        getMany('processo', 'suporte_tecnico', $filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(async oss=>{
+            cadastros=oss
+            Promise.all(cadastros.map(async ({idUsuario: id})=>!usuarios[id] ? usuarios[id] = (await getUser(id).catch(()=>({nome: 'Erro'}))).nome : undefined))
+        })
         agora=Date.now()/1000
     }, 1000)
     onDestroy(()=>clearInterval(handlerAgora))
@@ -42,7 +48,10 @@
             Filial
         </th>
         <th>
-            ID
+            Ticket
+        </th>
+        <th>
+            De
         </th>
         <th>
             Status
@@ -74,6 +83,9 @@
                 </td>
                 <td>
                     {cadastro.id}
+                </td>
+                <td>
+                    {usuarios[cadastro.idUsuario] || 'Carregando...'}
                 </td>
                 <td>
                     {campos.status 

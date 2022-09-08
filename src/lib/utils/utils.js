@@ -169,6 +169,16 @@ export function assignVencimento (obj) {
   }
   return return_obj;
 }
+/**
+ * @typedef {number} Miliseconds
+ * @param {Miliseconds} offset 
+ * @returns função que pega o retorno de `assignVencimento` e filtra se está vencido, pelo offset
+ */
+export function filterVencidos (offset = 0) {
+  return function (obj) {
+    return Date.now() + offset > obj.ven?.getMilliseconds()
+  }
+}
 
 
     /**

@@ -3,7 +3,7 @@
     import Fa from 'svelte-fa'
     import { faEye as faEye, faHeadset } from '@fortawesome/free-solid-svg-icons'
     import { processos } from '$lib/stores/notifications'
-    import { filterPendente, assignVencimento } from "$lib/utils/utils";
+    import { filterPendente, assignVencimento, filterVencidos } from "$lib/utils/utils";
     let pendentes = 0;
     /**Tag da etapa filtrada*/
     export let Tag;
@@ -14,6 +14,13 @@
     $: por_tag = $processos.filter(processo=>processo.etapa.Tag === Tag);
     $: pendentes = por_tag.filter(filterPendente)
     $: por_vencimento = pendentes.map(({etapa})=>assignVencimento(etapa))
+    const hora = 1000 * 60 * 60 * 24
+    const dia = hora * 24
+    const semana = dia * 7
+    let offsets = [0, dia, semana]
+    $: vencidos = por_vencimento.filter(filterVencidos())
+    $: vencem_hoje = por_vencimento.filter(filterVencidos(dia))
+    $: vencem_semana = por_vencimento.filter(filterVencidos(semana))
 
     $:hidden = !pendentes
 </script>
@@ -30,9 +37,9 @@
     </ul>
     <div class='divider'/>
     <ul>
-        <li>🟥 venceram</li>
-        <li>🟨 vencem hoje</li>
-        <li>🟩 vencem essa semana</li>
+        <li>🟥 {vencidos.length} venceram</li>
+        <li>🟨 {vencem_hoje.length} vencem hoje</li>
+        <li>🟩 {vencem_semana.length} vencem essa semana</li>
     </ul>
     <!--ul>
         <li>Vencem essa semana</li>

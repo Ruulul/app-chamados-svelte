@@ -9,6 +9,7 @@
     let files = [];
     let addFiles = undefined;
     $: parsed = parseMD(value)
+    let enviando = false;
     const servico = getContext('servico')
 
     function voltar () {
@@ -22,12 +23,15 @@
             titulo: 'msg',
             anexos: files
         }
+        enviando = true
         if (value.length > 0)
         addMensagem($servico, mensagem)
             .then(()=>getUnique('processo', 'suporte_tecnico', $servico.id))
             .then(servico.set)
+            .then(()=>enviando=false)
             .then(voltar)
-            .catch(()=>{})
+            .catch(console.error)
+        else enviando = false
     }
 </script>
 <form on:submit|preventDefault={onSubmit}>
@@ -35,7 +39,7 @@
         <br>
         <Anexos bind:files bind:addFiles/>
     <div class='buttons'>
-        <button class='action button' type='submit'>Enviar mensagem</button>
+        <button disabled={enviando} class='action button' type='submit'>Enviar mensagem</button>
         <button class='action button' on:click={voltar}>Voltar</button>
     </div>
 </form>

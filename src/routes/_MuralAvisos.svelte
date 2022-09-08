@@ -5,6 +5,11 @@
     import Filtros from "./_Filtros.svelte";
     import Fa from "svelte-fa";
     import { faThumbtack as pin } from '@fortawesome/free-solid-svg-icons';
+    import { getUser } from "$lib/utils/db";
+
+    let usuarios = {}
+
+    $: $processos.filter(filterPendente).map(async ({idUsuario: id})=>!usuarios[id] ? usuarios[id] = (await getUser(id).catch(()=>({nome: 'Erro'}))).nome : undefined)
 </script>
 
 <div class='filled container'>
@@ -27,9 +32,12 @@
             <th>
                 Tipo
             </th>
+            <th>
+                De
+            </th>
         </thead>
         <tbody>
-            {#each $processos.filter(filterPendente) as {id, etapa: {Tag}, log, Tag: process_tag}}
+            {#each $processos.filter(filterPendente) as {id, idUsuario, etapa: {Tag}, log, Tag: process_tag}}
                 <tr>
                     <a href={`/processos/${Tag}/${id}`}>
                         <td>
@@ -37,6 +45,9 @@
                         </td>
                         <td>
                             {formatTag(process_tag)}
+                        </td>
+                        <td>
+                            {usuarios[idUsuario] || 'Carregando...'}
                         </td>
                     </a>
                 </tr>
