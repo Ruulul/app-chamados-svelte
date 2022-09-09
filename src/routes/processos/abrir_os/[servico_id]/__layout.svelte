@@ -25,7 +25,7 @@
     import { sendEmail } from '$lib/utils/email'
     console.log(`from layout, ${proximo_status}, ${metadado_hora}`);
 
-    let atendente='', nome='Sem usuário', dept='Sem usuário', anexos = []
+    let atendente='', nome='Sem usuário', dept='Sem usuário', anexos = {}
     let servico = writable({})
     /**
      * @type {{
@@ -64,12 +64,12 @@
     getServico()
     $: if ($servico?.idEtapaAtual) 
         getUnique('etapa', etapa, $servico?.idEtapaAtual)
-        .then(data=>getCampo('log', data.log[0].Tag, data.log[0].id, 'anexo'))
-        .then(files=>anexos=files)
+        .then(data=>data.log?.forEach(async log => !anexos[log.id] ? anexos[log.id] = await getCampo('log', log.Tag, log.id, 'anexo') : undefined))
         .catch(()=>{})
     $: servico_new = $processos.find(({id})=>id==$page.params.servico_id)
     $: if (servico_new?.updatedAt !== $servico?.updatedAt) getServico()
     $: console.log($servico)
+    $: console.log(anexos)
     
     setContext('servico', servico)
     setContext('getServico', getServico)
@@ -206,7 +206,10 @@
                             <label>
                                 Prioridade
                                 <select bind:value={$classificador.prioridade} on:change={()=>campos_etapa["prioridade"]=$classificador.prioridade}>
-
+                                    <option value=1>Baixa</option>
+                                    <option value=2>Média</option>
+                                    <option value=3>Alta</option>
+                                    <option value=4>Urgente</option>
                                 </select>
                             </label>
                             <label>
@@ -250,9 +253,13 @@
             </tr>
         </table>
         <div class='campo'>
-        <h2>Anexo</h2>
-            {#each anexos as {data, title}}
-                <ExibeArquivo title={title?.split('-')[1]} {data}/>
+        <h2>Anexos</h2>
+            {#each Object.values(anexos).flat() as anexo}
+                {#if anexo instanceof Object}
+                    {@const title = anexo.title}
+                    {@const data = anexo.data}
+                    <ExibeArquivo title={title?.split('-')[1]} {data}/>
+                {/if}
             {/each}
         </div>
 
