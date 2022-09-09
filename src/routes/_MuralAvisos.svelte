@@ -33,11 +33,15 @@
                 Tipo
             </th>
             <th>
+                Status
+            </th>
+            <th>
                 De
             </th>
         </thead>
         <tbody>
-            {#each $processos.filter(filterPendente) as {id, idUsuario, etapa: {Tag}, log, Tag: process_tag}}
+            {#each $processos.filter(filterPendente) as {id, idUsuario, etapa: {Tag, campos}, log, Tag: process_tag}}
+                {@const etapa_campos = Object.fromEntries(campos)}
                 <tr>
                     <a href={`/processos/${Tag}/${id}`}>
                         <td>
@@ -45,6 +49,9 @@
                         </td>
                         <td>
                             {formatTag(process_tag)}
+                        </td>
+                        <td>
+                            {etapa_campos.status}
                         </td>
                         <td>
                             {usuarios[idUsuario] || 'Carregando...'}
