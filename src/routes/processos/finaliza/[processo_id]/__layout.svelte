@@ -12,11 +12,11 @@
 <script>
     import { page } from '$app/stores'
     import { user } from '$lib/stores/user';
-    import { getUnique, getDepts, getDept, getOpcoes, updateProcesso, getEtapas } from '$lib/utils/cadastros';
+    import { getUnique, getDepts, getOpcoes, updateProcesso } from '$lib/utils/cadastros';
     import { getUser } from '$lib/utils/db';
-    import { sendEmail } from '$lib/utils/email';
     import { setContext } from 'svelte';
     import { writable } from 'svelte/store';
+    import { notificaEnvolvidos } from '$lib/utils/utils';
     let processo = writable(), cliente, depts, status_opcoes = [], status = '', updating = false
     setContext('processo', processo)
     const getProcesso = () => getUnique('processo', 'finaliza', $page.params.processo_id)
@@ -42,31 +42,6 @@
             .then(()=>notificaEnvolvidos($processo))
             .then(getProcesso)
             .then(()=>updating = false)
-    }
-
-    async function notificaEnvolvidos(processo) {
-        const template = 
-            status === 'fechado' ? 'closed' :
-            status === 'rejeitado' ? 'rejected' : 
-            null
-        if (!template) return;
-        const emails = await getEmailsEnvolvidos(processo)
-        sendEmail(template, emails, {idOS: processo.id})
-    }
-
-    async function getEmailsEnvolvidos(processo) {
-        const usuario = await getUser(processo.idUsuario);
-        const etapas = await getEtapas(processo.idEtapaAtual);
-        let emails = [usuario.email];
-        
-        for (let etapa of etapas) {
-            let dept = await getDept(etapa.dept);
-            if (!dept) continue;
-            if (dept.campos.email)
-                emails.push(dept.campos.email);
-        }
-
-        return emails;
     }
 </script>
 <div class='filled container'>

@@ -115,13 +115,14 @@
     function onChange (campo) {
         return async ()=>{
             let filial = Object.fromEntries($servico.campos)?.filial;
-            let novo_status = proximo_status[campos_etapa.status];
+            let status = campos_etapa.status
+            let novo_status = proximo_status[status];
             let update = {};
             update[campo] = campos_etapa[campo];
             if (campo === 'status')
                 update[metadado_hora[novo_status]] = (new Date()).toISOString();
-            if (novo_status.toLowerCase().includes("aguardando"))
-                sendEmail('on_hold', (await getUser($servico.idUsuario)).email, { idOS: $servico.id, status: novo_status });
+            if (status.includes("aguardando") && campo === 'status')
+                sendEmail('on_hold', (await getUser($servico.idUsuario)).email, { idOS: $servico.id, status, tag: $servico.Tag });
             if (campo === 'categoria')
                 update.suporteId = $user.id
             if (campo==='status' && campos_etapa[campo] === 'fechado')

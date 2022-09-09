@@ -1,5 +1,7 @@
 import insane from "insane";
 import { marked } from "marked";
+import { getUser } from "./db";
+import { getEtapas, getDept } from "./cadastros";
 
 /** Converte uma string de data para ISO.
  * @param {string} date Representação em texto de uma string gerada por Date() ou date_obj.toString(), no locale pt-BR. 
@@ -199,3 +201,30 @@ export function filterVencidos (offset = 0) {
       'aguardando solicitante': 'pausa_em',
       'aguardando terceiro': 'pausa_em',
   }
+
+
+
+export async function notificaEnvolvidos(processo) {
+  const template = 
+      status === 'fechado' ? 'closed' :
+      status === 'rejeitado' ? 'rejected' : 
+      null
+  if (!template) return;
+  const emails = await getEmailsEnvolvidos(processo)
+  sendEmail(template, emails, {idOS: processo.id})
+}
+
+async function getEmailsEnvolvidos(processo) {
+  const usuario = await getUser(processo.idUsuario);
+  const etapas = await getEtapas(processo.idEtapaAtual);
+  let emails = [usuario.email];
+  
+  for (let etapa of etapas) {
+      let dept = await getDept(etapa.dept);
+      if (!dept) continue;
+      if (dept.campos.email)
+          emails.push(dept.campos.email);
+  }
+
+  return emails;
+}
