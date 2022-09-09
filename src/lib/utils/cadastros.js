@@ -90,5 +90,5 @@ async function addMensagem (processo, mensagem) {
     let { anexos } = mensagem;
     delete mensagem.anexos;
     let new_message = await requestPost(`/processo/${processo.Tag}/${processo.id}/etapa/${processo.etapa.Tag}/${processo.etapa.id}/mensagem`, mensagem)
-    if (anexos.length > 0) return Promise.all(anexos.forEach(anexo=>requestPost(`/log/${new_message.Tag}/${new_message.id}/campo/anexo`, anexo)))
+    if (anexos?.length > 0) return Promise.all(anexos.forEach(anexo=>requestPost(`/log/${new_message.Tag}/${new_message.id}/campo/anexo`, anexo)))
 }
