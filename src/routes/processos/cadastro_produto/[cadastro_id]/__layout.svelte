@@ -17,7 +17,7 @@
     import { getUser } from '$lib/utils/db';
     import { setContext } from 'svelte';
     import { writable } from 'svelte/store';
-    let cadastro = writable(), campos = {}, cliente, depts, status_opcoes = [], status = '', updating = false, anexos = []
+    let cadastro = writable(), campos = {}, cliente, depts, status_opcoes = [], status = '', updating = false, anexos = {}
     setContext('cadastro', cadastro)
     getUnique('processo', 'cadastro_produto', $page.params.cadastro_id)
     .then(data=>{
@@ -28,8 +28,7 @@
     $: etapa = $cadastro?.etapa.Tag
     $: if ($cadastro?.idEtapaAtual) 
         getUnique('etapa', etapa, $cadastro?.idEtapaAtual)
-        .then((data)=>getCampo('log', data.log[0]?.Tag, data.log[0]?.id, 'anexo'))
-        .then(files=>anexos=files)
+        .then(data=>data.log?.forEach(async log => !anexos[log.id] ? anexos[log.id] = await getCampo('log', log.Tag, log.id, 'anexo') : undefined))
     getDepts('cadastro_produto', 'cadastro_produto').then(data=>depts=data)
     $: console.log(`Getting "etapa/campos/${etapa}/status"`)
     $: getOpcoes('etapa', etapa, 'status').then(data=>status_opcoes=data)
@@ -102,11 +101,14 @@
         </table>
         <div class='campo'>
         <h2>Anexo</h2>
-            {#each anexos as {data, title}}
-                <ExibeArquivo title={title?.split('-')[1]} {data}/>
+            {#each Object.values(anexos).flat() as anexo}
+                {#if anexo instanceof Object}
+                    {@const title = anexo.title}
+                    {@const data = anexo.data}
+                    <ExibeArquivo title={title?.split('-')[1]} {data}/>
+                {/if}
             {/each}
         </div>
-
     </div>
     <div class='container'>
         <slot/>

@@ -27,7 +27,7 @@
             <textarea
             class='campo filled container descr' 
             bind:value={descr} 
-            on:paste|preventDefault={({clipboardData:{files}})=>addFiles(files)}/>
+            on:paste={({clipboardData:{files}})=>addFiles(files)}/>
         </label>
         <div class='buttons'>
             <input type=submit value='Abrir chamado' class='action button'>
