@@ -67,6 +67,7 @@
                         {label:'Sementes', value:23},
                         {label:'Serviços', value:17},
                         {label:'Produtos', value:25},
+                        {label:'Imobilizado', value:17},
                     ]}
                     bind:value={departamento_id}
                 />
