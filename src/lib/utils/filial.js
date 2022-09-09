@@ -20,36 +20,36 @@ import { Store } from "./utils"
 const filial_store = new Store({
 	get: ()=>filial, 
 	isValid: (nova_filial)=>filiais_validas.includes(nova_filial),
-	set: (nova_filial)=>filial=nova_filial
+	set: (nova_filial)=>filial=nova_filial,
 })
 
 const filial_store_interface = {
 	subscribe	: filial_store.subscribe.bind(filial_store), 
-	set			: filial_store.set.bind(filial_store)
+	set			: filial_store.set.bind(filial_store),
 }
 
 export {filial_store_interface as filial}
 
 const filiais_validas_store = new Store({
 	get: ()=>filiais_validas,
-	set: (novas_filiais)=>filiais_validas=novas_filiais
+	set: (novas_filiais)=>filiais_validas=novas_filiais,
 })
 
 const filiais_validas_store_interface = {
 	subscribe	: filiais_validas_store.subscribe.bind(filiais_validas_store),
-	set			: filiais_validas_store.set.bind(filiais_validas_store)
+	set			: filiais_validas_store.set.bind(filiais_validas_store),
 }
 
 export { filiais_validas_store_interface as filiais_validas }
 
 const filiais_validas_por_id_store = new Store({
 	get: ()=>filiais_validas_por_id,
-	set: (novas_filiais_por_id)=>filiais_validas_por_id=Object.fromEntries(novas_filiais_por_id)
+	set: (novas_filiais_por_id)=>filiais_validas_por_id=Object.fromEntries(novas_filiais_por_id),
 })
 
 const filiais_validas_por_id_store_interface = {
 	subscribe : filiais_validas_por_id_store.subscribe.bind(filiais_validas_por_id_store),
-	set : filiais_validas_por_id_store.set.bind(filiais_validas_por_id_store)
+	set : filiais_validas_por_id_store.set.bind(filiais_validas_por_id_store),
 }
 
 export { filiais_validas_por_id_store_interface as filiais_validas_por_id }
@@ -63,5 +63,5 @@ const setFilial = filial_store.set.bind(filial_store)
 const setFiliaisValidas = filiais_validas_store.set.bind(filiais_validas_store)
 export {
     setFilial,
-    setFiliaisValidas
+    setFiliaisValidas,
 }
