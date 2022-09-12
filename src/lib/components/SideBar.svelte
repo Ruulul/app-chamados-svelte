@@ -14,7 +14,7 @@
 <nav title='Barra lateral'>
 	{#each items as [title, href]}
 	<li>
-		<a {title} href={href==='/' ? href : undefined} alt="Página {title}">
+		<a {title} {href} alt="Página {title}">
 			<Icon {href} />
 		</a>
 	</li>
