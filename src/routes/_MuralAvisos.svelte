@@ -14,10 +14,10 @@
         fn(processo) {
             let tipo_filter = !this.tipo ? true : processo.Tag === this.tipo;
             let etapa_filter = !this.etapa ? true : processo.etapa.Tag === this.etapa;
-            let status_filter = !this.status ? true : processo.etapa.campos.find(campo=>campo[0]==='status')[1] === this.status;
+            let status_filter = !this.status ? true : Object.fromEntries(processo.etapa.campos).status === this.status;
 
             return tipo_filter && etapa_filter && status_filter;
-        }
+        },
     }
     $: console.log(JSON.stringify(filter))
 
@@ -88,6 +88,9 @@
                 Tipo
             </th>
             <th>
+                Etapa
+            </th>
+            <th>
                 Status
             </th>
             <th>
@@ -104,6 +107,9 @@
                         </td>
                         <td>
                             {formatTag(process_tag)}
+                        </td>
+                        <td>
+                            {formatTag(Tag)}
                         </td>
                         <td>
                             {etapa_campos.status}
