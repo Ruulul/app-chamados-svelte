@@ -2,15 +2,19 @@
     import { onDestroy } from 'svelte';
     import { filtros } from '$lib/stores/cadastros';
     import { getMany, getDepts } from '$lib/utils/cadastros';
+import { getUser } from '$lib/utils/db';
     export let sort;
-    let cadastros = [], depts = [];
+    let cadastros = [], depts = [], usuarios = {};
 
     $: getMany('processo', 'cadastro_produto',$filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
     getDepts('cadastro_produto', 'cadastro_produto').then(datap=>depts=datap)
 
     let agora = Date.now()/1000
     let handlerAgora = setInterval(()=>{
-        getMany('processo', 'cadastro_produto',$filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
+        getMany('processo', 'cadastro_produto',$filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>{
+            cadastros=oss
+            Promise.all(cadastros.map(async ({idUsuario: id})=>!usuarios[id] ? usuarios[id] = (await getUser(id).catch(()=>({nome: 'Erro'}))).nome : undefined))
+        })
         agora=Date.now()/1000
     }, 1000)
     onDestroy(()=>clearInterval(handlerAgora))
@@ -23,6 +27,9 @@
     <thead class='underline'>
         <th>
             ID
+        </th>
+        <th>
+            Usuário
         </th>
         <th>
             Status
@@ -44,10 +51,10 @@
         <a href={cadastro.etapa.Tag === 'cadastro_produto' ? `${cadastro.id}` : `../finaliza/${cadastro.id}`}>
             <tr>
                 <td>
-                    Sla
+                    {cadastro.id}
                 </td>
                 <td>
-                    {cadastro.id}
+                    {usuarios[cadastro.idUsuario] || "Carregando..."}
                 </td>
                 <td>
                     {campos.status 
