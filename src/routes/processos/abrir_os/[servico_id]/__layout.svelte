@@ -10,8 +10,6 @@
 
 </script>
 <script>
-    import Fa from 'svelte-fa';
-    import {faPen} from '@fortawesome/free-solid-svg-icons';
     import { processos } from '$lib/stores/notifications'
     import { onDestroy, setContext } from 'svelte';
     import { getUser, } from '$lib/utils/db.js'
@@ -149,7 +147,7 @@
 {#key $servico?.updatedAt}
 <div class='filled container'>
     <div class='wrapper'>
-        <h1>Chamado {$servico.id}</h1>{#if $user?.tipo == 'suporte'}<a href='/classificar/{$page.params.servico_id}'><Fa icon={faPen}/></a>{/if}
+        <h1>Chamado {$servico.id}</h1>{#if $user?.tipo == 'suporte'}<a href='/classificar/{$page.params.servico_id}'><i class='fas fa-pen'/></a>{/if}
         <table> 
             <tr>
                 <th>

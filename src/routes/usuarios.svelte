@@ -13,9 +13,6 @@
 </script>
 
 <script>
-    import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
-import Fa from "svelte-fa";
-
     export let usuarios;
 </script>
 
@@ -39,7 +36,7 @@ import Fa from "svelte-fa";
         </tbody>
     </table>
     <p>
-        <a href='/usuario' title='Adicionar usuário'><Fa icon={faUserPlus}/></a>
+        <a href='/usuario' title='Adicionar usuário'><i class='fas fa-user-plus'/></a>
     </p>
 </div>
 

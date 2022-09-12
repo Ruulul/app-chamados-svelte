@@ -1,12 +1,8 @@
-<script>
-    import Fa from 'svelte-fa'
-    import { faEye as faEye } from '@fortawesome/free-solid-svg-icons'
-</script>
 <div class='outlined container'>
     <a sveltekit:prefetch href='/servicos'>
         <h3>Suporte Técnico <br>
             (Arquivo) 
-            <Fa icon={faEye}/> 
+            <i class='fas fa-eye'/> 
         </h3>
     </a>
 </div>
