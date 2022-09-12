@@ -1,7 +1,5 @@
 <script>
 	import { page } from '$app/stores';
-	import '@fortawesome/fontawesome-free/css/fontawesome.css'
-	import '@fortawesome/fontawesome-free/css/solid.css'
 	export let href
 	let icons = {
 		home: 'fa-home',

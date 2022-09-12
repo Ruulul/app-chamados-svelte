@@ -1,5 +1,7 @@
 <script>
 import "../app.css";
+import '@fortawesome/fontawesome-free/css/fontawesome.css'
+import '@fortawesome/fontawesome-free/css/solid.css'
 import SideBar from '$lib/components/SideBar.svelte'
 import UpBar from '$lib/components/UpBar.svelte'
 import { user } from '$lib/stores/user.js'
