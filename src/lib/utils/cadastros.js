@@ -1,4 +1,4 @@
-import { requestGet, requestPost, requestPut } from "./network";
+import { requestGet, requestPost, requestPut, requestDelete } from "./network";
 
 export {
     post,
@@ -12,6 +12,7 @@ export {
     getEtapas,
     updateProcesso,
     addMensagem,
+    deleteMensagem,
     nextEtapa,
 }
 
@@ -91,4 +92,8 @@ async function addMensagem (processo, mensagem) {
     delete mensagem.anexos;
     let new_message = await requestPost(`/processo/${processo.Tag}/${processo.id}/etapa/${processo.etapa.Tag}/${processo.etapa.id}/mensagem`, mensagem)
     if (anexos?.length > 0) return Promise.all(anexos.forEach(anexo=>requestPost(`/log/${new_message.Tag}/${new_message.id}/campo/anexo`, anexo)))
+}
+
+async function deleteMensagem(id) {
+    return requestDelete(`/mensagem/${id}`)
 }
