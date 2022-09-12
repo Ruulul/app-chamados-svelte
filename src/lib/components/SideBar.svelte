@@ -51,27 +51,4 @@
 		justify-content: end;
 		justify-self: center;
 	}
-	div {
-		position: relative;
-		width: 0;
-		height: 0;
-	}
-	p {
-		position: absolute;
-		font-size: small;
-		background-color: darkred;
-		color: white;
-		transition: width 0.2s, height 0.2s, font-size 0.2s;
-		top: -1.5em;
-		width: 1.5em;
-		height: 1.5em;
-		border-radius: 2em;
-		display: grid;
-		place-content: center;
-	}
-	.hidden p {
-		width: 0;
-		height: 0;
-		font-size: 0;
-	}
 </style>
