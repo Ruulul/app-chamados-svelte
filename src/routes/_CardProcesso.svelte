@@ -1,7 +1,4 @@
 <script>
-    import { user } from "$lib/stores/user";
-    import Fa from 'svelte-fa'
-    import { faEye as faEye, faHeadset } from '@fortawesome/free-solid-svg-icons'
     import { processos } from '$lib/stores/notifications'
     import { filterPendente, assignVencimento, filterVencidos } from "$lib/utils/utils";
     let pendentes = 0;
@@ -26,8 +23,8 @@
 </script>
 
 <div class='outlined container'>
-    <h3>{titulo} <a href='/processos/{Tag}'><Fa icon={faEye}/></a></h3>
-    <h2><Fa icon={faHeadset}/> Meus tickets</h2>
+    <h3>{titulo} <a href='/processos/{Tag}'><i class='fas fa-eye'/></a></h3>
+    <h2><i class='fas fa-headset'/> Meus tickets</h2>
     <div class='divider'/>
     <a class='action button' sveltekit:prefetch href='/processos/{Tag}/novo'>Abrir Chamado</a>
     <ul>
@@ -49,6 +46,7 @@
 <style>
     .outlined.container {
         padding: 2em;
+        padding-right: 1em;
         width: 12%;
         min-height: 30em;
         justify-content: end;
