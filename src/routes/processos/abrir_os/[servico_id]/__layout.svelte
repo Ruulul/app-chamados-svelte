@@ -60,6 +60,8 @@
             etapa = data.etapa.Tag
         })
     getServico()
+    let handler = setTimeout(getServico, 1000);
+    onDestroy(()=>clearInterval(handler))
     $: if ($servico?.idEtapaAtual) 
         getUnique('etapa', etapa, $servico?.idEtapaAtual)
         .then(data=>data.log?.forEach(async log => !anexos[log.id] ? anexos[log.id] = await getCampo('log', log.Tag, log.id, 'anexo') : undefined))

@@ -19,12 +19,16 @@
     import { writable } from 'svelte/store';
     let cadastro = writable(), campos = {}, cliente, depts, status_opcoes = [], status = '', updating = false, anexos = {}
     setContext('cadastro', cadastro)
-    getUnique('processo', 'cadastro_produto', $page.params.cadastro_id)
+    const getProcesso = ()=>getUnique('processo', 'cadastro_produto', $page.params.cadastro_id)
     .then(data=>{
         $cadastro=data;
         campos = data ? Object.fromEntries(data.etapa.campos) : {}
         status = campos["status"]
     })
+    getProcesso()
+    let handler = setTimeout(getProcesso, 1000);
+    onDestroy(()=>clearInterval(handler))
+    setContext('getProcesso', getProcesso)
     $: etapa = $cadastro?.etapa.Tag
     $: if ($cadastro?.idEtapaAtual) 
         getUnique('etapa', etapa, $cadastro?.idEtapaAtual)
@@ -43,8 +47,7 @@
             return nextEtapa($cadastro)
                 .then(()=>history.back())
         return updateProcesso($cadastro, {status})
-            .then(()=>getUnique('processo', 'cadastro_produto', $page.params.cadastro_id))
-            .then(cadastro.set)
+            .then(getProcesso)
             .then(()=>etapa==='finaliza'&&status==='true' ? history.back() : undefined)
     }
 </script>

@@ -19,13 +19,16 @@
     import { notificaEnvolvidos } from '$lib/utils/utils';
     let processo = writable(), cliente, depts, status_opcoes = [], status = '', updating = false
     setContext('processo', processo)
-    const getProcesso = () => getUnique('processo', 'finaliza', $page.params.processo_id)
+    const getProcesso = 
+    () => getUnique('processo', 'finaliza', $page.params.processo_id)
     .then(data=>{
         $processo=data;
         console.log(data)
         status=Object.fromEntries(data.etapa.campos)["status"]
     })
     getProcesso()
+    let handler = setTimeout(getProcesso, 1000);
+    onDestroy(()=>clearInterval(handler))
     $: etapa = $processo?.etapa.Tag
     $: getDepts($processo?.Tag, 'finaliza').then(data=>depts=data)
     $: console.log(etapa)
@@ -39,8 +42,8 @@
     function onChange() {
         updating = true
         return updateProcesso($processo, {status})
+            .then(()=>getProcesso())
             .then(()=>notificaEnvolvidos($processo))
-            .then(getProcesso)
             .then(()=>updating = false)
     }
 </script>
@@ -96,6 +99,9 @@
     </div>
 </div>
 <style>
+    .updating {
+        opacity: 0.2;
+    }
     .updating::after {
         content: '...',
         
