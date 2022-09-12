@@ -31,8 +31,6 @@
     "@fortawesome/fontawesome-free": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "insane": "^2.6.2",
-    "marked": "^4.1.0",
-    "svelte-fa": "^3.0.3",
-    "svelte-paginate": "^0.0.1"
+    "marked": "^4.1.0"
   }
 }
