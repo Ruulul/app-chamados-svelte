@@ -15,7 +15,7 @@
     import { user } from '$lib/stores/user';
     import { getUnique, getCampo, getDepts, getOpcoes, updateProcesso, nextEtapa } from '$lib/utils/cadastros';
     import { getUser } from '$lib/utils/db';
-    import { setContext } from 'svelte';
+    import { setContext, onDestroy } from 'svelte';
     import { writable } from 'svelte/store';
     let cadastro = writable(), campos = {}, cliente, depts, status_opcoes = [], status = '', updating = false, anexos = {}
     setContext('cadastro', cadastro)

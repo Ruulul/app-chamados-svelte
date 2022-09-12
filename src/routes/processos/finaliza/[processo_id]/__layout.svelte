@@ -14,7 +14,7 @@
     import { user } from '$lib/stores/user';
     import { getUnique, getDepts, getOpcoes, updateProcesso } from '$lib/utils/cadastros';
     import { getUser } from '$lib/utils/db';
-    import { setContext } from 'svelte';
+    import { setContext, onDestroy } from 'svelte';
     import { writable } from 'svelte/store';
     import { notificaEnvolvidos } from '$lib/utils/utils';
     let processo = writable(), cliente, depts, status_opcoes = [], status = '', updating = false
