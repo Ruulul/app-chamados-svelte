@@ -1,15 +1,41 @@
 <script>
     import { processos } from "$lib/stores/notifications";
     import { filterPendente, formatTag } from "$lib/utils/utils";
-    import { flip } from 'svelte/animate'
-    import Filtros from "./_Filtros.svelte";
-    import Fa from "svelte-fa";
-    import { faThumbtack as pin } from '@fortawesome/free-solid-svg-icons';
     import { getUser } from "$lib/utils/db";
 
     let usuarios = {}
+    let tipos = []
+    let etapas = []
+    let status = []
+    let filter = {
+        tipo: undefined,
+        etapa: undefined,
+        status: undefined,
+        fn(processo) {
+            let tipo_filter = !this.tipo ? true : processo.Tag === this.tipo;
+            let etapa_filter = !this.etapa ? true : processo.etapa.Tag === this.etapa;
+            let status_filter = !this.status ? true : processo.etapa.campos.find(campo=>campo[0]==='status')[1] === this.status;
 
-    $: $processos.filter(filterPendente).map(async ({idUsuario: id})=>!usuarios[id] ? usuarios[id] = (await getUser(id).catch(()=>({nome: 'Erro'}))).nome : undefined)
+            return tipo_filter && etapa_filter && status_filter;
+        }
+    }
+    $: console.log(JSON.stringify(filter))
+
+    $: $processos.filter(p=>filterPendente(p)).map(({idUsuario: id, Tag: tipo, etapa: {campos, Tag: tag_etapa}})=>{
+        if(!tipos.includes(tipo))
+            tipos[tipos.length] = tipo
+        if(!etapas.includes(tag_etapa))
+            etapas[etapas.length] = tag_etapa
+        const campos_obj = Object.fromEntries(campos)
+        if(!status.includes(campos_obj.status))
+            status[status.length] = campos_obj.status
+        if(!usuarios[id]) 
+            fillUserName(id)
+    })
+
+    async function fillUserName(id) {
+        usuarios[id] = (await getUser(id).catch(()=>({nome: 'Erro'}))).nome
+    }
 </script>
 
 <div class='filled container'>
@@ -19,9 +45,38 @@
         {/await}-->
     <div class=title>
         <h2>
-            <Fa icon={pin}/>
+            <i class='fas fa-thumbtack'/>
             Mural de avisos
         </h2>
+        <form>
+            <label>
+                Tipo
+                <select bind:value={filter.tipo}>
+                    <option value={undefined}>Escolha...</option>
+                    {#each tipos as tipo}
+                        <option>{tipo}</option>
+                    {/each}
+                </select>
+            </label>
+            <label>
+                Etapa
+                <select bind:value={filter.etapa}>
+                    <option value={undefined}>Escolha...</option>
+                    {#each etapas as etapa}
+                        <option>{etapa}</option>
+                    {/each}
+                </select>
+            </label>
+            <label>
+                Status
+                <select bind:value={filter.status}>
+                    <option value={undefined}>Escolha...</option>
+                    {#each status as stat}
+                        <option>{stat}</option>
+                    {/each}
+                </select>
+            </label>
+        </form>
     </div>
     <div class=divider/>
     <table>
@@ -40,7 +95,7 @@
             </th>
         </thead>
         <tbody>
-            {#each $processos.filter(filterPendente) as {id, idUsuario, etapa: {Tag, campos}, log, Tag: process_tag}}
+            {#each $processos.filter(p=>filterPendente(p)&&filter.fn(p)) as {id, idUsuario, etapa: {Tag, campos}, log, Tag: process_tag}}
                 {@const etapa_campos = Object.fromEntries(campos)}
                 <tr>
                     <a href={`/processos/${Tag}/${id}`}>
