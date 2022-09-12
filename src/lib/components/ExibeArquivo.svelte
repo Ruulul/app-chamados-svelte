@@ -29,6 +29,11 @@
      */
     export let abrir = 'Abrir arquivo em nova aba'
 
+    /**
+     * Texto para a opção de download. Sete pra `false` para ocultar.
+     */
+    export let download = 'Baixar arquivo'
+
      /**
       * CSS 
       */
@@ -45,7 +50,8 @@
 	    	</span>
             <slot/>
 	    </div>
-        <a class:hidden={!(data && abrir)} href={data} target='_blank'>{abrir}</a>
+        <a class:hidden={!(data && abrir)} href={data} {title} target='_blank'>{abrir}</a>
+        <a class:hidden={!(data && download)} href={data} download={title}>{download}</a>
 {:else if String(title) !== 'undefined'}
     {#await getFile(title)}
         {carregando}
@@ -60,7 +66,8 @@
 	    	</span>
             <slot/>
 	    </div>
-        <a class:hidden={!(data && abrir)} href={data} target='_blank'>{abrir}</a>
+        <a class:hidden={!(data && abrir)} href={data} {title} target='_blank'>{abrir}</a>
+        <a class:hidden={!(data && download)} href={data} download={title}>{download}</a>
         <span class:hidden={data !== 'Não autorizado'}>{sem_arquivo}</span>
     {/await}
 {/if}
