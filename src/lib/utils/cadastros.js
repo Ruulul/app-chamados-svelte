@@ -16,7 +16,12 @@ export {
     nextEtapa,
 }
 
+let last_request = Date.now();
+let interval = 1000
+
 async function post (model, tag, os) {
+    if (Date.now() < last_request + interval ) return
+    last_request = Date.now()
     let { anexos } = os;
     delete os.anexos;
     let processo = await requestPost(`/${model}/${tag}`, os);
@@ -72,9 +77,13 @@ async function getCount (model, tag, filtros) {
 }
 
 async function updateProcesso (processo, update) {
+        if (Date.now() < last_request + interval ) return
+        last_request = Date.now()
         return requestPut(`/etapa/${processo.etapa.Tag}/${processo.etapa.id}`, update)
 }
 async function nextEtapa (processo, props) {
+    if (Date.now() < last_request + interval ) return
+    last_request = Date.now()
     const initial_props = {
         finaliza: {
             status: "em analise",
@@ -88,6 +97,8 @@ async function nextEtapa (processo, props) {
 }
 
 async function addMensagem (processo, mensagem) {
+    if (Date.now() < last_request + interval ) return
+    last_request = Date.now()
     let { anexos } = mensagem;
     delete mensagem.anexos;
     let new_message = await requestPost(`/processo/${processo.Tag}/${processo.id}/etapa/${processo.etapa.Tag}/${processo.etapa.id}/mensagem`, mensagem)
@@ -95,5 +106,7 @@ async function addMensagem (processo, mensagem) {
 }
 
 async function deleteMensagem(id) {
+    if (Date.now() < last_request + interval ) return
+    last_request = Date.now()
     return requestDelete(`/mensagem/${id}`)
 }
