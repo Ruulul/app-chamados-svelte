@@ -44,6 +44,9 @@
 		place-content: center;
 		display: grid;
 	}
+	a {
+		text-decoration: none;
+	}
 	nav {
 		padding: 0;
 		display: flex;
