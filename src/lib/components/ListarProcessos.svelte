@@ -84,7 +84,7 @@
         as cadastro(cadastro.id)}
             {@const campos = Object.fromEntries(cadastro.etapa.campos)}
             {@const campos_processo = Object.fromEntries(cadastro.campos)}
-        <a href={`../${cadastro.etapa.Tag}/${cadastro.id}`}>
+        <a href={`/processos/${cadastro.etapa.Tag}/${cadastro.id}`}>
             <tr>
                 <td>
                     {campos_processo.filial}
