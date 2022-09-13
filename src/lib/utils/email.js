@@ -1,13 +1,14 @@
 /**
  * @typedef {('open'|'taken'|'released'|'message'|'closed'|'on_hold')} EmailTypes Tipos existentes de email
  */
-const EmailTypes = ['open', 'taken', 'released', 'message', 'closed', 'on_hold']
+const EmailTypes = ['open', 'taken', 'released', 'message', 'closed', 'on_hold', 'rejected']
 import open from '$lib/email_templates/open.svelte'
 import message from '$lib/email_templates/message.svelte'
 import taken from '$lib/email_templates/taken.svelte'
 import released from '$lib/email_templates/released.svelte'
 import closed from '$lib/email_templates/closed.svelte'
 import on_hold from '$lib/email_templates/onhold.svelte'
+import rejected from '$lib/email_templates/rejected.svelte'
 import { origin } from './network'
 import { formatTag } from './utils'
 const SecureToken = "59fa2524-23b0-4dc1-af39-82ac290ca35c";
@@ -59,6 +60,7 @@ const templatesMap = {
 	released,
 	closed,
 	on_hold,
+	rejected,
 }
 /** Mapeamento dos assuntos */
 const subjectMap = {
