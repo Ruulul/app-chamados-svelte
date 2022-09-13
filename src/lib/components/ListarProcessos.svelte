@@ -1,12 +1,9 @@
-<script context='module'>
-    let usuarios = {}
-</script>
 <script>
     import { onDestroy } from 'svelte';
     import { filtros } from '$lib/stores/cadastros'
     import { getMany } from '$lib/utils/cadastros';
     import { filterPendente, formatTag } from '$lib/utils/utils';
-    import { getUser } from '$lib/utils/db';
+    import { user_names } from '$lib/stores/user';
     export let sort = (a, b)=>b.id-a.id;
     export let tag = undefined;
     let cadastros = [];
@@ -21,7 +18,7 @@
     let handlerAgora = setInterval(()=>{
         getMany('processo', tag, $filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(async oss=>{
             cadastros=oss
-            Promise.all(cadastros.map(async ({idUsuario: id})=>!usuarios[id] ? usuarios[id] = (await getUser(id).catch(()=>({nome: 'Erro'}))).nome : undefined))
+            oss.forEach(({idUsuario:id})=>user_names.add(id))
         })
         agora=Date.now()/1000
     }, 1000)
@@ -98,7 +95,7 @@
                     {cadastro.id}
                 </td>
                 <td>
-                    {usuarios[cadastro.idUsuario] || 'Carregando...'}
+                    {$user_names[cadastro.idUsuario] || 'Carregando...'}
                 </td>
                 <td>
                     {campos.status 

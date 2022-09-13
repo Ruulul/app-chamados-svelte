@@ -1,9 +1,8 @@
 <script>
     import { processos } from "$lib/stores/notifications";
+    import { user_names } from "$lib/stores/user";
     import { filterPendente, formatTag } from "$lib/utils/utils";
-    import { getUser } from "$lib/utils/db";
 
-    let usuarios = {}
     let tipos = []
     let etapas = []
     let status = []
@@ -22,6 +21,7 @@
     $: console.log(JSON.stringify(filter))
 
     $: $processos.filter(p=>filterPendente(p)).map(({idUsuario: id, Tag: tipo, etapa: {campos, Tag: tag_etapa}})=>{
+        user_names.add(id)
         if(!tipos.includes(tipo))
             tipos[tipos.length] = tipo
         if(!etapas.includes(tag_etapa))
@@ -29,13 +29,7 @@
         const campos_obj = Object.fromEntries(campos)
         if(!status.includes(campos_obj.status))
             status[status.length] = campos_obj.status
-        if(!usuarios[id]) 
-            fillUserName(id)
     })
-
-    async function fillUserName(id) {
-        usuarios[id] = (await getUser(id).catch(()=>({nome: 'Erro'}))).nome
-    }
 </script>
 
 <div class='filled container'>
@@ -115,7 +109,7 @@
                             {etapa_campos.status}
                         </td>
                         <td>
-                            {usuarios[idUsuario] || 'Carregando...'}
+                            {$user_names[idUsuario] || 'Carregando...'}
                         </td>
                     </a>
                 </tr>

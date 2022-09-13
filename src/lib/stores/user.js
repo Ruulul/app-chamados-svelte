@@ -1,5 +1,5 @@
 import { get, writable } from 'svelte/store'
-import { auth } from '$lib/utils/db.js'
+import { auth, getUser } from '$lib/utils/db.js'
 import { filial, filiais_validas_por_id } from '$lib/utils/filial'
 
 function createUser() {
@@ -61,3 +61,17 @@ function createUser() {
 	}
 }
 export const user = createUser()
+
+export const user_names = createUserNames()
+
+function createUserNames () {
+	const { subscribe, set, update } = writable({})
+	return {
+		subscribe,
+		add(id) {
+			if (get({subscribe})[id])
+				return;
+			getUser(id).then(user=>update(state=>(state[id]=user.nome, state))).catch(console.log);
+		}
+	}
+}
