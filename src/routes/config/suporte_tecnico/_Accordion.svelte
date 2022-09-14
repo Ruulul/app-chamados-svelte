@@ -14,6 +14,7 @@
         {#each items as item}
             <slot name='item' {item}/>
         {/each}
+        <slot name='last-items'/>
     </ul>
 </div>
 <style>
