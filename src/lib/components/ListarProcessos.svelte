@@ -84,7 +84,7 @@
         <a href={`/processos/${cadastro.etapa.Tag}/${cadastro.id}`}>
             <tr>
                 <td>
-                    {campos_processo.filial}
+                    {campos_processo.filial || ''}
                 </td>
                 {#if !tag}
                 <td>
