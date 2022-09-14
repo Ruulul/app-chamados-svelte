@@ -1,20 +1,20 @@
 <script>
-import { categorias_os } from "$lib/stores/local_db";
+    export let items
+    export let title
 
+    let visible = false;
 </script>
-<h2>
-    Categorias
-</h2>
-<input type='checkbox' id='cat-cb'>
 <div class='tab'>
-    <label class='tab' for='cat-cb'>Categorias</label>
-    <ul class='tab-content'>
-        <li class='tab'>Adicionar Categoria</li>
-        {#each $categorias_os.sort((a, b)=>b.tipo<a.tipo) as {tipo, categoria, id}}
-        <li class='tab'><i class='fas fa-close'/><i class='fas fa-pen'/>{tipo} - {categoria} (id {id})</li>
+    <label class='tab'>
+        <input type='checkbox'>
+        {title}
+    </label>
+    <ul class:visible class='tab-content'>
+        <slot name='first-items'/>
+        {#each items as item}
+            <slot name='item' {item}/>
         {/each}
     </ul>
-
 </div>
 
 <style>
@@ -29,12 +29,12 @@ import { categorias_os } from "$lib/stores/local_db";
         padding: 0.5em;
         cursor: pointer;
     }
-    .tab > .tab-content {
+    .tab-content {
         overflow: hidden;
         max-height: 0;
         transition: all 1s;
     }
-    input:checked + .tab > .tab-content {
+    .visible {
         max-height: 100vh;
     }
     ul {

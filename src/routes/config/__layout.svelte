@@ -15,13 +15,7 @@
 </h1>
 <ul>
     <li class:selected={$page.url.pathname==='/config/'}><a href='/config/'>Index</a></li>
-    <li class:selected={$page.url.pathname.includes('/config/suporte_tecnico/')}>
-        Suporte Técnico
-        <ul>
-            <li class:selected={$page.url.pathname==='/config/suporte_tecnico/tipos/'}><a href='/config/suporte_tecnico/tipos/'>Tipos</a></li>
-            <li class:selected={$page.url.pathname==='/config/suporte_tecnico/categorias/'}><a href='/config/suporte_tecnico/categorias/'>Categorias</a></li>
-        </ul>
-    </li>
+    <li class:selected={$page.url.pathname==='/config/suporte_tecnico/'}><a href='/config/suporte_tecnico/'>Suporte Técnico</a></li>
 </ul>
 <slot/>
 
