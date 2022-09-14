@@ -14,14 +14,24 @@
     Menu
 </h1>
 <ul>
-    <li class:selected={$page.url.pathname==='/config/'}><a href='/config/'>Index</a></li>
-    <li class:selected={$page.url.pathname==='/config/suporte_tecnico/'}><a href='/config/suporte_tecnico/'>Suporte Técnico</a></li>
+    <li><a class=button class:action={$page.url.pathname==='/config/'} href='/config/'>Index</a></li>
+    <li><a class=button class:action={$page.url.pathname==='/config/suporte_tecnico/'} href='/config/suporte_tecnico/'>Suporte Técnico</a></li>
 </ul>
 <slot/>
 
 <style>
-    .selected > a {
-        text-decoration: underline;
-        text-decoration-color: var(--secondary-color);
+    a {
+        text-decoration: none;
+        padding: 0.5em;
+        display: block;
+        width: 10em;
+    }
+    li {
+        margin: 1.5em;
+        margin-left: 0;
+        list-style: none;
+    }
+    ul {
+        padding: 0;
     }
 </style>
