@@ -41,10 +41,4 @@
         list-style: none;
         padding: 0;
     }
-    li {
-        gap: 1em;
-    }
-    li * {
-        margin-right: 1em;
-    }
 </style>

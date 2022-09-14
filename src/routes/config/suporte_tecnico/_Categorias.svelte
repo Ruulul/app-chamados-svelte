@@ -11,9 +11,6 @@ import Accordion from "./_Accordion.svelte";
     </li>
 </Accordion>
 <style>
-    input {
-        opacity: 0;
-    }
     .tab {
         display: block;
         overflow: hidden;
@@ -21,18 +18,6 @@ import Accordion from "./_Accordion.svelte";
         border-radius: 1em;
         padding: 0.5em;
         cursor: pointer;
-    }
-    .tab > .tab-content {
-        overflow: hidden;
-        max-height: 0;
-        transition: all 1s;
-    }
-    input:checked + .tab > .tab-content {
-        max-height: 100vh;
-    }
-    ul {
-        list-style: none;
-        padding: 0;
     }
     li {
         gap: 1em;
