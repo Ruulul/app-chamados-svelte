@@ -22,7 +22,7 @@
  */
 
 import { converteDateToISO } from './utils.js'
-import { requestGet, requestPost } from './network.js'
+import { requestDelete, requestGet, requestPost } from './network.js'
 import { filiais_validas_por_id, filial, setFiliaisValidas, setFilial } from './filial.js'
 import { get } from 'svelte/store'
 
@@ -59,6 +59,15 @@ const config = {
 	async addCategoria (categoria) {
 		await requestPost('/servicos/novo/subcategoria', categoria)
 			.catch(console.error)
+		filial.set(get(filial));
+	},
+	async deleteCategoria (categoria) {
+		await requestPost(`/servicos/excluir/subcategoria/${categoria.tipo}/${categoria.categoria}`)
+		filial.set(get(filial));
+	},
+	async editarCategoria (categoria, update) {
+		await requestPost(`/servicos/excluir/subcategoria/${categoria.tipo}/${categoria.categoria}`, 
+		{id: categoria.id, tipo: update.tipo || categoria.tipo, newCategoria: update.newCategoria || categoria.categoria})
 		filial.set(get(filial));
 	},
 	getDepartamentos () {
