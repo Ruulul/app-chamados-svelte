@@ -1,5 +1,5 @@
 <script>
-    import { tipos_os, categorias_por_tipo_os } from "$lib/stores/local_db";
+    import { tipos_os, categorias_os } from "$lib/stores/local_db";
     import Accordion from "./_Accordion.svelte";
 </script>
 <Accordion title='Tipos' items={$tipos_os}>
@@ -7,11 +7,11 @@
     <li slot='item' let:item class='tab'>
         <i class='fas fa-close'/>
         <i class='fas fa-pen'/>
-        <Accordion wrap={false} title={item.tipo} items={$categorias_por_tipo_os[item.tipo]}>
+        <Accordion wrap={false} title={item.tipo} items={$categorias_os.filter(categoria=>categoria.tipo===item.tipo)}>
             <li slot='item' let:item class='tab'>
                 <i class='fas fa-close'/>
                 <i class='fas fa-pen'/>
-                {item}
+                {item.categoria}
             </li>
         </Accordion>
     </li>
