@@ -10,7 +10,7 @@
 <script>
 	import Filtro from '$lib/components/Filtro.svelte';
 	import { departamentos } from '$lib/stores/local_db';
-	import { config } from '$lib/utils/db';
+	import { auth, config } from '$lib/utils/db';
     import { filial, filiais_validas_por_id } from '$lib/utils/filial';
 	let filial_selecionada = Object.entries($filiais_validas_por_id).find((entry)=>entry[1]==$filial)[0]
 	let filiais_de_acesso = []
@@ -19,6 +19,7 @@
 	$: filiais_de_acesso = [filial_id]
 	$: filiais_de_acesso = [...((new Set(filiais_de_acesso)).add(filial_id))]
 
+	let nome, sobrenome, email, senha
 	let dept = ''
 	let novo_departamento_dialog
 	$: if (dept == 'Novo...') {
@@ -26,17 +27,28 @@
 		dept = ''
 	}
 	async function onSubmit() {
+		auth.newUser({
+			nome,
+			sobrenome,
+			email,
+			senha,
+			acessa_filial: filiais_de_acesso,
+			dept,
+			permissoes: [],
+		})
 	}
 	</script>
 <h1>Novo usuário</h1>
 <form class='div filled container' on:submit|preventDefault={onSubmit}>
 	<div>
 		<label for=nome>Nome:</label>
-		<input id=nome placeholder="Nome">
+		<input bind:value={nome} id=nome placeholder="Nome">
+		<label for=sobrenome>Sobrenome:</label>
+		<input bind:value={sobrenome} id=sobrenome placeholder="Sobrenome">
 		<label for=email>Email:</label>
-		<input id=email type='email' placeholder="Email">
+		<input bind:value={email} id=email type='email' placeholder="Email">
 		<label for=senha>Senha:</label>
-		<input id=senha type='password' placeholder='Senha'>
+		<input bind:value={senha} id=senha type='password' placeholder='Senha'>
 	</div>
 	<div>
 		<Filtro 

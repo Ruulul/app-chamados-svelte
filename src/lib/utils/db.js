@@ -115,7 +115,24 @@ const auth = {
 				.catch(console.error)
 	},
 	getPerfis () {
-		return requestGet('/usuarios/all').catch(console.error)
+		return requestGet('/usuarios').catch(console.error)
+	},
+	/**
+	 * 
+	 * @param {{
+	 * nome: string,
+	 * sobrenome: string,
+	 * filialId: number,
+	 * email: string,
+	 * senha: string,
+	 * dept: number,
+	 * acessa_filial: string[],
+	 * permissoes: ('suporte' | 'admin')[],
+	 * }} cadastro 
+	 * @returns 
+	 */
+	newUser (cadastro) {
+		return requestPost('/usuarios', cadastro).catch(console.error)
 	}
 }
 
@@ -164,6 +181,6 @@ async function getFile (filename) {
  * @returns {Promise} Usuário pelo id
  */
 async function getUser (id) {
-	return requestGet('/usuario/' + id)
+	return requestGet('/usuarios/' + id)
 		.catch(console.error)
 }
