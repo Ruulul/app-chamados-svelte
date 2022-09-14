@@ -82,8 +82,6 @@
     $: sla = Math.floor(agora - abertura)
     $: campos_etapa = $servico?.etapa ? Object.fromEntries($servico?.etapa.campos) : {}
 
-    $: isSuporte = $user?.tipo=='suporte'
-
     $: $servico?.usuarioId, setNomeAndDept()
     $: campos_etapa, setAtendente()
 
@@ -167,7 +165,7 @@
                     {$servico?.createdAt?.split('T')[0].split('-').reverse().join('/')}
                 </td>
             </tr>
-            <tr class:hidden={!(!!atendente || isSuporte)}>
+            <tr class:hidden={!(!!atendente || canEdit)}>
                 <th>
                     Responsável:
                 </th>
