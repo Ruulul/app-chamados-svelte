@@ -6,7 +6,7 @@
 </script>
 <div class='tab'>
     <label class='tab'>
-        <input type='checkbox'>
+        <input bind:checked={visible} type='checkbox'>
         {title}
     </label>
     <ul class:visible class='tab-content'>
@@ -16,7 +16,6 @@
         {/each}
     </ul>
 </div>
-
 <style>
     input {
         opacity: 0;
