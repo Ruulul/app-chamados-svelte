@@ -1,14 +1,12 @@
 <script>
-import Categorias from "./_Categorias.svelte";
-import Tipos from "./_Tipos.svelte";
+import TiposECategorias from "./_Tipos&Categorias.svelte";
 
 </script>
 <h2>
     Suporte Técnico
 </h2>
 <div>
-    <Tipos/>
-    <Categorias/>
+    <TiposECategorias/>
 </div>
 
 <style>
