@@ -2,6 +2,7 @@ import insane from "insane";
 import { marked } from "marked";
 import { getUser } from "./db";
 import { getEtapas, getDept } from "./cadastros";
+import { sendEmail } from "./email";
 
 /** Converte uma string de data para ISO.
  * @param {string} date Representação em texto de uma string gerada por Date() ou date_obj.toString(), no locale pt-BR. 
@@ -116,7 +117,7 @@ export function TimeFromSeconds (seconds) {
 }
 
 export function formatTag (tag) {
-  return tag.split('_')
+  return tag.includes('_') ? tag.split('_')
   .map((/**@type {string}*/s)=>
       Array.prototype
       .reduce.call(s, (pv, cv, index)=>{
@@ -124,7 +125,7 @@ export function formatTag (tag) {
               cv = cv.toUpperCase()
           return pv + cv
       }, ""))
-  .join(' ')
+  .join(' ') : tag
 }
 
 export function filterPendente (processo) {
@@ -205,16 +206,20 @@ export function filterVencidos (offset = 0) {
 
 
 export async function notificaEnvolvidos(processo) {
+  console.log('start notifica')
+  const status = Object.fromEntries(processo.etapa.campos)?.status
+  if (!status) return console.log('notificaEnvolvidos: sem status');
   const template = 
       status === 'fechado' ? 'closed' :
       status === 'rejeitado' ? 'rejected' : 
       null
-  if (!template) return;
+  if (!template) return console.log('notificaEnvolvidos: sem template');
   const emails = await getEmailsEnvolvidos(processo)
-  sendEmail(template, emails, {idOS: processo.id})
+  console.log('emails obtidos: ' + emails.join(', '));
+  await sendEmail(template, emails, {idOS: processo.id, tag: processo.Tag}).then(console.log)
 }
 
-async function getEmailsEnvolvidos(processo) {
+export async function getEmailsEnvolvidos(processo) {
   const usuario = await getUser(processo.idUsuario);
   const etapas = await getEtapas(processo.idEtapaAtual);
   let emails = [usuario.email];
