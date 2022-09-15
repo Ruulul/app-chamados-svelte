@@ -216,7 +216,7 @@ export async function notificaEnvolvidos(processo) {
   if (!template) return console.log('notificaEnvolvidos: sem template');
   const emails = await getEmailsEnvolvidos(processo)
   console.log('emails obtidos: ' + emails.join(', '));
-  await sendEmail(template, emails, {idOS: processo.id, tag: processo.Tag}).then(console.log)
+  await sendEmail(template, emails, {idOS: processo.id, tag: processo.Tag, last_msg: processo.log.sort((a, b)=>b.id - a.id)[0]}).then(console.log)
 }
 
 export async function getEmailsEnvolvidos(processo) {

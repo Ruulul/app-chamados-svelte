@@ -76,9 +76,9 @@ const propsMap = {
 	message	: ['idOS', 'nome', 'nomeAutor', 'mensagem'],
 	taken	: ['idOS', 'nomeSuporte'],
 	released: ['idOS'],
-	closed	: ['idOS'],
+	closed	: ['idOS', 'last_msg'],
 	on_hold : ['idOS', 'status'],
-	rejected: ['idOS'],
+	rejected: ['idOS', 'last_msg'],
 }
 const from_email = "suporte.ti@ourobrancoagronegocios.com.br"
 const From = from_email
