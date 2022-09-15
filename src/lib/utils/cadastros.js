@@ -1,3 +1,5 @@
+import { user } from "$lib/stores/user";
+import { get } from "svelte/store";
 import { requestGet, requestPost, requestPut, requestDelete } from "./network";
 
 export {
@@ -84,9 +86,10 @@ async function updateProcesso (processo, update) {
 async function nextEtapa (processo, props) {
     if (Date.now() < last_request + interval ) return
     last_request = Date.now()
+    let dept = await getDept(processo.etapa.dept)
     const initial_props = {
         finaliza: {
-            status: "em analise",
+            status: get(user).dept.map(({departamento})=>departamento).includes(dept.departamento) ? "fechado" : "em analise",
         }
     }
     let meta_processos = await requestGet('/meta/processo/' + processo.Tag)
