@@ -2,12 +2,14 @@
     import { onDestroy } from 'svelte';
     import { filtros } from '$lib/stores/cadastros'
     import { getMany } from '$lib/utils/cadastros';
-    import { filterPendente, formatTag } from '$lib/utils/utils';
+    import { formatTag } from '$lib/utils/utils';
     import { user_names } from '$lib/stores/user';
-import Pagination from './Pagination.svelte';
+    import Pagination from './Pagination.svelte';
+    import FiltroProcessos from './FiltroProcessos.svelte';
     export let sort = (a, b)=>b.id-a.id;
     export let tag = undefined;
     let cadastros = [];
+    let filter
 
     let filtros_enum = createEnum(['abertos', 'fechados']);
     let filtro = filtros.abertos;
@@ -32,16 +34,10 @@ import Pagination from './Pagination.svelte';
     }
 </script>
 <div class='filled container'>
-    <form>
-        <label>
-            Filtrar chamados:
-            <br>
-            <select bind:value={filtro}>
-                <option value={filtros_enum.abertos}>Abertos</option>
-                <option value={filtros_enum.fechados}>Fechados</option>
-            </select>
-        </label>
-    </form>
+    <div class='filter'>
+        <span>Filtrar chamados</span>
+        <FiltroProcessos processos={cadastros} bind:filter/>
+    </div>
 <table>
     <caption>Ordens de Serviço</caption>
     <thead class='underline'>
@@ -73,11 +69,7 @@ import Pagination from './Pagination.svelte';
     <tbody>
         <Pagination 
         data={cadastros
-            .filter(processo=>
-                filtro===filtros_enum.abertos
-                    ? filterPendente(processo) 
-                    : !filterPendente(processo)
-            )
+            .filter(p=>filter.fn(p))
             .sort(sort)}>
         <a slot='page' let:page href={`/processos/${page.etapa.Tag}/${page.id}`}>
             {@const cadastro = page}
@@ -137,7 +129,17 @@ import Pagination from './Pagination.svelte';
         content: var(--active, 'filtro');
         text-transform: capitalize;
     }
-    div {
+    .filter {
+        padding: 0;
+        width: 100%;
+        margin: 1em;
+    }
+    .filter span {
+        font-size: larger;
+        font-weight: bold;
+        margin: 1em;
+    }
+    .filled.container {
         padding-top: 0;
         padding-right: 1em;
         padding-left: 1em;

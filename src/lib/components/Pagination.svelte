@@ -21,11 +21,9 @@
         : page >= pages - ellipsis_threshold
             ? 'no-right-ellipsis'
         : 'all-ellipsis'
-    $: console.log(page, state)
     let pages_index = []
     $: pages_index = new Array(ellipsis_threshold + 2).fill(undefined)
     $: page, pages_index = pages_index.map((_, i)=>i + 1);
-    $: console.log(pages_index)
     $: switch (state) {
         case 'all-ellipsis':
             pages_index = pages_index.map(i=>i + page - ellipsis_threshold)
