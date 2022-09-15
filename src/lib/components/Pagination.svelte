@@ -80,6 +80,9 @@
         text-align: center;
         cursor: pointer;
     }
+    i.fa-ellipsis {
+        cursor: auto;
+    }
     i.disabled {
         opacity: 0.5;
         cursor: not-allowed;
