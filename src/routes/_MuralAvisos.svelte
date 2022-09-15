@@ -1,10 +1,9 @@
 <script>
-    import FiltroProcessos from "$lib/components/FiltroProcessos.svelte";
+    import FiltroProcessos, { filter } from "$lib/components/FiltroProcessos.svelte";
     import Pagination from "$lib/components/Pagination.svelte";
     import { processos } from "$lib/stores/notifications";
     import { user_names } from "$lib/stores/user";
     import { filterPendente, formatTag } from "$lib/utils/utils";
-    let filter
 </script>
 
 <div class='filled container'>
@@ -16,7 +15,7 @@
         <h2>
             <i class='fas fa-thumbtack'/>
             Mural de avisos
-            <FiltroProcessos processos={$processos.filter(filterPendente)} bind:filter/>
+            <FiltroProcessos processos={$processos.filter(filterPendente)}/>
         </h2>
     </div>
     <div class=divider/>
@@ -39,7 +38,9 @@
             </th>
         </thead>
         <tbody>
-            <Pagination items_per_page={5} data={$processos.filter(p=>filterPendente(p)&&filter.fn(p))}>
+            <Pagination 
+                items_per_page={5} 
+                data={$processos.filter(p=>filterPendente(p)&&$filter.fn(p))}>
                 <tr slot='page' let:page>
                     {@const {id, idUsuario, etapa: {Tag, campos}, log, Tag: process_tag} = page}
                     {@const etapa_campos = Object.fromEntries(campos)}

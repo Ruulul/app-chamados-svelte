@@ -1,42 +1,20 @@
 <script>
-    import { onDestroy } from 'svelte';
     import { filtros } from '$lib/stores/cadastros'
     import { getMany } from '$lib/utils/cadastros';
     import { formatTag } from '$lib/utils/utils';
     import { user_names } from '$lib/stores/user';
     import Pagination from './Pagination.svelte';
-    import FiltroProcessos from './FiltroProcessos.svelte';
+    import FiltroProcessos, { filter } from './FiltroProcessos.svelte';
     export let sort = (a, b)=>b.id-a.id;
     export let tag = undefined;
     let cadastros = [];
-    let filter
-
-    let filtros_enum = createEnum(['abertos', 'fechados']);
-    let filtro = filtros.abertos;
 
     $: getMany('processo', tag, $filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
-
-    
-    let agora = Date.now()/1000
-    let handlerAgora = setInterval(()=>{
-        getMany('processo', tag, $filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(async oss=>{
-            cadastros=oss
-            oss.forEach(({idUsuario:id})=>user_names.add(id))
-        })
-        agora=Date.now()/1000
-    }, 1000)
-    onDestroy(()=>clearInterval(handlerAgora))
-
-    function createEnum(entries) {
-        const enumObject = {};
-        for (const entry of entries) enumObject[entry] = entry;
-        return Object.freeze(enumObject);
-    }
 </script>
 <div class='filled container'>
     <div class='filter'>
         <span>Filtrar chamados</span>
-        <FiltroProcessos processos={cadastros} bind:filter/>
+        <FiltroProcessos processos={cadastros}/>
     </div>
 <table>
     <caption>Ordens de Serviço</caption>
@@ -68,9 +46,7 @@
     </thead>
     <tbody>
         <Pagination 
-        data={cadastros
-            .filter(p=>filter.fn(p))
-            .sort(sort)}>
+        data={cadastros.filter(p=>$filter.fn(p)).sort(sort)}>
         <a slot='page' let:page href={`/processos/${page.etapa.Tag}/${page.id}`}>
             {@const cadastro = page}
             {@const campos = Object.fromEntries(cadastro.etapa.campos)}

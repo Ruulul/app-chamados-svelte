@@ -1,10 +1,5 @@
-<script>
-    import { user_names } from "$lib/stores/user";
-    let tipos = []
-    let etapas = []
-    let status = []
-    export let processos
-    export let filter = {
+<script context='module'>
+    export const filter = writable({
         tipo: undefined,
         etapa: undefined,
         status: undefined,
@@ -15,7 +10,15 @@
 
             return tipo_filter && etapa_filter && status_filter;
         },
-    }    
+    })
+</script>
+<script>
+    import { user_names } from "$lib/stores/user";
+    import { writable } from "svelte/store";
+    let tipos = []
+    let etapas = []
+    let status = []
+    export let processos
     
     $: processos.map(({idUsuario: id, Tag: tipo, etapa: {campos, Tag: tag_etapa}})=>{
         user_names.add(id)
@@ -31,7 +34,7 @@
 <form>
     <label>
         Tipo
-        <select bind:value={filter.tipo}>
+        <select bind:value={$filter.tipo}>
             <option value={undefined}>Escolha...</option>
             {#each tipos as tipo}
                 <option>{tipo}</option>
@@ -40,7 +43,7 @@
     </label>
     <label>
         Etapa
-        <select bind:value={filter.etapa}>
+        <select bind:value={$filter.etapa}>
             <option value={undefined}>Escolha...</option>
             {#each etapas as etapa}
                 <option>{etapa}</option>
@@ -49,7 +52,7 @@
     </label>
     <label>
         Status
-        <select bind:value={filter.status}>
+        <select bind:value={$filter.status}>
             <option value={undefined}>Escolha...</option>
             {#each status as stat}
                 <option>{stat}</option>

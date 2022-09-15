@@ -8,7 +8,6 @@
     const cadastro = getContext('cadastro')
     const getProcesso = getContext('getProcesso')
     let value = ''
-    $: log = ($cadastro) ? [...$cadastro.log].reverse() : []
 
     $: mensagem = {
         titulo: 'mensagem',
