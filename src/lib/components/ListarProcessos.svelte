@@ -4,6 +4,7 @@
     import { getMany } from '$lib/utils/cadastros';
     import { filterPendente, formatTag } from '$lib/utils/utils';
     import { user_names } from '$lib/stores/user';
+import Pagination from './Pagination.svelte';
     export let sort = (a, b)=>b.id-a.id;
     export let tag = undefined;
     let cadastros = [];
@@ -70,18 +71,18 @@
         <th class='filtro'/>
     </thead>
     <tbody>
-        {#each 
-            cadastros
+        <Pagination 
+        data={cadastros
             .filter(processo=>
                 filtro===filtros_enum.abertos
                     ? filterPendente(processo) 
                     : !filterPendente(processo)
             )
-            .sort(sort) 
-        as cadastro(cadastro.id)}
+            .sort(sort)}>
+        <a slot='page' let:page href={`/processos/${page.etapa.Tag}/${page.id}`}>
+            {@const cadastro = page}
             {@const campos = Object.fromEntries(cadastro.etapa.campos)}
             {@const campos_processo = Object.fromEntries(cadastro.campos)}
-        <a href={`/processos/${cadastro.etapa.Tag}/${cadastro.id}`}>
             <tr>
                 <td>
                     {campos_processo.filial || ''}
@@ -112,7 +113,7 @@
                 </td>
             </tr>
         </a>
-        {/each}
+        </Pagination>
     </tbody>
 </table>
 </div>

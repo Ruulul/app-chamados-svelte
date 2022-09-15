@@ -1,4 +1,5 @@
 <script>
+    import Pagination from "$lib/components/Pagination.svelte";
     import { processos } from "$lib/stores/notifications";
     import { user_names } from "$lib/stores/user";
     import { filterPendente, formatTag } from "$lib/utils/utils";
@@ -92,9 +93,10 @@
             </th>
         </thead>
         <tbody>
-            {#each $processos.filter(p=>filterPendente(p)&&filter.fn(p)) as {id, idUsuario, etapa: {Tag, campos}, log, Tag: process_tag}}
-                {@const etapa_campos = Object.fromEntries(campos)}
-                <tr>
+            <Pagination data={$processos.filter(p=>filterPendente(p)&&filter.fn(p))}>
+                <tr slot='page' let:page>
+                    {@const {id, idUsuario, etapa: {Tag, campos}, log, Tag: process_tag} = page}
+                    {@const etapa_campos = Object.fromEntries(campos)}
                     <a href={`/processos/${Tag}/${id}`}>
                         <td>
                             {id} - {log[0].titulo.toUpperCase()}
@@ -113,7 +115,7 @@
                         </td>
                     </a>
                 </tr>
-            {/each}
+            </Pagination>
         </tbody>
     </table>
 </div>
