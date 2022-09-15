@@ -6,6 +6,10 @@
     $: pages = Math.ceil(data.length/items_per_page)
     $: down = page > 1
     $: up = page < pages
+    $: if (page < 1 || page > pages) {
+        if (page < 1) page = 1
+        else if (page > pages) page = pages
+    }
 </script>
 {#each data.slice((page - 1) * items_per_page, page * items_per_page) as page}
     <slot name='page' {page}/>
@@ -18,6 +22,7 @@
 <style>
     div {
         display: flex;
+        gap: 2em;
         flex-flow: row;
         list-style: none;
         justify-content: space-between;
