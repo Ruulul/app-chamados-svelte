@@ -2,6 +2,8 @@
     export let data
     export let page = 1
     export let items_per_page = 10
+    export let ellipsis_threshold = 3
+    export let items_while_ellipsing = 3
 
     $: pages = Math.ceil(data.length/items_per_page)
     $: down = page > 1
@@ -10,19 +12,58 @@
         if (page < 1) page = 1
         else if (page > pages) page = pages
     }
+    /** @type {'no-ellipsis' | 'no-left-ellipsis' | 'no-right-ellipsis' | 'all-ellipsis'} */
+    $: state =
+        pages <= ellipsis_threshold
+            ? 'no-ellipsis'
+        : page <= ellipsis_threshold
+            ? 'no-left-ellipsis'
+        : page >= pages - ellipsis_threshold
+            ? 'no-right-ellipsis'
+        : 'all-ellipsis'
+    $: console.log(page, state)
+    let pages_index = []
+    $: pages_index = new Array(ellipsis_threshold + 2).fill(undefined)
+    $: page, pages_index = pages_index.map((_, i)=>i + 1);
+    $: console.log(pages_index)
+    $: switch (state) {
+        case 'all-ellipsis':
+            pages_index = pages_index.map(i=>i + page - ellipsis_threshold)
+            pages_index[pages_index.length - 1] = undefined;
+            pages_index[0] = undefined;
+        case 'no-ellipsis':
+            break;
+        case 'no-right-ellipsis':
+            pages_index = pages_index.map(i=>i - 2 + pages - ellipsis_threshold)
+            pages_index[0] = undefined;
+            break;
+        case 'no-left-ellipsis':
+            pages_index[pages_index.length - 1] = undefined;
+            break;
+    }
 </script>
 {#each data.slice((page - 1) * items_per_page, page * items_per_page) as page}
     <slot name='page' {page}/>
 {/each}
 <div>
-    <i on:click={()=>down ? page-- : page = pages} class='fas fa-arrow-left' class:last={pages > 1 && !down} class:disabled={pages===1}/>
-    <span>{page}</span>
-    <i on:click={()=>up ? page++ : page = 1} class='fas fa-arrow-right' class:last={pages > 1 && !up} class:disabled={pages===1}/>
+    <i on:click={()=>down ? page-- : undefined} 
+        class='fas fa-chevron-left'  
+        class:disabled={!down}/>
+        {#each pages_index.slice(0, ellipsis_threshold + 2 > pages ? pages : ellipsis_threshold + 2) as index}
+            <span class:hidden={!index} class:selected={page===index} on:click={()=>page=index}>{index}</span>
+            <i class:hidden={index} class="fas fa-ellipsis"/>
+        {/each}
+    <i on:click={()=>up ? page++ : undefined} 
+        class='fas fa-chevron-right'
+        class:disabled={!up}/>
 </div>
 <style>
+    .hidden {
+        display: none;
+    }
     div {
         display: flex;
-        gap: 2em;
+        gap: 0.5em;
         flex-flow: row;
         list-style: none;
         justify-content: space-between;
@@ -31,30 +72,20 @@
     i, span {
         border: solid var(--dark);
         background-color: white;
-        padding: 1rem;
-        font-size: larger;;
-        border-radius: 2em;
+        padding: 0.5rem;
+        font-size: smaller;
+        border-radius: 0.5em;
         width: 1em;
         height: 1em;
         text-align: center;
-    }
-    i {
         cursor: pointer;
     }
-    i.last,
     i.disabled {
         opacity: 0.5;
-        cursor: auto;
+        cursor: not-allowed;
     }
-    span {
+    .selected {
         background-color: var(--dark);
         color: white;
     }
 </style>
-<!--
-    i.last {
-        background-color: blue;
-        color: white;
-        border: solid white;
-    }
--->
