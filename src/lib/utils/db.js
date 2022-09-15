@@ -48,6 +48,19 @@ const config = {
 		return requestGet('/tipos', )
 			.catch(console.error)
 	},
+	async addTipo (tipo) {
+		await requestPost('/tipos', categoria)
+			.catch(console.error)
+		filial.set(get(filial));
+	},
+	async deleteTipo (tipo) {
+		await requestDelete(`/tipos/${tipo.id}`)
+		filial.set(get(filial));
+	},
+	async editarTipo (tipo, update) {
+		await requestPut(`/tipos/${tipo.id}`, update)
+		filial.set(get(filial));
+	},
 	/**
 	 * Obtém as categorias de {@link OS} da API.
 	 * @returns {Promise<Array<Categoria>>} Lista de categorias de {@link OS} no sistema.
