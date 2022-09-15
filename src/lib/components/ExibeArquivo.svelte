@@ -38,9 +38,12 @@
       * CSS 
       */
     export let style = {}
+
+    let width;
 </script>
 {#if data}
-	    <div class:hidden={data === 'Não autorizado'} class="file-wrapper" style={geraCSS(style)}>
+    <div bind:offsetWidth={width} style:width='100%'>
+	    <div style:--image-width={width} class:hidden={data === 'Não autorizado'} class="file-wrapper" style={geraCSS(style)}>
 	    	<span>{title} (Approx. {Math.floor(data.split(';base64,')[1].length/4 * 3 / 1024)} kB)
 	    		<br/>
                 <img class:hidden={!data.slice(0, 20).includes('image')} {alt} src={data}/>
@@ -52,23 +55,26 @@
 	    </div>
         <a class:hidden={!(data && abrir)} href={data} {title} target='_blank'>{abrir}</a>
         <a class:hidden={!(data && download)} href={data} download={title}>{download}</a>
+    </div>
 {:else if String(title) !== 'undefined'}
     {#await getFile(title)}
         {carregando}
     {:then data}
-	    <div class:hidden={data === 'Não autorizado'} class="file-wrapper" style={geraCSS(style)}>
-	    	<span>{title} (Approx. {Math.floor(data.split(';base64,')[1].length/4 * 3 / 1024)} kB)
-	    		<br/>
-                <img class:hidden={!data.slice(0, 20).includes('image')} {alt} src={data}/>
-	    		<object class:hidden={data.slice(0, 20).includes('image')} {alt} title='anexo' {data}>
-	    			Não pudemos exibir
-	    		</object>
-	    	</span>
-            <slot/>
-	    </div>
-        <a class:hidden={!(data && abrir)} href={data} {title} target='_blank'>{abrir}</a>
-        <a class:hidden={!(data && download)} href={data} download={title}>{download}</a>
-        <span class:hidden={data !== 'Não autorizado'}>{sem_arquivo}</span>
+        <div bind:offsetWidth={width} style:width='100%'>
+            <div style:--image-width={width} class:hidden={data === 'Não autorizado'} class="file-wrapper" style={geraCSS(style)}>
+                <span>{title} (Approx. {Math.floor(data.split(';base64,')[1].length/4 * 3 / 1024)} kB)
+                    <br/>
+                    <img class:hidden={!data.slice(0, 20).includes('image')} {alt} src={data}/>
+                    <object class:hidden={data.slice(0, 20).includes('image')} {alt} title='anexo' {data}>
+                        Não pudemos exibir
+                    </object>
+                </span>
+                <slot/>
+            </div>
+            <a class:hidden={!(data && abrir)} href={data} {title} target='_blank'>{abrir}</a>
+            <a class:hidden={!(data && download)} href={data} download={title}>{download}</a>
+            <span class:hidden={data !== 'Não autorizado'}>{sem_arquivo}</span>
+        </div>
     {/await}
 {/if}
 
@@ -82,7 +88,7 @@
 		align-self: center;
 	}
 	.file-wrapper :hover img {
-		width: 100%;
+		width: calc(var(--image-width, 100%) * 1px);
 	}
 
 	.file-wrapper {
