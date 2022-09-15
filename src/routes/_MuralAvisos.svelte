@@ -40,7 +40,8 @@
         <tbody>
             <Pagination 
                 items_per_page={5} 
-                data={$processos.filter(p=>filterPendente(p)&&$filter.fn(p))}>
+                data={$processos.filter(p=>filterPendente(p)&&$filter.fn(p))}
+                columns_count=5>
                 <tr slot='page' let:page>
                     {@const {id, idUsuario, etapa: {Tag, campos}, log, Tag: process_tag} = page}
                     {@const etapa_campos = Object.fromEntries(campos)}

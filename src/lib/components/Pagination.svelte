@@ -3,7 +3,7 @@
     export let page = 1
     export let items_per_page = 10
     export let ellipsis_threshold = 3
-    export let items_while_ellipsing = 3
+    export let columns_count
 
     $: pages = Math.ceil(data.length/items_per_page)
     $: down = page > 1
@@ -43,31 +43,44 @@
 {#each data.slice((page - 1) * items_per_page, page * items_per_page) as page}
     <slot name='page' {page}/>
 {/each}
-<div>
-    <i on:click={()=>down ? page-- : undefined} 
-        class='fas fa-chevron-left'  
-        class:disabled={!down}/>
-        {#each pages_index.slice(0, ellipsis_threshold + 2 > pages ? pages : ellipsis_threshold + 2) as index}
-            <span class:hidden={!index} class:selected={page===index} on:click={()=>page=index}>{index}</span>
-            <i class:hidden={index} class="fas fa-ellipsis"/>
-        {/each}
-    <i on:click={()=>up ? page++ : undefined} 
-        class='fas fa-chevron-right'
-        class:disabled={!up}/>
-</div>
+<tr class='outer'>
+    <td colspan={columns_count - 1}>
+        <div class=inner>
+            <i on:click={()=>down ? page-- : undefined} 
+                class='fas fa-chevron-left'  
+                class:disabled={!down}/>
+                {#each pages_index.slice(0, ellipsis_threshold + 2 > pages ? pages : ellipsis_threshold + 2) as index}
+                    <span class='number' class:hidden={!index} class:selected={page===index} on:click={()=>page=index}>{index}</span>
+                    <i class:hidden={index} class="fas fa-ellipsis"/>
+                {/each}
+            <i on:click={()=>up ? page++ : undefined} 
+                class='fas fa-chevron-right'
+                class:disabled={!up}/>
+        </div>
+    </td>
+    <td>{data.length} items</td>
+</tr>
 <style>
     .hidden {
         display: none;
     }
-    div {
+    .outer {
+        flex-flow: row;
+        justify-content: space-between;
+        align-items: flex-end;
+        width: 100%;
+    }
+    .inner {
         display: flex;
+        width: 20em;
+        margin: auto;
         gap: 0.5em;
         flex-flow: row;
         list-style: none;
         justify-content: space-between;
         margin-top: 2em;
     }
-    i, span {
+    i, .number {
         border: solid var(--dark);
         background-color: white;
         padding: 0.5rem;

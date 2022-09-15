@@ -46,7 +46,8 @@
     </thead>
     <tbody>
         <Pagination 
-        data={cadastros.filter(p=>$filter.fn(p)).sort(sort)}>
+        data={cadastros.filter(p=>$filter.fn(p)).sort(sort)}
+        columns_count={!tag ? 7 : 6}>
         <a slot='page' let:page href={`/processos/${page.etapa.Tag}/${page.id}`}>
             {@const cadastro = page}
             {@const campos = Object.fromEntries(cadastro.etapa.campos)}
