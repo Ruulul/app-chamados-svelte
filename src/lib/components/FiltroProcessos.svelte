@@ -41,34 +41,37 @@
     })
 </script>
 <form on:submit|preventDefault>
-    <label class:hidden={tipos.length===1}>
-        Processo
-        <select bind:value={$filter.tipo}>
-            <option value={undefined}></option>
-            {#each tipos as tipo}
-                <option>{tipo}</option>
-            {/each}
-        </select>
-    </label>
-    <label class:hidden={etapas.length===1}>
-        Etapa
-        <select bind:value={$filter.etapa}>
-            <option value={undefined}></option>
-            {#each etapas as etapa}
-                <option>{etapa}</option>
-            {/each}
-        </select>
-    </label>
-    <label class:hidden={status.length===1}>
-        Status
-        <select bind:value={$filter.status}>
-            <option value={undefined}></option>
-            {#each status as stat}
-                <option>{stat}</option>
-            {/each}
-        </select>
-    </label>
-    <button on:click={clear}>Limpar filtros!</button>
+    <span>Filtros:</span>
+    <div>
+        <label class:hidden={tipos.length===1}>
+            Processo
+            <select bind:value={$filter.tipo}>
+                <option value={undefined}></option>
+                {#each tipos as tipo}
+                    <option>{tipo}</option>
+                {/each}
+            </select>
+        </label>
+        <label class:hidden={etapas.length===1}>
+            Etapa
+            <select bind:value={$filter.etapa}>
+                <option value={undefined}></option>
+                {#each etapas as etapa}
+                    <option>{etapa}</option>
+                {/each}
+            </select>
+        </label>
+        <label class:hidden={status.length===1}>
+            Status
+            <select bind:value={$filter.status}>
+                <option value={undefined}></option>
+                {#each status as stat}
+                    <option>{stat}</option>
+                {/each}
+            </select>
+        </label>
+        <button on:click={clear}>Limpar filtros!</button>
+    </div>
 </form>
 
 <style>
@@ -76,8 +79,17 @@
         display: none;
     }
     form {
+        margin-top: 1em;
+    }
+    form span {
+        margin: 1em;
+    }
+    form, div {
         width: 100%;
+    }
+    div {
         display: flex;
+        flex-flow: row;
         justify-content: space-around;
     }
 </style>
