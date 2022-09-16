@@ -49,10 +49,12 @@
             <i on:click={()=>down ? page-- : undefined} 
                 class='fas fa-chevron-left'  
                 class:disabled={!down}/>
+            <span class=number class:hidden={!(state === 'no-right-ellipsis' || state === 'all-ellipsis')} on:click={()=>page=1}>1</span>
                 {#each pages_index.slice(0, ellipsis_threshold + 2 > pages ? pages : ellipsis_threshold + 2) as index}
                     <span class='number' class:hidden={!index} class:selected={page===index} on:click={()=>page=index}>{index}</span>
                     <i class:hidden={index} class="fas fa-ellipsis"/>
                 {/each}
+            <span class=number class:hidden={!(state === 'no-left-ellipsis' || state === 'all-ellipsis')} on:click={()=>page=pages}>{pages}</span>
             <i on:click={()=>up ? page++ : undefined} 
                 class='fas fa-chevron-right'
                 class:disabled={!up}/>
