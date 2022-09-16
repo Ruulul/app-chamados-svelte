@@ -14,13 +14,14 @@
     }
     /** @type {'no-ellipsis' | 'no-left-ellipsis' | 'no-right-ellipsis' | 'all-ellipsis'} */
     $: state =
-        pages <= ellipsis_threshold
+        pages <= ellipsis_threshold + 1
             ? 'no-ellipsis'
-        : page <= ellipsis_threshold
+        : page <= ellipsis_threshold + 1
             ? 'no-left-ellipsis'
         : page >= pages - ellipsis_threshold
             ? 'no-right-ellipsis'
         : 'all-ellipsis'
+    $: console.log(state)
     let pages_index = []
     $: pages_index = new Array(ellipsis_threshold + 2).fill(undefined)
     $: page, pages_index = pages_index.map((_, i)=>i + 1);
