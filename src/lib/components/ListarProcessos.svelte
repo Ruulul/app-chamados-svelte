@@ -5,11 +5,17 @@
     import { user_names } from '$lib/stores/user';
     import Pagination from './Pagination.svelte';
     import FiltroProcessos, { filter } from './FiltroProcessos.svelte';
+    import { onDestroy } from 'svelte';
     export let sort = (a, b)=>b.id-a.id;
     export let tag = undefined;
     let cadastros = [];
 
-    $: getMany('processo', tag, $filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
+    const get = () => getMany('processo', tag, $filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
+    get()
+    const handle = setInterval(get, 1000);
+    onDestroy(function(){
+        clearTimeout(handle)
+    })
 </script>
 <div class='filled container'>
     <div class='filter'>
