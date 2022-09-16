@@ -83,14 +83,11 @@ import { sendEmail } from '$lib/utils/email';
                 {/await}
             </h3>
             <h3>{titulo}</h3>
-            <div class='campo'>
-                {@html parseMD(descr)}
-                <dd>{data + ' ' + hora}</dd>
-                {#each Array.isArray(files[id]) ? Object.values(files[id]) : [] as {data = 'data:;base64,', title}}
-                    <ExibeArquivo {data} title={title?.split('-')[1]}/>
-                {/each}
-
-            </div>
+            {@html parseMD(descr)}
+            <dd>{data + ' ' + hora}</dd>
+            {#each Array.isArray(files[id]) ? Object.values(files[id]) : [] as {data = 'data:;base64,', title}}
+                <ExibeArquivo {data} title={title?.split('-')[1]}/>
+            {/each}
         </div>
     {/each}
 </div>

@@ -39,15 +39,27 @@
       */
     export let style = {}
 
-    let width;
+    /** @type {HTMLDialogElement} */
+    let preview;
 </script>
 {#if data}
-    <div bind:offsetWidth={width} style:width='100%'>
-	    <div style:--image-width={width} class:hidden={data === 'Não autorizado'} class="file-wrapper" style={geraCSS(style)}>
+{@const is_image = data.slice(0, 20).includes('image')}
+    <div style:width='100%'>
+	    <div class:hidden={data === 'Não autorizado'} style={geraCSS(style)}>
 	    	<span>{title} (Approx. {Math.floor(data.split(';base64,')[1].length/4 * 3 / 1024)} kB)
 	    		<br/>
-                <img class:hidden={!data.slice(0, 20).includes('image')} {alt} src={data}/>
-	    		<object class:hidden={data.split(';base64,')[1].length < 20 || data.slice(0, 20).includes('image')} {alt} title='anexo' {data}>
+                <button class:hidden={!is_image} on:click={()=>preview.showModal()}>Visualizar</button>
+                <dialog bind:this={preview}>
+                    <div class='file-wrapper'>
+                        <img class:hidden={!is_image} {alt} src={data}/>
+                        <div>
+                            <a class:hidden={!(data && abrir)} href={data} {title} target='_blank'>{abrir}</a>
+                            <a class:hidden={!(data && download)} href={data} download={title}>{download}</a>
+                            <button on:click={()=>preview.close()}>Voltar</button>
+                        </div>
+                    </div>
+                </dialog>
+	    		<object class:hidden={data.split(';base64,')[1].length < 20 || is_image} {alt} title='anexo' {data}>
 	    			Não pudemos exibir
 	    		</object>
 	    	</span>
@@ -60,12 +72,23 @@
     {#await getFile(title)}
         {carregando}
     {:then data}
-        <div bind:offsetWidth={width} style:width='100%'>
-            <div style:--image-width={width} class:hidden={data === 'Não autorizado'} class="file-wrapper" style={geraCSS(style)}>
+    {@const is_image = data.slice(0, 20).includes('image')}
+        <div style:width='100%'>
+            <div class:hidden={data === 'Não autorizado'} style={geraCSS(style)}>
                 <span>{title} (Approx. {Math.floor(data.split(';base64,')[1].length/4 * 3 / 1024)} kB)
                     <br/>
-                    <img class:hidden={!data.slice(0, 20).includes('image')} {alt} src={data}/>
-                    <object class:hidden={data.slice(0, 20).includes('image')} {alt} title='anexo' {data}>
+                    <button class:hidden={!is_image} on:click={()=>preview.showModal()}>Visualizar</button>
+                    <dialog bind:this={preview}>
+                        <div class='file-wrapper'>
+                            <img class:hidden={!is_image} {alt} src={data}/>
+                            <div>
+                                <a class:hidden={!(data && abrir)} href={data} {title} target='_blank'>{abrir}</a>
+                                <a class:hidden={!(data && download)} href={data} download={title}>{download}</a>
+                                <button on:click={()=>preview.close()}>Voltar</button>
+                            </div>
+                        </div>
+                    </dialog>
+                    <object class:hidden={is_image} {alt} title='anexo' {data}>
                         Não pudemos exibir
                     </object>
                 </span>
@@ -82,21 +105,20 @@
     .hidden {
         display: none;
     }
-	img {
-		width: 0;
-		transition: width 0.2s 0.25s;
-		align-self: center;
-	}
-	.file-wrapper :hover img {
-		width: calc(var(--image-width, 100%) * 1px);
-	}
 
 	.file-wrapper {
-		display: flex;
-		flex-flow: row;
+		display: grid;
 		border: none;
-		width: 100%;
-		justify-content: space-between;
-		margin: 0 -2em 0 -2em;
+        width: 70vw;
+        height: 80vh;
+		justify-content: center;
 	}
+	.file-wrapper img {
+		width: 60vw;
+	}
+    .file-wrapper div {
+        display: flex;
+        flex-flow: row;
+        width: 100%;
+    }
 </style>
