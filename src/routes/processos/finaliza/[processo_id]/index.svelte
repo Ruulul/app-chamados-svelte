@@ -8,6 +8,7 @@
     import { addMensagem, getUnique } from '$lib/utils/cadastros';
 
     const processo = getContext('processo')
+    const anexos = getContext('anexos')
     let value = ''
     $: log = ($processo) ? [...$processo.log].reverse() : []
 
@@ -21,7 +22,7 @@
     {$processo?.log[0].titulo}
 </div>
 <div class='messages'>
-    {#each log as {descr, createdAt, idUsuario, titulo}}
+    {#each log as {id, descr, createdAt, idUsuario, titulo}}
     {@const data_array = createdAt.split('T')}
     {@const data = data_array[0].split('-').reverse().join('/')}
     {@const hora = data_array[1].split('.')[0]}
@@ -36,6 +37,13 @@
         <h3>{titulo}</h3>
         {@html parseMD(descr)}
         <dd>{data + ' ' + hora}</dd>
+        {#each $anexos[id] as anexo}
+            {#if anexo instanceof Object}
+                {@const title = anexo.title}
+                {@const data = anexo.data}
+                <ExibeArquivo {data} title={title.split('-')}/>
+            {/if}
+        {/each}
     </div>
     {/each}
 </div>

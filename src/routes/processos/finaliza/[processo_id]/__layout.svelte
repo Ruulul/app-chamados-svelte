@@ -3,27 +3,33 @@
 	export async function load ({params}) {
 		return {
 			stuff: {
-				title: `Chamado ${params.cadastro_id}`
+				title: `Chamado ${params.processo_id}`
 			},
 		}
 	}
 
 </script>
 <script>
+    import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     import { page } from '$app/stores'
     import { user } from '$lib/stores/user';
-    import { getUnique, getDepts, getOpcoes, updateProcesso } from '$lib/utils/cadastros';
+    import { getUnique, getDepts, getOpcoes, updateProcesso, getCampo } from '$lib/utils/cadastros';
     import { getUser } from '$lib/utils/db';
     import { setContext, onDestroy } from 'svelte';
     import { writable } from 'svelte/store';
     import { notificaEnvolvidos } from '$lib/utils/utils';
     let processo = writable(), cliente, depts, status_opcoes = [], status = '', updating = false
     setContext('processo', processo)
+
+    let anexos = writable({})
+    $: console.log($anexos)
+    setContext('anexos', anexos)
     const getProcesso = 
     () => getUnique('processo', 'finaliza', $page.params.processo_id)
     .then(data=>{
         $processo=data;
         status=Object.fromEntries(data.etapa.campos)["status"]
+        data.log?.forEach(async log => !$anexos[log.id] ? $anexos[log.id] = await getCampo('log', log.Tag, log.id, 'anexo') : undefined)
     })
     getProcesso()
     let handler = setTimeout(getProcesso, 1000);
@@ -85,9 +91,16 @@
                     </select>
                 </td>
             </tr>
-        <div class='campo'>
-        <h2>Anexo</h2>
-        </div>
+            <div class='campo'>
+            <h2>Anexos</h2>
+                {#each Object.values($anexos).flat() as anexo}
+                    {#if anexo instanceof Object}
+                        {@const title = anexo.title}
+                        {@const data = anexo.data}
+                        <ExibeArquivo title={title?.split('-')[1]} {data}/>
+                    {/if}
+                {/each}
+            </div>
 
     </div>
     <div class='container'>
