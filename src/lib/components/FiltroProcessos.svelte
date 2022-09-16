@@ -52,7 +52,7 @@
                 {/each}
             </select>
         </label>
-        <label class:hidden={etapas.length===1}>
+        <label class:hidden={true || etapas.length===1}>
             Etapa
             <select bind:value={$filter.etapa}>
                 <option value={undefined}></option>
@@ -65,7 +65,7 @@
             Status
             <select bind:value={$filter.status}>
                 <option value={undefined}></option>
-                {#each status as stat}
+                {#each status.filter(s=>!$filter.tipo ? true : processos.filter(p=>p.Tag===$filter.tipo).map(p=>Object.fromEntries(p.etapa.campos).status).includes(s)) as stat}
                     <option>{stat}</option>
                 {/each}
             </select>
