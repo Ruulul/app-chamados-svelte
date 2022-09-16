@@ -69,8 +69,6 @@
                 .catch(console.error)
         else console.log('not fechado')
     }
-
-    if (browser) window.update = update;
     
     $: a_classificar = campos_etapa.categoria === 'A. D.'
 </script>
