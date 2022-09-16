@@ -23,7 +23,7 @@
 </script>
 
 <div class='outlined container'>
-    <h3><a href='/processos/{Tag}'>{titulo}<i class='fas fa-eye'/></a></h3>
+    <h3><a href='/processos/{Tag}'>{titulo} <i class='fas fa-eye'/></a></h3>
     <h2><i class='fas fa-headset'/> Meus tickets</h2>
     <div class='divider'/>
     <a class='action button' sveltekit:prefetch href='/processos/{Tag}/novo'>Abrir Chamado</a>
