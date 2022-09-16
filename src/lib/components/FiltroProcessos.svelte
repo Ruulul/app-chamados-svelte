@@ -19,6 +19,7 @@
 </script>
 <script>
     import { user_names } from "$lib/stores/user";
+    import { onMount } from "svelte";
     import { writable } from "svelte/store";
     let tipos = []
     let etapas = []
@@ -28,6 +29,7 @@
         $filter.clear()
         $filter = $filter
     }
+    onMount(clear)
     
     $: processos.map(({idUsuario: id, Tag: tipo, etapa: {campos, Tag: tag_etapa}})=>{
         user_names.add(id)
