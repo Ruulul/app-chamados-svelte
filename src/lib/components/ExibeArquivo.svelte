@@ -48,24 +48,22 @@
 	    <div class:hidden={data === 'Não autorizado'} style={geraCSS(style)}>
 	    	<span>{title} (Approx. {Math.floor(data.split(';base64,')[1].length/4 * 3 / 1024)} kB)
 	    		<br/>
-                <button class:hidden={!is_image} on:click={()=>preview.showModal()}>Visualizar</button>
+                <button class='action button' on:click={()=>preview.showModal()}>Visualizar</button>
                 <dialog bind:this={preview}>
                     <div class='file-wrapper'>
                         <img class:hidden={!is_image} {alt} src={data}/>
+                        <object class:hidden={data.split(';base64,')[1].length < 20 || is_image} {alt} title='anexo' {data}>
+                            Não pudemos exibir
+                        </object>
                         <div>
-                            <a class:hidden={!(data && abrir)} href={data} {title} target='_blank'>{abrir}</a>
-                            <a class:hidden={!(data && download)} href={data} download={title}>{download}</a>
-                            <button on:click={()=>preview.close()}>Voltar</button>
+                            <a class='action button' class:hidden={!(data && download)} href={data} download={title}>{download}</a>
+                            <button class='action button' on:click={()=>preview.close()}>Voltar</button>
                         </div>
                     </div>
                 </dialog>
-	    		<object class:hidden={data.split(';base64,')[1].length < 20 || is_image} {alt} title='anexo' {data}>
-	    			Não pudemos exibir
-	    		</object>
 	    	</span>
             <slot/>
 	    </div>
-        <a class:hidden={!(data && abrir)} href={data} {title} target='_blank'>{abrir}</a>
         <a class:hidden={!(data && download)} href={data} download={title}>{download}</a>
     </div>
 {:else if String(title) !== 'undefined'}
@@ -81,16 +79,15 @@
                     <dialog bind:this={preview}>
                         <div class='file-wrapper'>
                             <img class:hidden={!is_image} {alt} src={data}/>
+                            <object class:hidden={data.split(';base64,')[1].length < 20 || is_image} {alt} title='anexo' {data}>
+                                Não pudemos exibir
+                            </object>
                             <div>
-                                <a class:hidden={!(data && abrir)} href={data} {title} target='_blank'>{abrir}</a>
                                 <a class:hidden={!(data && download)} href={data} download={title}>{download}</a>
                                 <button on:click={()=>preview.close()}>Voltar</button>
                             </div>
                         </div>
                     </dialog>
-                    <object class:hidden={is_image} {alt} title='anexo' {data}>
-                        Não pudemos exibir
-                    </object>
                 </span>
                 <slot/>
             </div>
