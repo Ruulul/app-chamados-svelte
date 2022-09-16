@@ -17,6 +17,7 @@
     import { tipos_os, categorias_por_tipo_os } from '$lib/stores/local_db';
     import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     import { page } from '$app/stores'
+    import { goto } from '$app/navigation'
     import { writable } from 'svelte/store';
     import { TimeFromSeconds } from '$lib/utils/utils';
     import { proximo_status, metadado_hora,  } from '$lib/utils/utils';
@@ -52,10 +53,8 @@
         .then(data=>{
             if (data.etapa.Tag === 'finaliza') {
                 let new_link = `/processos/finaliza/${$page.params.servico_id}`
-                window.location.href = new_link
-                console.log(new_link)
+                goto(new_link)
             }
-            console.log(data)
             servico.set(data)
             etapa = data.etapa.Tag
         })
@@ -68,9 +67,7 @@
         .catch(()=>{})
     $: servico_new = $processos.find(({id})=>id==$page.params.servico_id)
     $: if (servico_new?.updatedAt !== $servico?.updatedAt) getServico()
-    $: console.log($servico)
-    $: console.log(anexos)
-    
+
     setContext('servico', servico)
     setContext('getServico', getServico)
     $: setContext('classificador', classificador)
@@ -92,11 +89,7 @@
     $: getOpcoes('etapa', etapa, 'status').then(opcoes=>status_opcoes=opcoes)
 
     function setAtendente () {
-       console.log("Setting atendente")
-       console.log(campos_etapa)
        let id = campos_etapa["suporteId"]
-       console.log(`atendenteId: ${id}`)
-       console.log(`$user?.nome: ${$user?.nome}`)
        if (id)
            if (id == $user?.id)
                atendente=$user?.nome
