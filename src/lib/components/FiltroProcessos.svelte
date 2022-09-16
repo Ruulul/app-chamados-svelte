@@ -41,28 +41,28 @@
     })
 </script>
 <form on:submit|preventDefault>
-    <label>
-        Tipo
+    <label class:hidden={tipos.length===1}>
+        Processo
         <select bind:value={$filter.tipo}>
-            <option value={undefined}>Escolha...</option>
+            <option value={undefined}></option>
             {#each tipos as tipo}
                 <option>{tipo}</option>
             {/each}
         </select>
     </label>
-    <label>
+    <label class:hidden={etapas.length===1}>
         Etapa
         <select bind:value={$filter.etapa}>
-            <option value={undefined}>Escolha...</option>
+            <option value={undefined}></option>
             {#each etapas as etapa}
                 <option>{etapa}</option>
             {/each}
         </select>
     </label>
-    <label>
+    <label class:hidden={status.length===1}>
         Status
         <select bind:value={$filter.status}>
-            <option value={undefined}>Escolha...</option>
+            <option value={undefined}></option>
             {#each status as stat}
                 <option>{stat}</option>
             {/each}
@@ -72,6 +72,9 @@
 </form>
 
 <style>
+    .hidden {
+        display: none;
+    }
     form {
         width: 100%;
         display: flex;
