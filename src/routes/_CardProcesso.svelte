@@ -10,14 +10,15 @@
     export let titulo;
     $: por_tag = $processos.filter(processo=>processo.etapa.Tag === Tag);
     $: pendentes = por_tag.filter(filterPendente)
-    $: por_vencimento = pendentes.map(({etapa})=>assignVencimento(etapa))
+    $: por_vencimento = pendentes.map(({etapa, createdAt})=>assignVencimento({...etapa, createdAt}))
     const hora = 1000 * 60 * 60 * 24
     const dia = hora * 24
     const semana = dia * 7
-    let offsets = [0, dia, semana]
     $: vencidos = por_vencimento.filter(filterVencidos())
-    $: vencem_hoje = por_vencimento.filter(filterVencidos(dia))
-    $: vencem_semana = por_vencimento.filter(filterVencidos(semana))
+    $: vencem_hoje = por_vencimento.filter(p=>filterVencidos(dia)(p)&&!vencidos.includes(p))
+    $: vencem_semana = por_vencimento.filter(p=>filterVencidos(semana)(p)&&!vencidos.includes(p)&&!vencem_hoje.includes(p))
+
+    $: console.log(por_vencimento.map(t=>({ven: t.ven, id: t.obj.id, id_processo: t.obj.idProcesso, tag: t.obj.Tag, ...Object.fromEntries(t.obj.campos)})))
 
     $:hidden = !pendentes
 </script>
@@ -28,9 +29,9 @@
     <div class='divider'/>
     <a class='action button' sveltekit:prefetch href='/processos/{Tag}/novo'>Abrir Chamado</a>
     <ul>
-        <li>{pendentes.length} pendentes</li>
-        <li>0 parados</li>
-        <li>0 em atendimento</li>
+        <li>{pendentes.filter(p=>Object.fromEntries(p.etapa.campos).status==='em analise').length} em análise</li>
+        <li>{pendentes.filter(p=>Object.fromEntries(p.etapa.campos).status==='pendente').length} pendentes</li>
+        <li>{pendentes.filter(p=>Object.fromEntries(p.etapa.campos).status==='em atendimento').length} em atendimento</li>
     </ul>
     <div class='divider'/>
     <ul>
