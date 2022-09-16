@@ -1,5 +1,6 @@
 <script>
     import { getContext } from 'svelte'
+    import { browser } from '$app/env'
     import { goto } from '$app/navigation'
     import { getUser } from '$lib/utils/db.js'
     import { updateProcesso, getCampo, getUnique, nextEtapa } from '$lib/utils/cadastros';
@@ -7,7 +8,7 @@
     import { parseMD } from '$lib/utils/utils'
     import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     import { metadado_hora, proximo_status } from '$lib/utils/utils';
-import { sendEmail } from '$lib/utils/email';
+    import { sendEmail } from '$lib/utils/email';
     /**
      * Objeto que mapeia o label do botão de alterar status com o status em si
      */
@@ -21,11 +22,9 @@ import { sendEmail } from '$lib/utils/email';
     const getServico = getContext('getServico')
     const classificador = getContext('classificador')
     $: campos_etapa = $servico?.etapa ? Object.fromEntries($servico?.etapa.campos) : {};
-    $: console.log(campos_etapa)
 
     let files = {};
     $: $servico.log?.forEach(async log => files[log.id] = await getCampo('log', log.Tag, log.id, 'anexo'))
-    $: console.log(files)
     function adicionaMensagem () {
         goto('addMensagem', {
             noscroll: true,
@@ -34,20 +33,27 @@ import { sendEmail } from '$lib/utils/email';
 
     async function atualizaChamado () {
         let novo_status = proximo_status[campos_etapa.status]
+        await update (novo_status)
+    }
+
+    async function update (status) {
+        if (!status) return;
         let filial = Object.fromEntries($servico.campos)?.filial;
         let update;
-        if (novo_status)
-            update = {status: novo_status, [metadado_hora[novo_status]]:(new Date()).toISOString()};
-        if (novo_status === 'em atendimento')
+        if (status)
+            update = {status, [metadado_hora[status]]:(new Date()).toISOString()};
+        if (status === 'em atendimento')
             update.suporteId = $user.id;
+        console.log('updating')
         await updateProcesso($servico, update)
             .then(async function(){
-                if (novo_status.toLowerCase().includes("aguardando"))
-                    sendEmail('on_hold', (await getUser($servico.idUsuario)).email, { idOS: $servico.id, status: novo_status });
+                if (status.toLowerCase().includes("aguardando"))
+                    sendEmail('on_hold', (await getUser($servico.idUsuario)).email, { idOS: $servico.id, status });
             })
             .then(getServico)
             .catch(console.error)
-        if (novo_status === 'fechado')
+        console.log('checking status fechado')
+        if (status === 'fechado')
             await nextEtapa($servico, { 
                     dept:
                     filial === '0101' 
@@ -57,12 +63,15 @@ import { sendEmail } from '$lib/utils/email';
                         : filial === '0401'
                         ? 29
                         : undefined,
-                })
+                }, 
+                { no_cooldown: true })
                 .then(()=>history.back())
                 .catch(console.error)
+        else console.log('not fechado')
     }
 
-    $: console.log($servico?.log)
+    if (browser) window.update = update;
+    
     $: a_classificar = campos_etapa.categoria === 'A. D.'
 </script>
 <div class='campo filled container assunto'>
