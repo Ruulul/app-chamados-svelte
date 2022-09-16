@@ -17,10 +17,6 @@
     $: vencidos = por_vencimento.filter(filterVencidos())
     $: vencem_hoje = por_vencimento.filter(p=>filterVencidos(dia)(p)&&!vencidos.includes(p))
     $: vencem_semana = por_vencimento.filter(p=>filterVencidos(semana)(p)&&!vencidos.includes(p)&&!vencem_hoje.includes(p))
-
-    $: console.log(por_vencimento.map(t=>({ven: t.ven, id: t.obj.id, id_processo: t.obj.idProcesso, tag: t.obj.Tag, ...Object.fromEntries(t.obj.campos)})))
-
-    $:hidden = !pendentes
 </script>
 
 <div class='outlined container'>

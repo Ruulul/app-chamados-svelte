@@ -9,7 +9,6 @@
     export let filial = ''
     let activeSort = ''
     let visible = false;
-    $: console.log(visible)
 
     const style = document.documentElement.style
 

@@ -17,30 +17,6 @@
     import { sendEmail } from '$lib/utils/email'
 	let titulo = '', descr = '';
 	let anexos, email = 'suporte.ti@ourobrancoagronegocios.com.br';
-    //let departamentos = []
-    //let departamento_id
-    //getDepts('abrir_os').then(depts=>{
-    //    departamentos=depts
-    //    departamento_id=departamentos[0].id
-    //})
-    //$: switch($filial) {
-    //    case '0101':
-    //        console.log("in switch 01")
-    //        departamento_id = 9
-    //        break;
-    //    case '0201':
-    //        console.log("in switch 02")
-    //        departamento_id = 22
-    //        break;
-    //    case '0401':
-    //        console.log("in switch 04")
-    //        departamento_id = 29
-    //        break;
-    //    default:
-    //        console.log($filial)
-    //}
-    //$: departamento_id, email = departamentos?.find(departamento=>departamento.id===departamento_id)?.email.valor
-    //$: console.log(email)
 	async function onSubmit() {
 		let os = {
 			mensagem:

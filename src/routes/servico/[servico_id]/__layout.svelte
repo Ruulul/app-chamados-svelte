@@ -53,18 +53,15 @@
     $: hasAtendente = servico?.atendenteId && servico?.atendenteId !== 'undefined'
     $: isSuporte = $user.tipo=='suporte'
     $: canRelease = servico?.atendenteId == $user.id && servico?.status!=='fechado'
-    $: console.log(JSON.stringify({hasAtendente, isSuporte, canRelease}))
     $: servico?.updatedAt, setAtendente()
     $: servico?.usuarioId, setNomeAndDept()
     function setAtendente () {
         let id = servico?.atendenteId
-        console.log(id)
         if (id)
             if (id == $user.id)
                 atendente=$user.nome
             else 
                 getUser(id)
-                .then(s=>(console.log(s),s))
                 .then(({nome})=>atendente=nome)
     }
     function setNomeAndDept () {

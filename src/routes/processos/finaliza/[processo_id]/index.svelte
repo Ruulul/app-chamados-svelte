@@ -15,7 +15,6 @@
         titulo: 'mensagem',
         descr: value,
     }
-    $: console.log(mensagem)
 </script>
 <div class='campo filled container assunto'>
     Assunto:

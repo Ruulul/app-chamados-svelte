@@ -23,7 +23,6 @@
     () => getUnique('processo', 'finaliza', $page.params.processo_id)
     .then(data=>{
         $processo=data;
-        console.log(data)
         status=Object.fromEntries(data.etapa.campos)["status"]
     })
     getProcesso()
@@ -31,14 +30,11 @@
     onDestroy(()=>clearInterval(handler))
     $: etapa = $processo?.etapa.Tag
     $: getDepts($processo?.Tag, 'finaliza').then(data=>depts=data)
-    $: console.log(etapa)
-    $: getOpcoes('etapa', etapa, 'status').then(data=>(console.log(data),status_opcoes=data.map(s=>s.toString())))
+    $: getOpcoes('etapa', etapa, 'status').then(data=>status_opcoes=data.map(s=>s.toString()))
     $: getUser($processo?.idUsuario).then(user=>cliente=user)
 
     let canEdit = false
     $: canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$processo.etapa.dept)?.departamento) || $user.cargo == 'admin'
-    $: console.log({user_dept: $user.dept, depts})
-    $: console.log(canEdit)
     function onChange() {
         updating = true
         return updateProcesso($processo, {status})

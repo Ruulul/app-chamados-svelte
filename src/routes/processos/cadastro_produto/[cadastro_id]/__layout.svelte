@@ -34,13 +34,11 @@
         getUnique('etapa', etapa, $cadastro?.idEtapaAtual)
         .then(data=>data.log?.forEach(async log => !anexos[log.id] ? anexos[log.id] = await getCampo('log', log.Tag, log.id, 'anexo') : undefined))
     getDepts('cadastro_produto', 'cadastro_produto').then(data=>depts=data)
-    $: console.log(`Getting "etapa/campos/${etapa}/status"`)
     $: getOpcoes('etapa', etapa, 'status').then(data=>status_opcoes=data)
     $: getUser($cadastro?.idUsuario).then(user=>cliente=user)
 
     let canEdit = false
     $: canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$cadastro?.etapa.dept)?.departamento) || $user.cargo == 'admin'
-    $: console.log({user_dept: $user.dept, depts})
     function onChange() {
         updating = true
         if (status === 'finalizado')

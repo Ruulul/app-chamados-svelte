@@ -79,7 +79,6 @@ async function updateServico (id, update, flag) {
 		servico[key] = value
 	return requestPost('/update/servico/' + id, servico)
 		.then(/**@param {OS} os */async os=>{
-			console.log(os)
 			const { nome, email } = await getUser(os.usuarioId || os.autorId)
 			const { nome : nomeSuporte, email : emailSuporte } = await getUser(os.atendenteId)
 			if (flag) sendEmail(flag, [email, emailSuporte], {idOS: os.id, nome, nomeSuporte, ...update, tag: 'suporte_tecnico'})
@@ -102,10 +101,7 @@ async function addMensagem (id, mensagem) {
 	return updateServico(id, { chat })
 		.then(async ({ chat, autorId, usuarioId, atendenteId })=>{
 			if (anexo) {
-				console.log(mensagem)
-				console.log(chat)
 				let { id : mensagem_id, chamadoId: chamado_id } = chat.at(-1);
-				console.log(id)
 				requestPost(`/update/mensagem/${mensagem_id}/arquivo`, anexo)
 					.then(()=>console.log(`Anexo no chamado ${chamado_id} na mensagem ${mensagem_id} salvo com sucesso`))
 			}
@@ -138,10 +134,8 @@ async function addMensagem (id, mensagem) {
 	let servicos = []
 	let filiais = get(filiais_validas);
 	let path = '/servicos?' + filtros.reduce((pv, cv, i)=>pv+(i?'&':'')+'filtro='+cv[0]+','+cv[1], '') + `&page=${page}&limit=${limit}`
-	console.log(path)
 	if (filtros.map(i=>i[0]).includes('filialId'))
 	return await requestGet(path).then(({page})=>page)
-	console.log("filial não encontrada nos filtros")
 	for (let filial of filiais) {
 		servicos = [...servicos, ...await requestGet(path, filial).then(({page})=>page)
 				.catch(()=>[])]
@@ -166,7 +160,6 @@ async function getServicosPageCount (filtros,limit) {
 	let count = 0;
 	for (let filial of filiais) {
 		let count_filial = await requestGet(path, filial).then(({count})=>count).catch(()=>0)
-		console.log(count, count_filial)
 		count = Math.max(count, Math.ceil(count_filial/limit));
 	}
 	return count;

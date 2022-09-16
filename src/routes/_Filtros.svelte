@@ -18,7 +18,6 @@
             filtro.push(['filialId', filial])
             setFilial(filial)
         }
-        console.log(filtro)
         $filtros.chamados = filtro
         servicos.update()
     } else {
@@ -27,7 +26,6 @@
     }
     let activeSort = ''
     let visible = false;
-    $: console.log(visible)
 
     const style = document.documentElement.style
 

@@ -22,7 +22,7 @@ let last_request = Date.now();
 let interval = 1000
 
 async function post (model, tag, os) {
-    if (Date.now() < last_request + interval ) return
+    if (Date.now() < last_request + interval ) return console.log('too quick')
     last_request = Date.now()
     let { anexos } = os;
     delete os.anexos;
@@ -31,10 +31,8 @@ async function post (model, tag, os) {
         let processoMeta = await requestGet(`/meta/processo/${tag}`)
         let etapaMeta = processoMeta.etapas.find(etapa=>!etapa.prev)
         let etapa = await requestGet(`/processo/${processo.Tag}/${processo.id}/etapa/${etapaMeta.Tag}/${processo.idEtapaAtual}`)
-        console.log(etapa)
         let msg = etapa.log[0]
         let model = 'log'
-        console.log({etapa, msg, model, tag})
         await Promise.all(anexos.map(anexo=>requestPost(`/${model}/${msg.Tag}/${msg.id}/campo/anexo`, anexo))).catch(console.error);
     }
     return processo
@@ -79,17 +77,17 @@ async function getCount (model, tag, filtros) {
 }
 
 async function updateProcesso (processo, update) {
-        if (Date.now() < last_request + interval ) return
+        if (Date.now() < last_request + interval ) return console.log('too quick')
         last_request = Date.now()
         return requestPut(`/etapa/${processo.etapa.Tag}/${processo.etapa.id}`, update)
 }
-async function nextEtapa (processo, props) {
-    if (Date.now() < last_request + interval ) return
+async function nextEtapa (processo, props, options) {
+    if (!options.no_cooldown && Date.now() < last_request + interval) return console.log('too quick')
     last_request = Date.now()
     let dept = await getDept(processo.etapa.dept)
     const initial_props = {
         finaliza: {
-            status: get(user).dept.map(({departamento})=>departamento).includes(dept.departamento) ? "fechado" : "em analise",
+            status: get(user).dept.includes(dept.departamento) ? "fechado" : "em analise",
         }
     }
     let meta_processos = await requestGet('/meta/processo/' + processo.Tag)
@@ -100,7 +98,7 @@ async function nextEtapa (processo, props) {
 }
 
 async function addMensagem (processo, mensagem) {
-    if (Date.now() < last_request + interval ) return
+    if (Date.now() < last_request + interval ) return console.log('too quick')
     last_request = Date.now()
     let { anexos } = mensagem;
     delete mensagem.anexos;
@@ -109,7 +107,7 @@ async function addMensagem (processo, mensagem) {
 }
 
 async function deleteMensagem(id) {
-    if (Date.now() < last_request + interval ) return
+    if (Date.now() < last_request + interval ) return console.log('too quick')
     last_request = Date.now()
     return requestDelete(`/mensagem/${id}`)
 }
