@@ -91,4 +91,7 @@
         padding-top: 1em;
         text-align: center;
     }
+    h2 {
+        width: 100%;
+    }
 </style>

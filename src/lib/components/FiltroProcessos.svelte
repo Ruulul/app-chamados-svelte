@@ -10,6 +10,11 @@
 
             return tipo_filter && etapa_filter && status_filter;
         },
+        clear() {
+            this.tipo = undefined;
+            this.etapa = undefined;
+            this.status = undefined;
+        }
     })
 </script>
 <script>
@@ -19,6 +24,10 @@
     let etapas = []
     let status = []
     export let processos
+    export const clear = function () {
+        $filter.clear()
+        $filter = $filter
+    }
     
     $: processos.map(({idUsuario: id, Tag: tipo, etapa: {campos, Tag: tag_etapa}})=>{
         user_names.add(id)
@@ -31,7 +40,7 @@
             status[status.length] = campos_obj.status
     })
 </script>
-<form>
+<form on:submit|preventDefault>
     <label>
         Tipo
         <select bind:value={$filter.tipo}>
@@ -59,4 +68,13 @@
             {/each}
         </select>
     </label>
+    <button on:click={clear}>Limpar filtros!</button>
 </form>
+
+<style>
+    form {
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+    }
+</style>
