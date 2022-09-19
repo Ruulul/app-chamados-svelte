@@ -39,9 +39,8 @@ function createCadastros () {
 
 export const notifications = createNotifications()
 
-let data = {}
-let unsub = undefined;
-if (browser) unsub = notifications.subscribe(new_data=>data=new_data)
+let unsub
+if (browser) unsub = notifications.subscribe(new_data=>window.localStorage.setItem('notifications', JSON.stringify(new_data)))
 function createNotifications () {
     const { subscribe, update } = writable({}, function start (set) {
         let storage = window.localStorage.getItem('notifications');
@@ -53,7 +52,6 @@ function createNotifications () {
         .then(processos=>set(Object.fromEntries(processos)))
 
         return function stop () {
-            window.localStorage.setItem('notifications', JSON.stringify(data))
             unsub()
         }
     });
