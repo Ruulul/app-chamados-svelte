@@ -22,7 +22,7 @@
  */
 
 import { converteDateToISO } from './utils.js'
-import { requestDelete, requestGet, requestPost } from './network.js'
+import { requestDelete, requestGet, requestPost, requestPut } from './network.js'
 import { filiais_validas_por_id, filial, setFiliaisValidas, setFilial } from './filial.js'
 import { get } from 'svelte/store'
 
@@ -49,7 +49,7 @@ const config = {
 			.catch(console.error)
 	},
 	async addTipo (tipo) {
-		await requestPost('/tipos', categoria)
+		await requestPost('/tipos', tipo)
 			.catch(console.error)
 		filial.set(get(filial));
 	},
@@ -66,21 +66,21 @@ const config = {
 	 * @returns {Promise<Array<Categoria>>} Lista de categorias de {@link OS} no sistema.
 	 */
 	 getCategorias () {
-		return requestGet('/servicos/categorias')
+		return requestGet('/categorias')
 			.catch(console.error)
 	},
 	async addCategoria (categoria) {
-		await requestPost('/servicos/novo/subcategoria', categoria)
+		await requestPost('/categorias', categoria)
 			.catch(console.error)
 		filial.set(get(filial));
 	},
 	async deleteCategoria (categoria) {
-		await requestPost(`/servicos/excluir/subcategoria/${categoria.tipo}/${categoria.categoria}`)
+		await requestDelete('/categorias/' + categoria.id)
 		filial.set(get(filial));
 	},
 	async editarCategoria (categoria, update) {
-		await requestPost(`/servicos/excluir/subcategoria/${categoria.tipo}/${categoria.categoria}`, 
-		{id: categoria.id, tipo: update.tipo || categoria.tipo, newCategoria: update.newCategoria || categoria.categoria})
+		await requestPut('/categorias/' + categoria.id, 
+		{id: categoria.id, tipo: update.tipo || categoria.tipo, categoria: categoria.categoria})
 		filial.set(get(filial));
 	},
 	getDepartamentos () {
