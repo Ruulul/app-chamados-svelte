@@ -5,6 +5,8 @@
     import { processos } from "$lib/stores/notifications";
     import { user_names } from "$lib/stores/user";
     import { filterPendente, formatTag } from "$lib/utils/utils";
+
+    let loading = {}
 </script>
 
 <div class='filled container'>
@@ -67,7 +69,7 @@
                         </td>
                     </a>
                     <td>
-                        <i class='mark-as-read fas fa-circle-dot' on:click={()=>notifications.markAsRead(page.id, page.log.sort((a, b)=>b.id - a.id).at(-1).id)}/>
+                        <i class={'mark-as-read fas ' + (loading[page.id] || false ? 'fa-spinner fa-spin' : 'fa-circle-dot')} on:click={()=>(loading[page.id]=true, notifications.markAsRead(page.id, page.log.sort((a, b)=>b.id - a.id).at(-1).id))}/>
                     </td>
                 </tr>
             </Pagination>
