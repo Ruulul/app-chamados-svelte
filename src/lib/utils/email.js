@@ -76,7 +76,7 @@ const subjectMap = {
 }
 /** Props válidos por template */
 const propsMap = {
-	open	: ['idOS', 'assunto'],
+	open	: ['idOS', 'assunto', 'nome'],
 	message	: ['idOS', 'nomeAutor', 'mensagem'],
 	taken	: ['idOS', 'nomeSuporte'],
 	started : ['idOS'],

@@ -64,7 +64,7 @@ async function getPrazo(prioridade, createdAt) {
 			.catch(()=>console.log(`Arquivo ${anexo.title} falhou no envio`))
 	}
 	let { email } = await getUser(os.usuarioId || os.autorId)
-	return sendEmail('open', [email, email_suporte], {idOS: created_os.id, assunto : os.assunto})
+	return sendEmail('open', [email, email_suporte], {idOS: created_os.id, assunto : os.assunto, nome: $user.nome })
 }
 
 /**

@@ -45,7 +45,7 @@
 		}
 
 		await post('processo', 'suporte_tecnico', os)
-        .then((os)=>sendEmail('open', [email, $user.email], { idOS: os.id, assunto: titulo, tag: os.Tag }))
+        .then((os)=>sendEmail('open', [email, $user.email], { idOS: os.id, assunto: titulo, tag: os.Tag, nome: $user.nome }))
         .then(()=>history.back())
         .catch(console.error)
 	}
