@@ -85,7 +85,7 @@ async function updateProcesso (processo, update) {
         return requestPut(`/etapa/${processo.etapa.Tag}/${processo.etapa.id}`, update)
 }
 async function nextEtapa (processo, props, options) {
-    if (!options.no_cooldown && Date.now() < last_request + interval) return console.log('too quick')
+    if (!options?.no_cooldown && Date.now() < last_request + interval) return console.log('too quick')
     last_request = Date.now()
     let dept = await getDept(processo.etapa.dept)
     const initial_props = {
