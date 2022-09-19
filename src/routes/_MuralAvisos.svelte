@@ -46,7 +46,7 @@
         <tbody>
             <Pagination 
                 items_per_page={5} 
-                data={$processos.filter(p=>filterPendente(p)&&$filter.fn(p)&&notifications.isNotRead(p))}
+                data={$processos.sort((a, b)=>b.id-a.id).filter(p=>filterPendente(p)&&$filter.fn(p)&&notifications.isNotRead(p))}
                 columns_count=5>
                 <tr slot='page' let:page>
                     {@const {id, idUsuario, etapa: {Tag, campos}, log, Tag: process_tag} = page}
