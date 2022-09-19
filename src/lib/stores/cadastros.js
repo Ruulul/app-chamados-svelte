@@ -1,5 +1,7 @@
+import { browser } from "$app/env";
 import { goto } from "$app/navigation";
 import { getMany } from "$lib/utils/cadastros";
+import { filterPendente } from "$lib/utils/utils";
 import { get, writable } from "svelte/store";
 
 export const cadastros = createCadastros()
@@ -23,7 +25,7 @@ function createCadastros () {
     async function setCadastros (set) {
         let filtro = get(filtros)
         let {cadastros, limit, page} = filtro
-        getMany('processo','cadastro_produto',cadastros, {limit, page})
+        getMany('processo','doesnt_really_matter',cadastros, {limit, page})
             .then((oss)=>{
                 if (oss=='Não autorizado') goto('/login')
                 set(oss)
@@ -32,5 +34,44 @@ function createCadastros () {
                 console.log(e)
                 set([])
             })
+    }
+}
+
+export const notifications = createNotifications()
+
+let data = {}
+//let unsub = undefined;
+//if (browser) unsub = notifications.subscribe(new_data=>data=new_data)
+function createNotifications () {
+    const { subscribe, update } = writable({}, function start (set) {
+        let storage = window.localStorage.getItem('notifications');
+        let data = {}
+        if (storage) data = JSON.parse(storage)
+        
+        getMany('processo')
+        .then(processos=>processos.filter(filterPendente).map(p=>[p.id, data[p.id] || 0]))
+        .then(processos=>set(Object.fromEntries(processos)))
+
+        return function stop () {
+            window.localStorage.setItem('notifications', data)
+            unsub()
+        }
+    });
+
+    return {
+        subscribe,
+        isRead: (p) => get({subscribe})[p.id] !== p.etapa.log.sort((a, b)=>b.id - a.id).at(0).id,
+        markAsRead(id, last_msg_id) {
+            update(data=>{
+                data[id] = last_msg_id;
+                return data;
+            })
+        },
+        removeEntry(id) {
+            update(data=>{
+                delete data[id];
+                return data;
+            })
+        },
     }
 }

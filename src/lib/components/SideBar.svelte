@@ -6,15 +6,15 @@
 			['Home', '/'],
 			['Chamados', '/processos'],
 			['Notificações', '/notificacoes'],
-			['Avisos', '/avisos'],
-			['Configurações', '/config'],
+			['Avisos', '/avisos', true],
 		]
 	//if ($user.cargo == "admin") items.push(['Usuários', '/usuarios']);
+	if ($user.cargo === "admin") items.push(['Configurações', '/config'])
 </script>
 <nav title='Barra lateral'>
-	{#each items as [title, href]}
+	{#each items as [title, href, no_click]}
 	<li>
-		<a {title} {href} alt="Página {title}">
+		<a {title} href={no_click ? undefined : href} alt="Página {title}">
 			<Icon {href} />
 		</a>
 	</li>

@@ -8,9 +8,10 @@
     import { onDestroy } from 'svelte';
     export let sort = (a, b)=>b.id-a.id;
     export let tag = undefined;
+    export let custom_cadastros = undefined;
     let cadastros = [];
 
-    const get = () => getMany('processo', tag, $filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
+    const get = custom_cadastros ? undefined : () => getMany('processo', tag, $filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
     get()
     const handle = setInterval(get, 1000);
     onDestroy(function(){
