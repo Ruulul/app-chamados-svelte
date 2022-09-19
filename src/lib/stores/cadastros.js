@@ -3,6 +3,7 @@ import { goto } from "$app/navigation";
 import { getMany } from "$lib/utils/cadastros";
 import { filterPendente } from "$lib/utils/utils";
 import { get, writable } from "svelte/store";
+import { processos } from "./notifications";
 
 export const cadastros = createCadastros()
 
@@ -39,8 +40,7 @@ function createCadastros () {
 
 export const notifications = createNotifications()
 
-let unsub
-if (browser) unsub = notifications.subscribe(new_data=>window.localStorage.setItem('notifications', JSON.stringify(new_data)))
+if (browser) notifications.subscribe(new_data=>window.localStorage.setItem('notifications', JSON.stringify(new_data)))
 function createNotifications () {
     const { subscribe, update } = writable({}, function start (set) {
         let storage = window.localStorage.getItem('notifications');
@@ -50,10 +50,6 @@ function createNotifications () {
         getMany('processo')
         .then(processos=>processos.filter(filterPendente).map(p=>[p.id, data[p.id] || 0]))
         .then(processos=>set(Object.fromEntries(processos)))
-
-        return function stop () {
-            unsub()
-        }
     });
 
     return {
