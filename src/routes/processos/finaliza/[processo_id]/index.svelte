@@ -7,6 +7,8 @@
     import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     import { addMensagem, getUnique } from '$lib/utils/cadastros';
 
+    import { notifications } from '$lib/stores/cadastros';
+
     const processo = getContext('processo')
     const anexos = getContext('anexos')
     let value = ''
@@ -22,7 +24,7 @@
     {$processo?.log[0].titulo}
 </div>
 <div class='messages'>
-    {#each log as {id, descr, createdAt, idUsuario, titulo}}
+    {#each log as {id, descr, createdAt, idUsuario, titulo}, index}
     {@const data_array = createdAt.split('T')}
     {@const data = data_array[0].split('-').reverse().join('/')}
     {@const hora = data_array[1].split('.')[0]}
@@ -35,9 +37,11 @@
             {/await}
         </h3>
         <h3>{titulo}</h3>
+        <dd class:hidden={$notifications[$processo.id] >= id} class=mark-as-read on:click={notifications.markAsRead($processo.id, id)}>Marcar como lido</dd>
+        <dd class:hidden={$notifications[$processo.id] <  id} class=mark-as-read on:click={notifications.markAsRead($processo.id, log.length > 1 ? log.at(index - 1).id : 0)}>Marcar como não lido</dd>
         {@html parseMD(descr)}
         <dd>{data + ' ' + hora}</dd>
-        {#each $anexos[id] as anexo}
+        {#each $anexos[id] || [] as anexo}
             {#if anexo instanceof Object}
                 {@const title = anexo.title}
                 {@const data = anexo.data}
@@ -56,6 +60,13 @@
     } class='action button'>Nova mensagem</button>
 
 <style>
+    .mark-as-read {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+    .hidden {
+        display: none;
+    }
     .messages {
         max-height: 30em;
         overflow-y: scroll;

@@ -1,6 +1,7 @@
 <script>
     import FiltroProcessos, { filter } from "$lib/components/FiltroProcessos.svelte";
     import Pagination from "$lib/components/Pagination.svelte";
+    import { notifications } from "$lib/stores/cadastros";
     import { processos } from "$lib/stores/notifications";
     import { user_names } from "$lib/stores/user";
     import { filterPendente, formatTag } from "$lib/utils/utils";
@@ -36,11 +37,14 @@
             <th>
                 De
             </th>
+            <th>
+                Marcar como lido
+            </th>
         </thead>
         <tbody>
             <Pagination 
                 items_per_page={5} 
-                data={$processos.filter(p=>filterPendente(p)&&$filter.fn(p))}
+                data={$processos.filter(p=>filterPendente(p)&&$filter.fn(p)&&notifications.isNotRead(p))}
                 columns_count=5>
                 <tr slot='page' let:page>
                     {@const {id, idUsuario, etapa: {Tag, campos}, log, Tag: process_tag} = page}
@@ -62,6 +66,9 @@
                             {$user_names[idUsuario] || 'Carregando...'}
                         </td>
                     </a>
+                    <td>
+                        <i class='mark-as-read fas fa-circle-dot' on:click={()=>notifications.markAsRead(page.id, page.log.sort((a, b)=>b.id - a.id).at(-1).id)}/>
+                    </td>
                 </tr>
             </Pagination>
         </tbody>
@@ -69,6 +76,9 @@
 </div>
 
 <style>
+    .mark-as-read {
+        cursor: pointer;
+    }
     .divider {
         margin-bottom: 1em;
         width: 100%;

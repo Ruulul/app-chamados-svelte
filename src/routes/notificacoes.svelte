@@ -5,4 +5,4 @@ import { processos } from "$lib/stores/notifications";
 
 </script>
 
-<ListarProcessos custom_cadastros={$processos.filter(notifications.isRead)} />
+<ListarProcessos custom_cadastros={$processos.filter(notifications.isNotRead)} />

@@ -11,7 +11,7 @@
     export let custom_cadastros = undefined;
     let cadastros = [];
 
-    const get = custom_cadastros ? undefined : () => getMany('processo', tag, $filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
+    const get = custom_cadastros ? ()=>cadastros=custom_cadastros : () => getMany('processo', tag, $filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
     get()
     const handle = setInterval(get, 1000);
     onDestroy(function(){

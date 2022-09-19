@@ -9,6 +9,7 @@
     import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     import { metadado_hora, proximo_status } from '$lib/utils/utils';
     import { sendEmail } from '$lib/utils/email';
+import { notifications } from '$lib/stores/cadastros';
     /**
      * Objeto que mapeia o label do botão de alterar status com o status em si
      */
@@ -76,7 +77,7 @@
     {$servico && $servico.log ? $servico.log[0].titulo : 'Carregando'}
 </div>
 <div class='messages'>
-    {#each $servico?.log?.sort((a, b)=>b.id-a.id) || [] as {id, idUsuario, titulo, descr, createdAt}}
+    {#each $servico?.log?.sort((a, b)=>b.id-a.id) || [] as {id, idUsuario, titulo, descr, createdAt}, index}
         {@const data_array = createdAt.split('T')}
         {@const data = data_array[0].split('-').reverse().join('/')}
         {@const hora = data_array[1].split('.')[0]}
@@ -89,6 +90,8 @@
                 {/await}
             </h3>
             <h3>{titulo}</h3>
+            <dd class:hidden={$notifications[$servico.id] >= id} class=mark-as-read on:click={notifications.markAsRead($servico.id, id)}>Marcar como lido</dd>
+            <dd class:hidden={$notifications[$servico.id] <  id} class=mark-as-read on:click={notifications.markAsRead($servico.id, $servico.log.length > 1 ? $servico.log.at(index - 1)?.id : 0)}>Marcar como não lido</dd>
             {@html parseMD(descr)}
             <dd>{data + ' ' + hora}</dd>
             {#each Array.isArray(files[id]) ? Object.values(files[id]) : [] as {data = 'data:;base64,', title}}
@@ -107,6 +110,13 @@
 {/if}
 
 <style>
+    .mark-as-read {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+    .hidden {
+        display: none;
+    }
     .messages {
         max-height: 30em;
         overflow-y: scroll;

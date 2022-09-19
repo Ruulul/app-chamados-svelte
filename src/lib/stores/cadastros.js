@@ -40,8 +40,8 @@ function createCadastros () {
 export const notifications = createNotifications()
 
 let data = {}
-//let unsub = undefined;
-//if (browser) unsub = notifications.subscribe(new_data=>data=new_data)
+let unsub = undefined;
+if (browser) unsub = notifications.subscribe(new_data=>data=new_data)
 function createNotifications () {
     const { subscribe, update } = writable({}, function start (set) {
         let storage = window.localStorage.getItem('notifications');
@@ -53,14 +53,14 @@ function createNotifications () {
         .then(processos=>set(Object.fromEntries(processos)))
 
         return function stop () {
-            window.localStorage.setItem('notifications', data)
+            window.localStorage.setItem('notifications', JSON.stringify(data))
             unsub()
         }
     });
 
     return {
         subscribe,
-        isRead: (p) => get({subscribe})[p.id] !== p.etapa.log.sort((a, b)=>b.id - a.id).at(0).id,
+        isNotRead: p => get({subscribe})[p.id] !== p.log.sort((a, b)=>b.id - a.id).at(0).id,
         markAsRead(id, last_msg_id) {
             update(data=>{
                 data[id] = last_msg_id;
