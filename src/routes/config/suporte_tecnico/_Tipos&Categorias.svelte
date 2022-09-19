@@ -82,7 +82,12 @@
 <dialog bind:this={dialog_criar}>
     <form on:submit|preventDefault={()=>config.addCategoria(item)}>
         <label>
-            Tipo - <input bind:value={item.tipo}>
+            Tipo - 
+            <select bind:value={item.tipo}>
+                {#each $tipos_os as { tipo }}
+                    <option>{tipo}</option>
+                {/each}
+            </select>
         </label>
         <label>
             Categoria - <input bind:value={item.categoria}>
