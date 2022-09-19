@@ -1,10 +1,11 @@
 /**
- * @typedef {('open'|'taken'|'released'|'message'|'closed'|'on_hold')} EmailTypes Tipos existentes de email
+ * @typedef {('open'|'taken'|'started'|'released'|'message'|'closed'|'on_hold')} EmailTypes Tipos existentes de email
  */
-const EmailTypes = ['open', 'taken', 'released', 'message', 'closed', 'on_hold', 'rejected']
+const EmailTypes = ['open', 'taken', 'started', 'released', 'message', 'closed', 'on_hold', 'rejected']
 import open from '$lib/email_templates/open.svelte'
 import message from '$lib/email_templates/message.svelte'
 import taken from '$lib/email_templates/taken.svelte'
+import started from '$lib/email_templates/started.svelte'
 import released from '$lib/email_templates/released.svelte'
 import closed from '$lib/email_templates/closed.svelte'
 import on_hold from '$lib/email_templates/onhold.svelte'
@@ -57,6 +58,7 @@ const templatesMap = {
 	open,
 	message,
 	taken,
+	started,
 	released,
 	closed,
 	on_hold,
@@ -66,15 +68,18 @@ const templatesMap = {
 const subjectMap = {
 	message: 'nova mensagem',
 	taken: 'assumido!',
+	started: 'atendimento iniciado',
 	released: 'colocado em espera',
 	closed: 'fechado',
 	on_hold: 'aguardando',
+	rejected: 'rejeitado',
 }
 /** Props válidos por template */
 const propsMap = {
 	open	: ['idOS', 'assunto'],
-	message	: ['idOS', 'nome', 'nomeAutor', 'mensagem'],
+	message	: ['idOS', 'nomeAutor', 'mensagem'],
 	taken	: ['idOS', 'nomeSuporte'],
+	started : ['idOS'],
 	released: ['idOS'],
 	closed	: ['idOS', 'last_msg'],
 	on_hold : ['idOS', 'status'],

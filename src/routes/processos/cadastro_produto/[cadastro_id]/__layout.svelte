@@ -15,6 +15,7 @@
     import { user } from '$lib/stores/user';
     import { getUnique, getCampo, getDepts, getOpcoes, updateProcesso, nextEtapa } from '$lib/utils/cadastros';
     import { getUser } from '$lib/utils/db';
+import { notificaEnvolvidos } from '$lib/utils/utils';
     import { setContext, onDestroy } from 'svelte';
     import { writable } from 'svelte/store';
     let cadastro = writable(), campos = {}, cliente, depts, status_opcoes = [], status = '', updating = false, anexos = {}
@@ -41,6 +42,7 @@
     $: canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$cadastro?.etapa.dept)?.departamento) || $user.cargo == 'admin'
     function onChange() {
         updating = true
+        notificaEnvolvidos($cadastro);
         if (status === 'finalizado')
             return nextEtapa($cadastro)
                 .then(()=>history.back())

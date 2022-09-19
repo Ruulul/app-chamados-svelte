@@ -5,7 +5,7 @@
     import { getUser } from '$lib/utils/db.js'
     import { updateProcesso, getCampo, getUnique, nextEtapa } from '$lib/utils/cadastros';
     import { user } from '$lib/stores/user.js'
-    import { parseMD } from '$lib/utils/utils'
+    import { notificaEnvolvidos, parseMD } from '$lib/utils/utils'
     import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
     import { metadado_hora, proximo_status } from '$lib/utils/utils';
     import { sendEmail } from '$lib/utils/email';
@@ -47,8 +47,7 @@
         console.log('updating')
         await updateProcesso($servico, update)
             .then(async function(){
-                if (status.toLowerCase().includes("aguardando"))
-                    sendEmail('on_hold', (await getUser($servico.idUsuario)).email, { idOS: $servico.id, status });
+                await notificaEnvolvidos($servico)
             })
             .then(getServico)
             .catch(console.error)

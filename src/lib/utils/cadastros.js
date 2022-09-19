@@ -1,6 +1,9 @@
 import { user } from "$lib/stores/user";
 import { get } from "svelte/store";
+import { getUser } from "./db";
+import { sendEmail } from "./email";
 import { requestGet, requestPost, requestPut, requestDelete } from "./network";
+import { getEmailsEnvolvidos } from "./utils";
 
 export {
     post,
@@ -104,6 +107,12 @@ async function addMensagem (processo, mensagem) {
     delete mensagem.anexos;
     let new_message = await requestPost(`/processo/${processo.Tag}/${processo.id}/etapa/${processo.etapa.Tag}/${processo.etapa.id}/mensagem`, mensagem)
     if (anexos?.length > 0) return Promise.all(anexos.forEach(anexo=>requestPost(`/log/${new_message.Tag}/${new_message.id}/campo/anexo`, anexo)))
+    let emails = await getEmailsEnvolvidos(processo);
+    await sendEmail('message', emails, {
+        idOS: processo.id,
+        nomeAutor: (await getUser(mensagem.idUsuario).catch(()=>({nome: '[erro obtendo nome]'})))?.nome,
+        mensagem: mensagem.descr,
+    });
 }
 
 async function deleteMensagem(id) {

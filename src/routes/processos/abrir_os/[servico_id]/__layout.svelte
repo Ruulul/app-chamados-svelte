@@ -19,7 +19,7 @@
     import { page } from '$app/stores'
     import { goto } from '$app/navigation'
     import { writable } from 'svelte/store';
-    import { TimeFromSeconds } from '$lib/utils/utils';
+    import { notificaEnvolvidos, TimeFromSeconds } from '$lib/utils/utils';
     import { proximo_status, metadado_hora,  } from '$lib/utils/utils';
     import { sendEmail } from '$lib/utils/email'
     console.log(`from layout, ${proximo_status}, ${metadado_hora}`);
@@ -110,10 +110,12 @@
             let novo_status = proximo_status[status];
             let update = {};
             update[campo] = campos_etapa[campo];
-            if (campo === 'status')
+            if (campo === 'status') {
                 update[metadado_hora[novo_status]] = (new Date()).toISOString();
-            if (status.includes("aguardando") && campo === 'status')
-                sendEmail('on_hold', (await getUser($servico.idUsuario)).email, { idOS: $servico.id, status, tag: $servico.Tag });
+                await notificaEnvolvidos($servico)
+                    .then(getServico)
+                    .catch(console.error);
+            }
             if (campo === 'categoria')
                 update.suporteId = $user.id
             if (campo==='status' && campos_etapa[campo] === 'fechado')

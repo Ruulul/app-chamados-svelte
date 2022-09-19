@@ -212,11 +212,21 @@ export async function notificaEnvolvidos(processo) {
   const template = 
       status === 'fechado' ? 'closed' :
       status === 'rejeitado' ? 'rejected' : 
+      status === 'pendente' ? 'taken' :
+      status === 'em atendimento' ? 'started' :
+      status === 'aguardando solicitante' ? 'on_hold' :
+      status === 'aguardando terceiro' ? 'on_hold' :
       null
   if (!template) return console.log('notificaEnvolvidos: sem template');
   const emails = await getEmailsEnvolvidos(processo)
   console.log('emails obtidos: ' + emails.join(', '));
-  await sendEmail(template, emails, {idOS: processo.id, tag: processo.Tag, last_msg: processo.log.sort((a, b)=>b.id - a.id)[0]}).then(console.log)
+  await sendEmail(template, emails, {
+    idOS: processo.id, 
+    tag: processo.Tag,
+    nomeSuporte: (await getUser(Object.fromEntries(processo.etapa.campos)?.suporteId).catch(()=>({nome: '[erro obtendo nome]'})))?.nome,
+    last_msg: processo.log.sort((a, b)=>b.id - a.id)[0],
+    status,
+  }).then(console.log)
 }
 
 export async function getEmailsEnvolvidos(processo) {

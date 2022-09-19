@@ -14,6 +14,7 @@
 	import { filiais_validas, filial } from '$lib/utils/filial';
     import { post, getDepts, getOpcoes,  } from '$lib/utils/cadastros';
     import { sendEmail } from '$lib/utils/email';
+import { user } from '$lib/stores/user';
 	let titulo = '', descr = '', anexos=[], unidade = '', departamento_id, departamentos=[];
     let unidades = [], filiais = [];
     getDepts('cadastro_produto', 'cadastro_produto').then(depts=>{
@@ -48,7 +49,7 @@
 		}
 
 		await post('processo', 'cadastro_produto', os)
-        .then((os)=>sendEmail('open', email, { idOS: os.id, assunto: titulo, tag: os.Tag }))
+        .then((os)=>sendEmail('open', [email, $user.email], { idOS: os.id, assunto: titulo, tag: os.Tag }))
         .then(()=>history.back())
         .catch(console.error)
 	}

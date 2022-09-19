@@ -43,6 +43,7 @@
     $: canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$processo.etapa.dept)?.departamento) || $user.cargo == 'admin'
     function onChange() {
         updating = true
+        notificaEnvolvidos($processo);
         return updateProcesso($processo, {status})
             .then(()=>getProcesso())
             .then(()=>notificaEnvolvidos($processo))
