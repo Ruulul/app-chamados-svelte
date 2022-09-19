@@ -118,19 +118,22 @@
             }
             if (campo === 'categoria')
                 update.suporteId = $user.id
-            if (campo==='status' && campos_etapa[campo] === 'fechado')
-                await nextEtapa($servico, { 
-                        dept:
-                        filial === '0101' 
-                            ? 9
-                            : filial === '0201'
-                            ? 22
-                            : filial === '0401'
-                            ? 29
-                            : undefined,
-                    })
-                    .then(()=>history.back())
-                    .catch(console.error)
+            if (campo==='status' && campos_etapa[campo] === 'fechado') {
+                if (confirm("Fechar chamado?")) {
+                    await nextEtapa($servico, { 
+                            dept:
+                            filial === '0101' 
+                                ? 9
+                                : filial === '0201'
+                                ? 22
+                                : filial === '0401'
+                                ? 29
+                                : undefined,
+                        })
+                        .then(()=>history.back())
+                        .catch(console.error)
+                }
+            }
             else
             await updateProcesso($servico, update)
                 .then(getServico)

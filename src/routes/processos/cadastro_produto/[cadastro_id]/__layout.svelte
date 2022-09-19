@@ -44,6 +44,7 @@ import { notificaEnvolvidos } from '$lib/utils/utils';
         updating = true
         notificaEnvolvidos($cadastro);
         if (status === 'finalizado')
+            if (confirm("Fechar chamado?"))
             return nextEtapa($cadastro)
                 .then(()=>history.back())
         return updateProcesso($cadastro, {status})
