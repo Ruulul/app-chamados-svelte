@@ -224,7 +224,7 @@ export async function notificaEnvolvidos(processo) {
     idOS: processo.id, 
     tag: processo.Tag,
     nomeSuporte: (await getUser(Object.fromEntries(processo.etapa.campos)?.suporteId).catch(()=>({nome: '[erro obtendo nome]'})))?.nome,
-    last_msg: processo.log.sort((a, b)=>b.id - a.id)[0],
+    last_msg: processo.log.sort((a, b)=>b.id - a.id)[0]?.descr || '[um erro aconteceu]',
     status,
   }).then(console.log)
 }
