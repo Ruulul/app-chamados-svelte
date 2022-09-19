@@ -49,7 +49,6 @@
         <th>
             Abertura
         </th>
-        <th class='filtro'/>
     </thead>
     <tbody>
         <Pagination 
