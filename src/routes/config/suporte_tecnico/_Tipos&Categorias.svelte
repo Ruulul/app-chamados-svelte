@@ -1,7 +1,7 @@
 <script>
     import { tipos_os, categorias_os } from "$lib/stores/local_db";
     import Accordion from "./_Accordion.svelte";
-    import { config } from "$lib/utils/db";
+    import { config, filiais_validas, filial } from "$lib/utils/db";
 
     let item = {}
     /** @type {HTMLDialogElement} */
@@ -9,7 +9,9 @@
     /** @type {HTMLDialogElement} */
     let dialog_categoria
     /** @type {HTMLDialogElement} */
-    let dialog_criar
+    let dialog_criar_tipo
+    /** @type {HTMLDialogElement} */
+    let dialog_criar_categoria
 
     function openEdit(type) {
         switch (type) {
@@ -17,15 +19,14 @@
                 return {
                     on (t) {
                         item = {...t};
-                        console.log(dialog_tipo)
-                        dialog_tipo.showModal();
+                        return ()=>dialog_tipo.showModal();
                     }
                 };
             case 'categoria':
                 return {
                     on (t) {
                         item = {...t}
-                        dialog_categoria.showModal();
+                        return ()=>dialog_categoria.showModal();
                     }
                 };
             case 'new':
@@ -35,9 +36,14 @@
                         switch (t) {
                             case 'tipo':
                                 item.tipo = '';
+                                return ()=>dialog_criar_tipo.showModal();
                             case 'categoria':
-                                item.categoria = '';
-                                dialog_criar.showModal();
+                                return {
+                                    on (t) {
+                                        item.tipo = t;
+                                        return ()=>dialog_criar_categoria.showModal();
+                                    }
+                                }
                         }
                     }
                 };
@@ -45,11 +51,12 @@
     }
 </script>
 <Accordion title=Tipos items={$tipos_os}>
-    <li slot=first-items class=tab on:click={()=>openEdit('new').on('tipo')}>Adicionar Tipo</li>
+    <li slot=first-items class=tab on:click={openEdit('new').on('tipo')}>Adicionar Tipo</li>
     <li slot=item let:item class=tab>
-        <i on:click={()=>config.deleteTipo(item)} class='fas fa-close'/>
+        <i on:click={config.deleteTipo(item)} class='fas fa-close'/>
         <i on:click={openEdit('tipo').on(item)} class='fas fa-pen'/>
         <Accordion wrap={false} title={item.tipo} items={$categorias_os.filter(categoria=>categoria.tipo===item.tipo)}>
+            <li slot=first-items class=tab on:click={openEdit('new').on('categoria').on(item.tipo)}>Adicionar Categoria</li>
             <li slot=item let:item class=tab>
                 <i on:click={()=>config.deleteCategoria(item)} class='fas fa-close'/>
                 <i on:click={openEdit('categoria').on(item)} class='fas fa-pen'/>
@@ -62,6 +69,14 @@
     <form on:submit|preventDefault={()=>config.editarTipo(item, item)}>
         ID - {item.id}
         <label>
+            Filial -
+            <select bind:value={$filial}>
+                {#each $filiais_validas as filial}
+                    <option>{filial}</option>
+                {/each}
+            </select>
+        </label>
+        <label>
             Tipo - <input bind:value={item.tipo}>
         </label>
         <input type=submit value=Atualizar>
@@ -71,7 +86,20 @@
     <form on:submit|preventDefault={()=>config.editarCategoria(item, item)}>
         ID - {item.id}
         <label>
-            Tipo - <input bind:value={item.tipo}>
+            Filial -
+            <select bind:value={$filial}>
+                {#each $filiais_validas as filial}
+                    <option>{filial}</option>
+                {/each}
+            </select>
+        </label>
+        <label>
+            Tipo - 
+            <select bind:value={item.tipo}>
+                {#each $tipos_os as { tipo }}
+                    <option>{tipo}</option>
+                {/each}
+            </select>
         </label>
         <label>
             Categoria - <input bind:value={item.categoria}>
@@ -79,7 +107,23 @@
         <input type=submit value=Atualizar>
     </form>
 </dialog>
-<dialog bind:this={dialog_criar}>
+<dialog bind:this={dialog_criar_tipo}>
+    <form on:submit|preventDefault={()=>config.addTipo(item)}>
+        <label>
+            Filial -
+            <select bind:value={$filial}>
+                {#each $filiais_validas as filial}
+                    <option>{filial}</option>
+                {/each}
+            </select>
+        </label>
+        <label>
+            Tipo - <input bind:value={item.categoria}>
+        </label>
+        <input type=submit value=Atualizar>
+    </form>
+</dialog>
+<dialog bind:this={dialog_criar_categoria}>
     <form on:submit|preventDefault={()=>config.addCategoria(item)}>
         <label>
             Tipo - 
