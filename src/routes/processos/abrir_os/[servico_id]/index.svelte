@@ -46,15 +46,15 @@ import { notifications } from '$lib/stores/cadastros';
         if (status === 'em atendimento')
             update.suporteId = $user.id;
         console.log('updating')
-        await updateProcesso($servico, update)
-            .then(async function(){
-                await notificaEnvolvidos($servico)
-            })
-            .then(getServico)
-            .catch(console.error)
         console.log('checking status fechado')
         if (status === 'fechado')
             if (confirm("Fechar chamado?")) {
+            await updateProcesso($servico, update)
+                .then(async function(){
+                    await notificaEnvolvidos($servico)
+                })
+                .then(getServico)
+                .catch(console.error)
             await nextEtapa($servico, { 
                     dept:
                     filial === '0101' 
@@ -69,7 +69,13 @@ import { notifications } from '$lib/stores/cadastros';
                 .then(()=>history.back())
                 .catch(console.error)
             }
-        else console.log('not fechado')
+        else 
+            await updateProcesso($servico, update)
+                .then(async function(){
+                    await notificaEnvolvidos($servico)
+                })
+                .then(getServico)
+                .catch(console.error)
     }
     
     $: a_classificar = campos_etapa.categoria === 'A. D.'
