@@ -19,13 +19,14 @@
     <form class='container' on:submit|preventDefault={onSubmit}>
         <label>
             {titulo_label}
-            <input class='campo filled container assunto' 
+            <input required class='campo filled container assunto' 
             bind:value={titulo}/>
         </label>
         <label>
             {descr_label}
             <textarea
             class='campo filled container descr' 
+            required
             bind:value={descr} 
             on:paste={({clipboardData:{files}})=>addFiles(files)}
             maxlength={1000}/>

@@ -81,7 +81,7 @@
                             : 'aguardando finalização'}
                 </td>
                 <td>
-                    {cadastro.log[0].titulo.toUpperCase()}
+                    {cadastro.log?.at(0)?.titulo.toUpperCase() || 'Carregando...'}
                 </td>
                 <td>
                     {cadastro.createdAt.split('T')[0].split('-').reverse().join('/')}

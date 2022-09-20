@@ -53,7 +53,7 @@
                     {@const etapa_campos = Object.fromEntries(campos)}
                     <a href={`/processos/${Tag}/${id}`}>
                         <td>
-                            {id} - {log[0].titulo.toUpperCase()}
+                            {id} - {log[0]?.titulo.toUpperCase()}
                         </td>
                         <td>
                             {formatTag(process_tag)}

@@ -48,13 +48,13 @@ function createNotifications () {
         if (storage) data = JSON.parse(storage)
         
         getMany('processo')
-        .then(processos=>processos.filter(filterPendente).map(p=>[p.id, data[p.id] || 0]))
+        .then(processos=>processos.filter(p=>Boolean(p)&&filterPendente).map(p=>[p.id, data[p.id] || 0]))
         .then(processos=>set(Object.fromEntries(processos)))
     });
 
     return {
         subscribe,
-        isNotRead: p => get({subscribe})[p.id] !== p.log.sort((a, b)=>b.id - a.id).at(0).id,
+        isNotRead: p => p?.log ? get({subscribe})[p.id] !== p.log.sort((a, b)=>b.id - a.id).at(0)?.id || 0 : undefined,
         markAsRead(id, last_msg_id) {
             update(data=>{
                 data[id] = last_msg_id;
