@@ -1,4 +1,6 @@
 <script>
+    import { filter } from '$lib/components/FiltroProcessos.svelte';
+
     import { processos } from '$lib/stores/notifications'
     import { filterPendente, assignVencimento, filterVencidos } from "$lib/utils/utils";
     let pendentes = 0;
@@ -8,6 +10,15 @@
      * Título a ser apresentado no card
      */
     export let titulo;
+
+    export let campos_dict = {
+        status: [
+            'em analise',
+            'pendente',
+            'em atendimento',
+        ]
+    }
+
     $: por_tag = $processos.filter(processo=>processo.etapa.Tag === Tag);
     $: pendentes = por_tag.filter(filterPendente)
     $: por_vencimento = pendentes.map(({etapa, createdAt})=>assignVencimento({...etapa, createdAt}))
@@ -24,11 +35,24 @@
     <h2><i class='fas fa-headset'/> Meus tickets</h2>
     <div class='divider'/>
     <a class='action button' sveltekit:prefetch href='/processos/{Tag}/novo'>Abrir Chamado</a>
-    <ul>
-        <li>{pendentes.filter(p=>Object.fromEntries(p.etapa.campos).status==='em analise').length} em análise</li>
-        <li>{pendentes.filter(p=>Object.fromEntries(p.etapa.campos).status==='pendente').length} pendentes</li>
-        <li>{pendentes.filter(p=>Object.fromEntries(p.etapa.campos).status==='em atendimento').length} em atendimento</li>
-    </ul>
+    {#each Object.entries(campos_dict) as [key, values]}
+        <ul>
+            <li class=no-link><span>Por {key}</span></li>
+            {#each values as value}
+                <li>
+                    <a href='/processos/{Tag}' 
+                        on:click={()=>{
+                            console.log("Changing filter")
+                            $filter[key] = value
+                        }}
+                    >
+                        {pendentes.filter(p=>Object.fromEntries(p.etapa.campos)[key] === value).length} {value}
+                    </a>
+                </li>
+            {/each}
+        </ul>
+    {/each}
+    Total: {pendentes.length}
     <div class='divider'/>
     <ul>
         <li>🟥 {vencidos.length} venceram</li>
@@ -41,6 +65,9 @@
 </div>
 
 <style>
+    .hidden {
+        display: none;
+    }
     .outlined.container {
         padding: 2em;
         padding-right: 1em;
@@ -63,6 +90,10 @@
     }
     li {
         position: relative;
+    }
+    li span {
+        display: block;
+        padding: 1em;
     }
     a {
         position: relative;

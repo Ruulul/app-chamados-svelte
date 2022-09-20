@@ -10,6 +10,7 @@
     export let tag = undefined;
     export let custom_cadastros = undefined;
     let cadastros = [];
+    export let clear_filters = ()=>{}
 
     const get = custom_cadastros ? ()=>cadastros=custom_cadastros : () => getMany('processo', tag, $filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
     get()
@@ -21,7 +22,7 @@
 <div class='filled container'>
     <div class='filter'>
         <span>Filtrar chamados</span>
-        <FiltroProcessos processos={cadastros}/>
+        <FiltroProcessos bind:clear={clear_filters} processos={cadastros}/>
     </div>
 <table>
     <caption>Ordens de Serviço</caption>

@@ -9,5 +9,10 @@
 </script>
 <script>
     import ListarProcessos from "$lib/components/ListarProcessos.svelte";
+    import { onMount } from "svelte";
+    
+    let clear_filters = ()=>{}
+
+    onMount(()=>clear_filters())
 </script>
-<ListarProcessos/>
+<ListarProcessos bind:clear_filters/>

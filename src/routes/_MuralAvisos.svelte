@@ -5,8 +5,13 @@
     import { processos } from "$lib/stores/notifications";
     import { user_names } from "$lib/stores/user";
     import { filterPendente, formatTag } from "$lib/utils/utils";
+    import { onMount } from "svelte";
 
     let loading = {}
+
+    let clear = ()=>{}
+
+    onMount(()=>clear())
 </script>
 
 <div class='filled container'>
@@ -18,7 +23,7 @@
         <h2>
             <i class='fas fa-thumbtack'/>
             Mural de avisos
-            <FiltroProcessos processos={$processos.filter(filterPendente)}/>
+            <FiltroProcessos bind:clear processos={$processos.filter(filterPendente)}/>
         </h2>
     </div>
     <div class=divider/>
