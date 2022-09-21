@@ -12,7 +12,7 @@ import on_hold from '$lib/email_templates/onhold.svelte'
 import rejected from '$lib/email_templates/rejected.svelte'
 import { origin } from './network'
 import { formatTag } from './utils'
-const SecureToken = "59fa2524-23b0-4dc1-af39-82ac290ca35c";
+const SecureToken = "e1c686b1-9ec6-47e6-a8a4-84914157acb0";
 /** Objeto de envio de emails */
 const Email = {
 	send: function (a) {
