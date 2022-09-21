@@ -1,23 +1,31 @@
 <script>
     import { auth } from '$lib/utils/db';
 	import { goto } from '$app/navigation'
+	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
+
 	let email;
 	let senha;
 	let error;
-	let dialog;
+	let info;
 
-	function handleSubmit() {
+	function alteraSenha () {
         let args = {email, senha}
         auth.alteraSenha(args)
         .then(()=>auth.login(args))
         .then(()=>goto('/'))
 	}
+	function resetaSenha () {
+		auth.resetaSenha(email);
+	}
 
-	onMount(showModal)
+	let token = undefined;
+	$: has_token = !!token;
+	onMount(getToken);
 
-	function showModal () {
-		dialog.showModal()
+	function getToken () {
+		let query_params = new URLSearchParams(location.search);
+		token = query_params.get('token');
 	}
 </script>
 <svelte:head>
@@ -25,17 +33,27 @@
 		Recuperação de Senha
 	</title>
 </svelte:head>
-<dialog class='filled container' bind:this={dialog}>
-	<p>Para recuperar sua senha, primeiro entre em contato com o departamento de TI para requisitar o reset.</p>
-	<p>Apenas então você poderá usar essa tela para escolher sua nova senha.</p>
-	<button class='action button' on:click={dialog.close.bind(dialog)}>Continuar</button>
-</dialog>
-<main class='filled container'>
+<main class:hidden={has_token} class='filled container'>
+	<img alt=''>
+	<span>Recuperação de senha</span>
+	<form on:submit|preventDefault={resetaSenha}>
+		<label for='email1'>
+			Email
+		</label>
+		<input id=email1 placeholder="Email" required bind:value={email} type="email"/>
+		<span class=error>{error || ''}</span>
+		<div>
+			<button class='action button' type=submit>Resetar senha</button>
+		</div>
+		<span class=info>{info || ''}</span>
+	</form>
+</main>
+<main class:hidden={!has_token} class='filled container'>
 	<img alt=''>
 	<span>
 		Recuperação de Senha
 	</span>
-	<form on:submit|preventDefault="{handleSubmit}">
+	<form on:submit|preventDefault="{alteraSenha}">
 		<label for='email'>
 		Email
 		</label>
@@ -45,7 +63,7 @@
 		Nova Senha
 		</label>
 		<input placeholder='Nova Senha' id='senha' required bind:value={senha} type='password'/>
-		<span>{error || ''}</span>
+		<span class=error>{error || ''}</span>
 		<div>
 			<button class='action button' type='submit'>Alterar minha senha</button>
 		</div>
@@ -53,9 +71,8 @@
 	<div class="voltar"><a href='/login'>Eu tenho acesso</a></div>
 </main>
 <style>
-	dialog::backdrop {
-		background-color: black;
-		opacity: 0.8;
+	.hidden {
+		display: none;
 	}
 	span {
 		text-align: left;
