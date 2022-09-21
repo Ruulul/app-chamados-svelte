@@ -196,7 +196,8 @@
 
                     <dialog class='filled container' bind:this={$classificador.dialog}>
                         <h2>
-                            Classificar chamado
+                            <span>Classificar chamado</span>
+                            <button class='action button' on:click={()=>$classificador.dialog.close()}>X</button>
                         </h2>
                         <form on:submit|preventDefault={()=>Promise.all([onChange("categoria")(), onChange("prioridade")()]).then($classificador.dialog.close.bind($classificador.dialog))}>
                             <label>
@@ -275,6 +276,10 @@
         display: flex;
         flex-flow: column;
         gap: 0.5em;
+    }
+    dialog h2 {
+        width: 100%;
+        justify-content: space-between;
     }
     .wrapper {
         justify-content: flex-start;
