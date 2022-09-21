@@ -15,7 +15,7 @@
     import { user } from '$lib/stores/user';
     import { getUnique, getCampo, getDepts, getOpcoes, updateProcesso, nextEtapa } from '$lib/utils/cadastros';
     import { getUser } from '$lib/utils/db';
-import { notificaEnvolvidos } from '$lib/utils/utils';
+    import { notificaEnvolvidos } from '$lib/utils/utils';
     import { setContext, onDestroy } from 'svelte';
     import { writable } from 'svelte/store';
     let cadastro = writable(), campos = {}, cliente, depts, status_opcoes = [], status = '', updating = false, anexos = {}
@@ -47,9 +47,9 @@ import { notificaEnvolvidos } from '$lib/utils/utils';
             if (confirm("Fechar chamado?"))
             return nextEtapa($cadastro)
                 .then(()=>history.back())
-        return updateProcesso($cadastro, {status})
+        else return updateProcesso($cadastro, {status})
             .then(getProcesso)
-            .then(()=>etapa==='finaliza'&&status==='true' ? history.back() : undefined)
+            .then(()=>etapa==='finaliza'&&status==='finalizado' ? history.back() : undefined)
     }
 </script>
 <div class='filled container'>
@@ -94,7 +94,8 @@ import { notificaEnvolvidos } from '$lib/utils/utils';
                 </th>
                 <td>
                     <span class:hidden={canEdit}>
-                        {status}</span>
+                        {status}
+                    </span>
                     <select class:updating class:hidden={!canEdit} bind:value={status} on:change={onChange}>
                         {#each status_opcoes || [] as opcao}
                             <option>{opcao}</option>
