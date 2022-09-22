@@ -8,6 +8,7 @@
 	}
 </script>
 <script>
+	import Dialog from '$lib/components/Dialog.svelte';
 	import Filtro from '$lib/components/Filtro.svelte';
 	import { departamentos } from '$lib/stores/local_db';
 	import { auth, config } from '$lib/utils/db';
@@ -79,7 +80,7 @@
 			}}
 			bind:value={dept}
 		/>
-		<dialog class='filled container' bind:this={novo_departamento_dialog}>
+		<Dialog title='' class='filled container' bind:this={novo_departamento_dialog}>
 			<button class='close button' on:click={()=>novo_departamento_dialog.close()}>X</button>
 			<h2>Escreva a nova categoria e envie</h2>
 			<form on:submit|preventDefault={async ()=>{
@@ -95,7 +96,7 @@
 				<input type='submit' value='Enviar' class='action button'>
 			</div>
 			</form>
-		</dialog>
+		</Dialog>
 		<input type="submit" value="Enviar" class='action button'/>
 	</div>
 </form>

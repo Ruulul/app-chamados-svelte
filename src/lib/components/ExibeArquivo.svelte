@@ -1,6 +1,7 @@
 <script>
     import { getFile } from "$lib/utils/db";
     import { geraCSS } from '$lib/utils/utils'
+import Dialog from "./Dialog.svelte";
     /**
      * Nome do arquivo na API
      */
@@ -49,7 +50,7 @@
 	    	<span>{title} (Approx. {Math.floor(data.split(';base64,')[1].length/4 * 3 / 1024)} kB)
 	    		<br/>
                 <button class='action button' on:click={()=>preview.showModal()}>Visualizar</button>
-                <dialog bind:this={preview}>
+                <Dialog title='' bind:dialog={preview}>
                     <div class='file-wrapper'>
                         <img class:hidden={!is_image} {alt} src={data}/>
                         <object class:hidden={data.split(';base64,')[1].length < 20 || is_image} {alt} title='anexo' {data}>
@@ -60,7 +61,7 @@
                             <button class='action button' on:click={()=>preview.close()}>Voltar</button>
                         </div>
                     </div>
-                </dialog>
+                </Dialog>
 	    	</span>
             <slot/>
 	    </div>
@@ -76,7 +77,7 @@
                 <span>{title} (Approx. {Math.floor(data.split(';base64,')[1].length/4 * 3 / 1024)} kB)
                     <br/>
                     <button class:hidden={!is_image} on:click={()=>preview.showModal()}>Visualizar</button>
-                    <dialog bind:this={preview}>
+                    <Dialog bind:dialog={preview}>
                         <div class='file-wrapper'>
                             <img class:hidden={!is_image} {alt} src={data}/>
                             <object class:hidden={data.split(';base64,')[1].length < 20 || is_image} {alt} title='anexo' {data}>
@@ -87,7 +88,7 @@
                                 <button on:click={()=>preview.close()}>Voltar</button>
                             </div>
                         </div>
-                    </dialog>
+                    </Dialog>
                 </span>
                 <slot/>
             </div>

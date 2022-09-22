@@ -2,6 +2,7 @@
     import { tipos_os, categorias_os } from "$lib/stores/local_db";
     import Accordion from "./_Accordion.svelte";
     import { config, filiais_validas, filial } from "$lib/utils/db";
+import Dialog from "$lib/components/Dialog.svelte";
 
     let item = {}
     /** @type {HTMLDialogElement} */
@@ -65,7 +66,7 @@
         </Accordion>
     </li>
 </Accordion>
-<dialog bind:this={dialog_tipo}>
+<Dialog title='' bind:dialog={dialog_tipo}>
     <form on:submit|preventDefault={()=>config.editarTipo(item, item)}>
         ID - {item.id}
         <label>
@@ -81,8 +82,8 @@
         </label>
         <input type=submit value=Atualizar>
     </form>
-</dialog>
-<dialog bind:this={dialog_categoria}>
+</Dialog>
+<Dialog title='' bind:dialog={dialog_categoria}>
     <form on:submit|preventDefault={()=>config.editarCategoria(item, item)}>
         ID - {item.id}
         <label>
@@ -106,8 +107,8 @@
         </label>
         <input type=submit value=Atualizar>
     </form>
-</dialog>
-<dialog bind:this={dialog_criar_tipo}>
+</Dialog>
+<Dialog title='' bind:dialog={dialog_criar_tipo}>
     <form on:submit|preventDefault={()=>config.addTipo(item)}>
         <label>
             Filial -
@@ -122,8 +123,8 @@
         </label>
         <input type=submit value=Atualizar>
     </form>
-</dialog>
-<dialog bind:this={dialog_criar_categoria}>
+</Dialog>
+<Dialog title='' bind:dialog={dialog_criar_categoria}>
     <form on:submit|preventDefault={()=>config.addCategoria(item)}>
         <label>
             Tipo - 
@@ -138,7 +139,7 @@
         </label>
         <input type=submit value=Atualizar>
     </form>
-</dialog>
+</Dialog>
 <style>
     dialog {
         width: 20em;

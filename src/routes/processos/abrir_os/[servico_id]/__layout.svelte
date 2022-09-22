@@ -22,6 +22,7 @@
     import { notificaEnvolvidos, TimeFromSeconds } from '$lib/utils/utils';
     import { proximo_status, metadado_hora,  } from '$lib/utils/utils';
     import { sendEmail } from '$lib/utils/email'
+    import Dialog from '$lib/components/Dialog.svelte';
     console.log(`from layout, ${proximo_status}, ${metadado_hora}`);
 
     let atendente='', nome='Sem usuário', dept='Sem usuário', anexos = {}
@@ -194,11 +195,7 @@
                 <td>
                     {campos_etapa["categoria"]}
 
-                    <dialog class='filled container' bind:this={$classificador.dialog}>
-                        <h2>
-                            <span>Classificar chamado</span>
-                            <button class='action button' on:click={()=>$classificador.dialog.close()}>X</button>
-                        </h2>
+                    <Dialog bind:dialog={$classificador.dialog} title='Classificar chamado'>
                         <form on:submit|preventDefault={()=>Promise.all([onChange("categoria")(), onChange("prioridade")()]).then($classificador.dialog.close.bind($classificador.dialog))}>
                             <label>
                                 Prioridade
@@ -230,8 +227,7 @@
                             <input type='submit' value='Enviar'>
                             <span>{$classificador.categoria}</span>
                         </form>
-                    </dialog>
-
+                    </Dialog>
                 </td>
             </tr>
             <tr>
@@ -272,14 +268,10 @@
         margin: auto;
         flex-flow: row;
     }
-    dialog form, dialog label {
+    form, label {
         display: flex;
         flex-flow: column;
         gap: 0.5em;
-    }
-    dialog h2 {
-        width: 100%;
-        justify-content: space-between;
     }
     .wrapper {
         justify-content: flex-start;

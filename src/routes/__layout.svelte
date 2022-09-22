@@ -10,6 +10,7 @@ import { goto } from '$app/navigation'
 import { page, navigating } from '$app/stores'
 import { browser } from '$app/env'
 import { onMount } from "svelte";
+import Dialog from "$lib/components/Dialog.svelte";
 
 $: loading = !!$navigating
 
@@ -53,7 +54,7 @@ onMount(()=>{
 	</title>
 </svelte:head>
 
-<dialog class='filled container' bind:this={escolhe_filial_dialog}>
+<Dialog title='' bind:dialog={escolhe_filial_dialog}>
 	<form on:submit|preventDefault={escolhe_filial_dialog.close()}>
 		<label>Selecione a filial
 			<select bind:value={$filial}>
@@ -64,7 +65,7 @@ onMount(()=>{
 		</label>
 		<input type='submit' value='Confirmar'/>
 	</form>
-</dialog>
+</Dialog>
 
 {#await auth_promise}
 	<h1>Loading...</h1>
