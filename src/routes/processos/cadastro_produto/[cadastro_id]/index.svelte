@@ -29,9 +29,9 @@
 </div>
 <div class='messages'>
     {#each $cadastro?.log.sort((a, b)=>b.id-a.id) || [] as {idUsuario, titulo, descr, createdAt, id}, index}
-        {@const data_array = createdAt.split('T')}
-        {@const data = data_array[0].split('-').reverse().join('/')}
-        {@const hora = data_array[1].split('.')[0]}
+        {@const data_obj = new Date(createdAt)}
+        {@const data = data_obj?.toLocaleDateString() || '[??/??/??'}
+        {@const hora = data_obj?.toLocaleTimeString() || '[??:??:??]'}
         <div class='campo filled container'>
             <h3>
                 {#await getUser(idUsuario)}
