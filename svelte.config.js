@@ -14,6 +14,7 @@ const config = {
   preprocess: [
     preprocess({
       postcss: true,
+      pug: true,
     }),
   ],
 };
