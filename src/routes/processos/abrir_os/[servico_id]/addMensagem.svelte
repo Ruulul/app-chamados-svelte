@@ -45,6 +45,11 @@
 </form>
 
 <style>
+    button:disabled {
+        pointer-events: none;
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
     .action.button {
         text-transform: uppercase;
         padding: 0.6em;

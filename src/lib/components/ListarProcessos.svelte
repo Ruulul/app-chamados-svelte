@@ -54,10 +54,6 @@
                             td {cadastro.createdAt.split('T')[0].split('-').reverse().join('/')}
 </template>
 <style>
-    form {
-        padding-top: 1.5em;
-        padding-left: 1em;
-    }
     table {
         justify-content: center;
         text-align: center;
@@ -68,10 +64,6 @@
     th {
         padding-top: 1em;
         padding-bottom: 1em;
-    }
-    th.filtro::before {
-        content: var(--active, 'filtro');
-        text-transform: capitalize;
     }
     .filter {
         padding: 0;

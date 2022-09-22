@@ -49,7 +49,7 @@
                 .then(()=>history.back())
         else return updateProcesso($cadastro, {status})
             .then(getProcesso)
-            .then(()=>etapa==='finaliza'&&status==='finalizado' ? history.back() : undefined)
+            .then(()=>etapa==='finaliza' && status==='finalizado' ? history.back() : undefined)
     }
 </script>
 <div class='filled container'>
@@ -96,7 +96,7 @@
                     <span class:hidden={canEdit}>
                         {status}
                     </span>
-                    <select class:updating class:hidden={!canEdit} bind:value={status} on:change={onChange}>
+                    <select class:updating class:hidden={!canEdit} bind:value={status} on:change={()=>onChange()}>
                         {#each status_opcoes || [] as opcao}
                             <option>{opcao}</option>
                         {/each}

@@ -35,7 +35,7 @@
                 descr
             },
             unidade: departamento_id===17 ? '' : unidade,
-            status: validate_only && is_opening_to_own_dept ? 'fechado' : 'pendente',
+            status: /*validate_only && is_opening_to_own_dept ? 'fechado' : */'pendente',
             email,
             dept: departamento_id,
             anexos,
