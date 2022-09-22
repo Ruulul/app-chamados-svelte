@@ -14,25 +14,19 @@
 	import { filiais_validas, filial } from '$lib/utils/filial';
     import { post, getDepts, getOpcoes,  } from '$lib/utils/cadastros';
     import { sendEmail } from '$lib/utils/email';
-import { user } from '$lib/stores/user';
+    import { user } from '$lib/stores/user';
 	let titulo = '', descr = '', anexos=[], unidade = '', departamento_id, departamentos=[];
-    let unidades = [], filiais = [];
+    let unidades = [];
+    let is_opening_to_own_dept = false;
+    let validate_only = false;
     getDepts('cadastro_produto', 'cadastro_produto').then(depts=>{
         departamentos=depts
         departamento_id=departamentos[0].id
     })
     $: email = departamentos?.find(departamento=>departamento.id===departamento_id)?.email.valor
-    getOpcoes('etapa', 'cadastro_produto','unidade').then(data=>{
+    getOpcoes('etapa', 'cadastro_produto', 'unidade').then(data=>{
         unidades=data
         unidade=unidades[0]
-    })
-    let filiais_encoded = ''
-    $: $filiais_validas, getOpcoes('processo', 'cadastro_produto', 'filial').then(data=>{
-        filiais = data?.filter(item=>$filiais_validas.includes(item));
-        let new_encoded = JSON.stringify(filiais)
-        if (filiais_encoded != new_encoded)
-            $filial = filiais[0]
-        filiais_encoded = new_encoded
     })
 	async function onSubmit() {
 		let os = {
@@ -41,8 +35,7 @@ import { user } from '$lib/stores/user';
                 descr
             },
             unidade: departamento_id===17 ? '' : unidade,
-            filial: $filial,
-            status: 'pendente',
+            status: validate_only && is_opening_to_own_dept ? 'fechado' : 'pendente',
             email,
             dept: departamento_id,
             anexos,
@@ -53,37 +46,24 @@ import { user } from '$lib/stores/user';
         .then(()=>history.back())
         .catch(console.error)
 	}
-	</script>
-<Novo {onSubmit} titulo_label='Produto' bind:anexos bind:titulo bind:descr>
-    <h1>Novo Cadastro</h1>
-    <table> 
-        <tr>
-            <th>
-                Tipo:
-            </th>
-            <td>
-                <Filtro 
-                    label=''
-                    options={[
-                        {label:'Sementes', value:23},
-                        {label:'Serviços', value:17},
-                        {label:'Produtos', value:25},
-                        {label:'Imobilizado', value:17},
-                    ]}
-                    bind:value={departamento_id}
-                />
-            </td>
-        </tr>
-        <tr class:hidden={departamento_id===17} >
-            <th>
-                Unidade:
-            </th>
-            <td>
-                <Filtro options={unidades} bind:value={unidade} label=''/>
-            </td>
-        </tr>
-    </table>
-</Novo>
+    $: departamento_id, console.log($user.dept)
+    $: departamento_id, console.log(departamentos, departamento_id)
+    $: departamento_id, console.log(is_opening_to_own_dept, validate_only)
+    $: departamento_id, is_opening_to_own_dept = $user.dept.includes(departamentos.find(dept=>dept.id===departamento_id)?.departamento)
+</script>
+<template lang="pug">
+    Novo('{onSubmit}' titulo_label='Produto' bind:anexos bind:titulo bind:descr)
+        h1 Novo Cadastro
+        table
+            tr
+                th Tipo:
+                td: Filtro(label='' options!='{[{label:"Sementes", value:23}, {label:"Serviços", value:17}, {label:"Produtos", value:25}, {label:"Imobilizado", value:17}]}' bind:value!='{departamento_id}')
+            tr(class:hidden!='{departamento_id===17}')
+                th Unidade: 
+                td: Filtro(options!='{unidades}' bind:value!="{unidade}" label='')
+            tr(class:hidden!='{is_opening_to_own_dept}'): th: label Validação
+                input(bind:checked!="{validate_only}"  type='checkbox')
+</template>
 <style>
     .hidden {
         display: none;
