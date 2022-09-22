@@ -8,34 +8,22 @@
     export let onSubmit
     let addFiles;
 </script>
-<div class='filled container'>
-    <div class='wrapper'>
-        <slot/>
-        <div class='campo'>
-        <h2>Anexo</h2>
-			<Anexos bind:addFiles bind:files={anexos}/>
-        </div>
-    </div>
-    <form class='container' on:submit|preventDefault={onSubmit}>
-        <label>
-            {titulo_label}
-            <input required class='campo filled container assunto' 
-            bind:value={titulo}/>
-        </label>
-        <label>
-            {descr_label}
-            <textarea
-            class='campo filled container descr' 
-            required
-            bind:value={descr} 
-            on:paste={({clipboardData:{files}})=>addFiles(files)}
-            maxlength={1000}/>
-        </label>
-        <div class='buttons'>
-            <input type=submit value='Abrir chamado' class='action button'>
-        </div>
-    </form>
-</div>
+<template lang="pug">
+    .filled.container
+        .wrapper
+            slot
+            .campo
+                h2 Anexo
+                Anexos(bind:addFiles bind:files!='{anexos}')
+        form.container(on:submit|preventDefault!='{onSubmit}')
+            label
+                | {titulo_label}
+                input.campo.filled.container.assunto(required bind:value!='{titulo}')
+            label {descr_label}
+                textarea.campo.filled.container.descr(required maxlength=100 bind:value!='{descr}' on:paste!="{({clipboardData:{files}})=>addFiles(files)}")
+            .buttons
+                input.action.button(type='submit' value='Abrir chamado')
+</template>
 
 <style>
     label {

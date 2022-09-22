@@ -3,14 +3,12 @@
     export let title_tag = 2;
     export let title;
 </script>
-<dialog class='filled container' bind:this={dialog}>
-    <svelte:element this={'h' + title_tag} class=title>
-        {title}
-        <button class='action close button' on:click={()=>dialog.close()}>X</button>
-    </svelte:element>
-    <slot/>
-</dialog>
-
+<template lang=pug>
+    dialog.filled.container(bind:this!='{dialog}')
+        svelte:element.title(this!="{'h' + title_tag}") {title}
+            button.action.close.button(on:click!='{()=>dialog.close()}') X
+        slot
+</template>
 <style>
     dialog {
         position: relative;
