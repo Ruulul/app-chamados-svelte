@@ -142,127 +142,69 @@
         }
     }
 </script>
-{#if $servico}
-{#key $servico?.updatedAt}
-<div class='filled container'>
-    <div class='wrapper'>
-        <h1>Chamado {$servico.id}</h1>{#if $user?.tipo == 'suporte'}<a href='/classificar/{$page.params.servico_id}'><i class='fas fa-pen'/></a>{/if}
-        <table> 
-            <tr>
-                <th>
-                    Tempo decorrido:
-                </th>
-                <td>
-                    {TimeFromSeconds(sla)}
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Abertura:
-                </th>
-                <td>
-                    {$servico?.createdAt?.split('T')[0].split('-').reverse().join('/')}
-                </td>
-            </tr>
-            <tr class:hidden={!(!!atendente || canEdit)}>
-                <th>
-                    Responsável:
-                </th>
-                <td>
-                    <span class:hidden={!atendente}>{atendente}</span>
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Cliente:
-                </th>
-                <td>
-                    {nome}
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Departamento:
-                </th>
-                <td>
-                    {dept}
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Categoria:
-                </th>
-                <td>
-                    {campos_etapa["categoria"]}
+<template lang="pug">
+    +if('$servico')
+        +key('$servico?.updatedAt')
+            .filled.container
+                .wrapper
+                    h1 Chamado {$servico.id}
+                    table
+                        tr
+                            th Tempo decorrido:
+                            td {TimeFromSeconds(sla)}
+                        tr
+                            th Abertura:
+                            td {$servico?.createdAt?.split('T')[0].split('-').reverse().join('/')}
+                        tr(class:hidden!='{!(!!atendente || canEdit)}')
+                            th Responsável:
+                            td: span(class:hidden!='{!atendente}') {atendente}
+                        tr
+                            th Cliente:
+                            td {nome}
+                        tr
+                            th Departamento
+                            td {dept}
+                        tr
+                            th Categoria:
+                            td {campos_etapa["categoria"]}
+                                Dialog(bind:dialog!='{$classificador.dialog}' title='Classificar chamado')
+                                    form(on:submit|preventDefault!='{()=>Promise.all([onChange("categoria")(), onChange("prioridade")()]).then($classificador.dialog.close.bind($classificador.dialog))}')
+                                        label Prioridade
+                                            select(bind:value!='{$classificador.prioridade}' on:change!='{()=>campos_etapa["prioridade"]=$classificador.prioridade}')
+                                                option(value=1) Baixa 
+                                                option(value=2) Média
+                                                option(value=3) Alta
+                                                option(value=4) Urgente
+                                        label Tipo
+                                            select(bind:value!='{$classificador.tipo}')
+                                                +each('$tipos_os as {tipo}')
+                                                    option {tipo}
+                                            input(bind:value!='{$classificador.tipo}' placeholder="Use isso se não encontrar sua opção acima")
+                                        label Categoria
+                                            select(bind:value!='{$classificador._categoria}' on:change!='{()=>campos_etapa["categoria"]=$classificador.categoria}')
+                                                +each('$categorias_por_tipo_os[$classificador.tipo] || [] as categoria')
+                                                    option {categoria}
+                                            input(bind:value!='{$classificador._categoria}' placeholder="Use isso se não encontrar sua opção acima")
+                                        input(type="submit" value="enviar")
+                                        span {$classificador.categoria}
+                        tr
+                            th Status:
+                            td
+                                span(class:hidden!='{canEdit}') {campos_etapa["status"]}
+                                select(class:hidden!='{!canEdit}' bind:value!='{campos_etapa["status"]}' on:change!='{()=>onChange("status")()}')
+                                    +each('status_opcoes as opcao')
+                                        option {opcao}
+                    .campo
+                        h2 Anexos
+                            +each('Object.values(anexos).flat() as anexo')
+                                +if('anexo instanceof Object')
+                                    +const('title = anexo.title')
+                                    +const('data = anexo.data')
+                                    ExibeArquivo(title!='{title?.split('-')[1]}' '{data}')
+                .container
+                    slot
 
-                    <Dialog bind:dialog={$classificador.dialog} title='Classificar chamado'>
-                        <form on:submit|preventDefault={()=>Promise.all([onChange("categoria")(), onChange("prioridade")()]).then($classificador.dialog.close.bind($classificador.dialog))}>
-                            <label>
-                                Prioridade
-                                <select bind:value={$classificador.prioridade} on:change={()=>campos_etapa["prioridade"]=$classificador.prioridade}>
-                                    <option value=1>Baixa</option>
-                                    <option value=2>Média</option>
-                                    <option value=3>Alta</option>
-                                    <option value=4>Urgente</option>
-                                </select>
-                            </label>
-                            <label>
-                                Tipo 
-                                <select bind:value={$classificador.tipo}>
-                                    {#each $tipos_os as {tipo}}
-                                        <option>{tipo}</option>
-                                    {/each}
-                                </select>
-                                <input placeholder="Use isso se não encontrar sua opção acima" bind:value={$classificador.tipo}>
-                            </label>
-                            <label>
-                                Categoria
-                                <select bind:value={$classificador._categoria} on:change={()=>campos_etapa["categoria"]=$classificador.categoria}>
-                                    {#each $categorias_por_tipo_os[$classificador.tipo] || [] as categoria}
-                                        <option>{categoria}</option>
-                                    {/each}
-                                </select>
-                                <input placeholder="Use isso se não encontrar sua opção acima" bind:value={$classificador._categoria} on:change={()=>campos_etapa["categoria"]=$classificador.categoria}>
-                            </label>
-                            <input type='submit' value='Enviar'>
-                            <span>{$classificador.categoria}</span>
-                        </form>
-                    </Dialog>
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Status:
-                </th>
-                <td>
-                    <span class:hidden={canEdit}>
-                        {campos_etapa["status"]}</span>
-                    <select class:hidden={!canEdit} bind:value={campos_etapa["status"]}  on:change={onChange("status")}>
-                        {#each status_opcoes as opcao}
-                            <option>{opcao}</option>
-                        {/each}
-                    </select>
-                </td>
-            </tr>
-        </table>
-        <div class='campo'>
-        <h2>Anexos</h2>
-            {#each Object.values(anexos).flat() as anexo}
-                {#if anexo instanceof Object}
-                    {@const title = anexo.title}
-                    {@const data = anexo.data}
-                    <ExibeArquivo title={title?.split('-')[1]} {data}/>
-                {/if}
-            {/each}
-        </div>
-
-    </div>
-    <div class='container'>
-        <slot/>
-    </div>
-</div>
-{/key}
-{/if}
+</template>
 <style>
     .filled.container {
         margin: auto;
