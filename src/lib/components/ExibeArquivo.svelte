@@ -19,16 +19,6 @@ import Dialog from "./Dialog.svelte";
      * O arquivo, se já disponível
      */
     export let data = undefined
-    /**
-     * Texto para ser exibido quando o arquivo não é encontrado
-     */
-    export let sem_arquivo = 'Sem arquivo'
-
-    /**
-     * Texto para o link para abrir em nova aba. Sete para `false` se quiser ocultar o link.
-     * @type {string | boolean}
-     */
-    export let abrir = 'Abrir arquivo em nova aba'
 
     /**
      * Texto para a opção de download. Sete pra `false` para ocultar.
@@ -53,10 +43,10 @@ import Dialog from "./Dialog.svelte";
                     Dialog(title='' bind:dialog!='{preview}')
                         .file-wrapper
                             img(class:hidden!='{!is_image}' '{alt}' src!='{data}')
-                            object(class:hidden!='{data.split(";base64,")[1].length < 20 || is_image}' '{alt}' '{data}')
+                            object(class:hidden!='{data.split(";base64,")[1].length < 20 || is_image}' '{alt}' '{data}' '{title}')
                                 | Não pudemos exibir
                             div
-                                a.action.button(class:hidden!='{!(data && download)}' href=data download=title)
+                                a.action.button(class:hidden!='{!(data && download)}' href!='{data}' download!='{title}')
                                     | {download}
                                 button.action.button(on:click!='{()=>preview.close()}') Voltar
     +if('data')

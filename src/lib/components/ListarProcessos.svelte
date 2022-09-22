@@ -19,80 +19,40 @@
         clearTimeout(handle)
     })
 </script>
-<div class='filled container'>
-    <div class='filter'>
-        <span>Filtrar chamados</span>
-        <FiltroProcessos bind:clear={clear_filters} processos={cadastros}/>
-    </div>
-<table>
-    <caption>Ordens de Serviço</caption>
-    <thead class='underline'>
-        <th>
-            Filial
-        </th>
-        {#if !tag}
-        <th>
-            Tipo
-        </th>
-        {/if}
-        <th>
-            Ticket
-        </th>
-        <th>
-            De
-        </th>
-        <th>
-            Status
-        </th>
-        <th>
-            Assunto
-        </th>
-        <th>
-            Abertura
-        </th>
-    </thead>
-    <tbody>
-        <Pagination 
-        data={cadastros.filter(p=>$filter.fn(p)).sort(sort)}
-        columns_count={!tag ? 7 : 6}>
-        <a slot='page' let:page href={`/processos/${page.etapa.Tag}/${page.id}`}>
-            {@const cadastro = page}
-            {@const campos = Object.fromEntries(cadastro.etapa.campos)}
-            {@const campos_processo = Object.fromEntries(cadastro.campos)}
-            <tr>
-                <td>
-                    {campos_processo.filial || ''}
-                </td>
-                {#if !tag}
-                <td>
-                    {formatTag(cadastro.Tag)}
-                </td>
-                {/if}
-                <td>
-                    {cadastro.id}
-                </td>
-                <td>
-                    {$user_names[cadastro.idUsuario] || 'Carregando...'}
-                </td>
-                <td>
-                    {campos.status 
-                        ? campos.status 
-                        : campos.finalizado==='true'
-                            ? 'finalizado' 
-                            : 'aguardando finalização'}
-                </td>
-                <td>
-                    {cadastro.log?.at(0)?.titulo.toUpperCase() || 'Carregando...'}
-                </td>
-                <td>
-                    {cadastro.createdAt.split('T')[0].split('-').reverse().join('/')}
-                </td>
-            </tr>
-        </a>
-        </Pagination>
-    </tbody>
-</table>
-</div>
+<template lang=pug>
+    .filled.container
+        .filter
+            span Filtrar chamados
+            FiltroProcessos(bind:clear!='{clear_filters}' processos!='{cadastros}')
+        table
+            caption Ordens de Serviço
+            thead.underline
+                th Filial
+                +if('!tag') 
+                    th Tipo
+                th Ticket
+                th De
+                th Status
+                th Assunto
+                th Abertura
+            tbody
+                Pagination(
+                    data!='{cadastros.filter(p=>$filter.fn(p)).sort(sort)}'
+                    columns_count!='{!tag ? 7 : 6}')
+                    a(slot='page' let:page href='/processos/{page.etapa.Tag}/{page.id}')
+                        +const('cadastro=page')
+                        +const('campos=Object.fromEntries(cadastro.etapa.campos)')
+                        +const('campos_processo=Object.fromEntries(cadastro.campos)')
+                        tr
+                            td {campos_processo.filial || ''}
+                            +if('!tag') 
+                                td {formatTag(cadastro.Tag)}
+                            td {cadastro.id}
+                            td {$user_names[cadastro.idUsuario] || 'Carregando...'}
+                            td {campos.status}
+                            td {cadastro.log?.at(0)?.titulo.toUpperCase() || 'Carregando'}
+                            td {cadastro.createdAt.split('T')[0].split('-').reverse().join('/')}
+</template>
 <style>
     form {
         padding-top: 1.5em;
