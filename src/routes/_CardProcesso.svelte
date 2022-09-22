@@ -3,7 +3,7 @@
 
     import { processos } from '$lib/stores/notifications'
     import { filterPendente, assignVencimento, filterVencidos } from "$lib/utils/utils";
-    let pendentes = 0;
+    let pendentes = [];
     /**Tag da etapa filtrada*/
     export let Tag;
     /**
@@ -30,39 +30,34 @@
     $: vencem_semana = por_vencimento.filter(p=>filterVencidos(semana)(p)&&!vencidos.includes(p)&&!vencem_hoje.includes(p))
 </script>
 
-<div class='outlined container'>
-    <h3><a href='/processos/{Tag}'>{titulo} <i class='fas fa-eye'/></a></h3>
-    <h2><i class='fas fa-headset'/> Meus tickets</h2>
-    <div class='divider'/>
-    <a class='action button' sveltekit:prefetch href='/processos/{Tag}/novo'>Abrir Chamado</a>
-    {#each Object.entries(campos_dict) as [key, values]}
-        <ul>
-            <li class=no-link><span>Por {key}</span></li>
-            {#each values as value}
-                <li>
-                    <a href='/processos/{Tag}' 
-                        on:click={()=>{
-                            console.log("Changing filter")
-                            $filter[key] = value
-                        }}
-                    >
-                        {pendentes.filter(p=>Object.fromEntries(p.etapa.campos)[key] === value).length} {value}
-                    </a>
-                </li>
-            {/each}
-        </ul>
-    {/each}
-    Total: {pendentes.length}
-    <div class='divider'/>
-    <ul>
-        <li>🟥 {vencidos.length} venceram</li>
-        <li>🟨 {vencem_hoje.length} vencem hoje</li>
-        <li>🟩 {vencem_semana.length} vencem essa semana</li>
-    </ul>
-    <!--ul>
-        <li>Vencem essa semana</li>
-    </ul-->
-</div>
+<template lang=pug>
+    .outlined.container
+        h3
+            a(href="/processos/{Tag}")
+                | {titulo}
+                |
+                i.fas.fa-eye
+        h2
+            i.fas.fa-headset
+            |
+            | Meus tickets
+        .divider
+        a.action.button(sveltekit:prefetch href="/processos/{Tag}/novo") Abrir Chamado
+        +each('Object.entries(campos_dict) as [key, values]')
+            ul
+                li.no-link
+                    span Por {key}
+                +each('values as value')
+                    li
+                        a(href='/processos/{Tag}' on:click!="{()=>{$filter[key] = value}}")
+                            | {pendentes.filter(p=>Object.fromEntries(p.etapa.campos)[key] === value).length} {value}
+        | Total: {pendentes.length}
+        .divider
+        ul
+            li 🟥 {vencidos.length} venceram
+            li 🟨 {vencem_hoje.length} vencem hoje
+            li 🟩 {vencem_semana.length} vencem essa semana
+</template>
 
 <style>
     .hidden {
