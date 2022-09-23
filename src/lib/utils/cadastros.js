@@ -87,15 +87,15 @@ async function updateProcesso (processo, update) {
 async function nextEtapa (processo, props, options) {
     if (!options?.no_cooldown && Date.now() < last_request + interval) return console.log('too quick')
     last_request = Date.now()
-    let dept = await getDept(processo.etapa.dept)
+    let meta_processos = await requestGet('/meta/processo/' + processo.Tag)
+    let meta_etapa_atual = meta_processos.etapas.find(etapa=>etapa.Tag===processo.etapa.Tag)
+    let meta_etapa_next = meta_processos.etapas.find(etapa=>etapa.id===meta_etapa_atual.next)
+    let dept = await getDept(props.dept ? props.dept : meta_etapa_next.dept)
     const initial_props = {
         finaliza: {
             status: get(user).dept.includes(dept.departamento) ? "fechado" : "em analise",
         }
     }
-    let meta_processos = await requestGet('/meta/processo/' + processo.Tag)
-    let meta_etapa_atual = meta_processos.etapas.find(etapa=>etapa.Tag===processo.etapa.Tag)
-    let meta_etapa_next = meta_processos.etapas.find(etapa=>etapa.id===meta_etapa_atual.next)
     if (meta_etapa_next)
         return requestPost(`/processo/${processo.Tag}/${processo.id}/etapa/${meta_etapa_atual.next}`, { ...props, ...initial_props[meta_etapa_next.Tag] })
 }
