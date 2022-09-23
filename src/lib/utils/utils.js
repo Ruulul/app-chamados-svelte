@@ -110,7 +110,9 @@ export function Store ({
     }
 }
 
-export function TimeFromSeconds (seconds) {
+export function TimeFromSeconds (utc_seconds) {
+    let timezone = - 1000 * 60 * 60 * 3;
+    let seconds = utc_seconds + timezone;
     return `
         ${Math.floor(seconds/86400)}d ${(Math.floor(seconds/3600) % 24).toString().padStart(2, '0')}h${(Math.floor(seconds/60)%60).toString().padStart(2, '0')}min
     `
