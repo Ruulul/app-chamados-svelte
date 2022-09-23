@@ -8,13 +8,14 @@
             button.action.close.button(on:click!='{()=>dialog.close()}') X
         slot
         
-    style.
-        dialog {
-            position: relative;
-        }
-        dialog * > button.close.button {
-            position: absolute;
-            right: 1em;
-            top: 1em;
-        }
 </template>
+<style>
+    dialog {
+        position: relative;
+    }
+    dialog * > button.close.button {
+        position: absolute;
+        right: 1em;
+        top: 1em;
+    }
+</style>
