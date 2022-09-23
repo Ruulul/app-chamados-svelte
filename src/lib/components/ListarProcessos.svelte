@@ -14,7 +14,7 @@
 
     const get = custom_cadastros ? ()=>cadastros=custom_cadastros : () => getMany('processo', tag, $filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
     get()
-    const handle = setInterval(get, 1000);
+    const handle = setInterval(get, 5000);
     onDestroy(function(){
         clearTimeout(handle)
     })
@@ -45,10 +45,16 @@
                         +const('campos_processo=Object.fromEntries(cadastro.campos)')
                         tr
                             td {campos_processo.filial || ''}
-                            +if('!tag') 
+                            +if('!tag')
                                 td {formatTag(cadastro.Tag)}
                             td {cadastro.id}
-                            td {$user_names[cadastro.idUsuario] || 'Carregando...'}
+                            +if('$user_names[cadastro.idUsuario]')
+                                td {$user_names[cadastro.idUsuario]}
+                                +else()
+                                +await('user_names.add(cadastro.idUsuario)')
+                                    td Carregando...
+                                    +then('_')
+                                        td {$user_names[cadastro.idUsuario]}
                             td {campos.status}
                             td {cadastro.log?.at(0)?.titulo.toUpperCase() || 'Carregando'}
                             td {cadastro.createdAt.split('T')[0].split('-').reverse().join('/')}

@@ -6,6 +6,7 @@
     import { user_names } from "$lib/stores/user";
     import { filterPendente, formatTag } from "$lib/utils/utils";
     import { onMount } from "svelte";
+    import ExibeNome from '$lib/components/ExibeNome.svelte'
 
     let loading = {}
 
@@ -45,7 +46,13 @@
                             td {formatTag(process_tag)}
                             td {formatTag(Tag)}
                             td {etapa_campos.status}
-                            td {$user_names[idUsuario] || 'Carregando...'}
+                            +if('$user_names[idUsuario]')
+                                td {$user_names[idUsuario]}
+                                +else()
+                                    +await('user_names.add(idUsuario)')
+                                        td Carregando...
+                                        +then('_')
+                                            td {$user_names[idUsuario]}
                             td: i(
                                 class!=`{'mark-as-read fas ' 
                                         +(loading[page.id] || false 

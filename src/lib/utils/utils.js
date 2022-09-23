@@ -3,6 +3,11 @@ import { marked } from "marked";
 import { getUser } from "./db";
 import { getEtapas, getDept } from "./cadastros";
 import { sendEmail } from "./email";
+/**
+ * @param {number} ms Miliseconds to await 
+ * @returns 
+ */
+export const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 /** Converte uma string de data para ISO.
  * @param {string} date Representação em texto de uma string gerada por Date() ou date_obj.toString(), no locale pt-BR. 
