@@ -13,7 +13,7 @@
 </script>
 <div class=main>
 	<CardProcesso Tag='abrir_os' titulo='Suporte Técnico'/>
-	<CardProcesso campos_dict={{status: ['pendente', 'em atendimento']}} Tag='cadastro_produto' titulo='Cadastro de Produto'/>
+	<CardProcesso campos_dict={{status: ['pendente', 'em atendimento',]}} Tag='cadastro_produto' titulo='Cadastro de Produto'/>
 	<MuralAvisos/>
 </div>
 <style>

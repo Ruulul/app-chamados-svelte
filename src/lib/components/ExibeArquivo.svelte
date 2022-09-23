@@ -57,7 +57,6 @@ import Dialog from "./Dialog.svelte";
                 +then('data')
                     +const('is_image = data.slice(0, 20).includes("image")')
                     +template(data, is_image)
-
 </template>
 
 <style>

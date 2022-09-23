@@ -18,7 +18,6 @@
     })
 </script>
 <script>
-    import { user_names } from "$lib/stores/user";
     import { writable } from "svelte/store";
     let tipos = []
     let etapas = []
@@ -31,7 +30,6 @@
     }
     
     $: processos.map(({idUsuario: id, Tag: tipo, etapa: {campos, Tag: tag_etapa}})=>{
-        user_names.add(id)
         if(!tipos.includes(tipo))
             tipos[tipos.length] = tipo
         if(!etapas.includes(tag_etapa))
@@ -41,39 +39,27 @@
             status[status.length] = campos_obj.status
     })
 </script>
-<form on:submit|preventDefault>
-    <span>Filtros:</span>
-    <div>
-        <label class:hidden={tipos.length===1}>
-            Processo
-            <select bind:value={$filter.tipo}>
-                <option value={undefined}></option>
-                {#each tipos as tipo}
-                    <option>{tipo}</option>
-                {/each}
-            </select>
-        </label>
-        <label class:hidden={true || etapas.length===1}>
-            Etapa
-            <select bind:value={$filter.etapa}>
-                <option value={undefined}></option>
-                {#each etapas as etapa}
-                    <option>{etapa}</option>
-                {/each}
-            </select>
-        </label>
-        <label class:hidden={status.length===1}>
-            Status
-            <select bind:value={$filter.status}>
-                <option value={undefined}></option>
-                {#each status.filter(s=>!$filter.tipo ? true : processos.filter(p=>p.Tag===$filter.tipo).map(p=>Object.fromEntries(p.etapa.campos).status).includes(s)) as stat}
-                    <option>{stat}</option>
-                {/each}
-            </select>
-        </label>
-        <button on:click={clear}>Limpar filtros!</button>
-    </div>
-</form>
+<template lang="pug">
+    form(on:submit|preventDefault)
+        span Filtros:
+        div
+            label(class:hidden!='{tipos.length===1}') Processo
+                select(bind:value!='{$filter.tipo}')
+                    option(value!='{undefined}')
+                    +each('tipos as tipo')
+                        option {tipo}
+            label(class:hidden!='{true || etapas.length===1}') Etapa
+                select(bind:value!='{$filter.etapa}')
+                    option(value!='{undefined}')
+                    +each('etapas as etapa')
+                        option {etapa}
+            label(class:hidden!='{status.length===1}') Status
+                select(bind:value!='{$filter.status}')
+                    option(value!='{undefined}')
+                    +each('status.filter(s=>!$filter.tipo ? true : processos.filter(p=>p.Tag===$filter.tipo).map(p=>Object.fromEntries(p.etapa.campos).status).includes(s)) as stat')
+                        option {stat}
+            button(on:click!='{clear}') Limpar Filtros!
+</template>
 
 <style>
     .hidden {

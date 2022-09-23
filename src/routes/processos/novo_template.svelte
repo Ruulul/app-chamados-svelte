@@ -20,7 +20,7 @@
                 | {titulo_label}
                 input.campo.filled.container.assunto(required bind:value!='{titulo}')
             label {descr_label}
-                textarea.campo.filled.container.descr(required maxlength=100 bind:value!='{descr}' on:paste!="{({clipboardData:{files}})=>addFiles(files)}")
+                textarea.campo.filled.container.descr(required maxlength=1000 bind:value!='{descr}' on:paste!="{({clipboardData:{files}})=>addFiles(files)}")
             .buttons
                 input.action.button(type='submit' value='Abrir chamado')
 </template>
