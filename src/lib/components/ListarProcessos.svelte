@@ -4,6 +4,7 @@
     import { formatTag } from '$lib/utils/utils';
     import { user_names } from '$lib/stores/user';
     import Pagination from './Pagination.svelte';
+    import PaginationBar from './PaginationBar.svelte';
     import FiltroProcessos, { filter } from './FiltroProcessos.svelte';
     import { onDestroy } from 'svelte';
     export let sort = (a, b)=>b.id-a.id;
@@ -14,6 +15,10 @@
 
     const get = custom_cadastros ? ()=>cadastros=custom_cadastros : () => getMany('processo', tag, $filtros.chamados, {limit: $filtros.limit, page: $filtros.page}).then(oss=>cadastros=oss)
     get()
+
+    $: data = cadastros.filter(p=>$filter.fn(p)).sort(sort)
+    let page = 1
+
     const handle = setInterval(get, 5000);
     onDestroy(function(){
         clearTimeout(handle)
@@ -36,9 +41,7 @@
                 th Assunto
                 th Abertura
             tbody
-                Pagination(
-                    data!='{cadastros.filter(p=>$filter.fn(p)).sort(sort)}'
-                    columns_count!='{!tag ? 7 : 6}')
+                Pagination('{data}' bind:page columns_count!='{!tag ? 7 : 6}')
                     a(slot='page' let:page href='/processos/{page.etapa.Tag}/{page.id}')
                         +const('cadastro=page')
                         +const('campos=Object.fromEntries(cadastro.etapa.campos)')
@@ -58,6 +61,8 @@
                             td {campos.status}
                             td {cadastro.log?.at(0)?.titulo.toUpperCase() || 'Carregando'}
                             td {cadastro.createdAt.split('T')[0].split('-').reverse().join('/')}
+        PaginationBar(n_items!='{data.length}' bind:page)
+        | {data.length} items
 </template>
 <style>
     table {

@@ -1,6 +1,7 @@
 <script>
     import FiltroProcessos, { filter } from "$lib/components/FiltroProcessos.svelte";
     import Pagination from "$lib/components/Pagination.svelte";
+    import PaginationBar from "$lib/components/PaginationBar.svelte";
     import { notifications } from "$lib/stores/cadastros";
     import { processos } from "$lib/stores/notifications";
     import { user_names } from "$lib/stores/user";
@@ -9,6 +10,9 @@
     import ExibeNome from '$lib/components/ExibeNome.svelte'
 
     let loading = {}
+
+    $: data = $processos.sort((a, b)=>b.id-a.id).filter(p=>filterPendente(p)&&$filter.fn(p)&&notifications.isNotRead(p))
+    let page
 
     let clear = ()=>{}
 
@@ -32,10 +36,7 @@
                 th De
                 th Marcar como lido
             tbody
-                Pagination(
-                    items_per_page=5
-                    data!='{$processos.sort((a, b)=>b.id-a.id).filter(p=>filterPendente(p)&&$filter.fn(p)&&notifications.isNotRead(p))}'
-                    columns_count=6)
+                Pagination(items_per_page=5 '{data}' bind:page)
                     tr(slot='page' let:page)
                         +const('{id, idUsuario, log} = page')
                         +const('process_tag = page.Tag')
@@ -57,10 +58,10 @@
                                 class!=`{'mark-as-read fas ' 
                                         +(loading[page.id] || false 
                                             ? 'fa-spinner fa-spin'  
-                                            : 'fa-circle-dot')}
-                                    on:click!='{()=>(loading[page.id]=true, 
-                                    notifications.markAsRead(page.id, 
-                                        page.log.sort((a, b)=>b.id - a.id).at(-1).id))}`)
+                                            : 'fa-circle-dot')}`
+                                    on:click!="{()=>(loading[page.id]=true, notifications.markAsRead(page.id, page.log.sort((a, b)=>b.id - a.id).at(-1).id))}")
+        PaginationBar(bind:page n_items!='{data.length}')
+        | {data.length} items
 </template>
 <style>
     .mark-as-read {
