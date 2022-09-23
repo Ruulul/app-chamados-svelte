@@ -47,6 +47,7 @@ import { notifications } from '$lib/stores/cadastros';
             update.suporteId = $user.id;
         console.log('updating')
         console.log('checking status fechado')
+        $servico.etapa.campos.find(campo=>campo[0]==='status')[1] = status;
         if (status === 'fechado')
             if (confirm("Fechar chamado?")) {
             await updateProcesso($servico, update)

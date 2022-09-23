@@ -42,6 +42,7 @@
     $: canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$cadastro?.etapa.dept)?.departamento) || $user.cargo == 'admin'
     function onChange() {
         updating = true
+        $cadastro.etapa.campos.find(campo=>campo[0]==='status')[1] = status;
         notificaEnvolvidos($cadastro);
         if (status === 'finalizado')
             if (confirm("Fechar chamado?"))
