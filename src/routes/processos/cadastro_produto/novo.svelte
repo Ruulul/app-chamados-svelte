@@ -61,6 +61,7 @@
             tr(class:hidden!='{departamento_id===17}')
                 th Unidade: 
                 td: Filtro(options!='{unidades}' bind:value!="{unidade}" label='')
+        //
             tr(class:hidden!='{is_opening_to_own_dept}'): th: label Validação
                 input(bind:checked!="{validate_only}"  type='checkbox')
 </template>

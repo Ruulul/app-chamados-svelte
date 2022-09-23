@@ -43,11 +43,14 @@
     function onChange() {
         updating = true
         $cadastro.etapa.campos.find(campo=>campo[0]==='status')[1] = status;
-        notificaEnvolvidos($cadastro);
-        if (status === 'finalizado')
-            if (confirm("Fechar chamado?"))
-            return nextEtapa($cadastro)
-                .then(()=>history.back())
+        if (status !== 'finalizado') notificaEnvolvidos($cadastro);
+        if (status === 'finalizado') {
+            if (confirm("Fechar chamado?")) { 
+                notificaEnvolvidos($cadastro);
+                return nextEtapa($cadastro)
+                    .then(()=>history.back())
+            }
+        }
         else return updateProcesso($cadastro, {status})
             .then(getProcesso)
             .then(()=>etapa==='finaliza' && status==='finalizado' ? history.back() : undefined)

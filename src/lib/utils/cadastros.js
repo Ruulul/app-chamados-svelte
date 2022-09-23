@@ -80,11 +80,12 @@ async function getCount (model, tag, filtros) {
 }
 
 async function updateProcesso (processo, update) {
+    console.log('updating process')
         if (Date.now() < last_request + interval ) return console.log('too quick')
         last_request = Date.now()
         return requestPut(`/etapa/${processo.etapa.Tag}/${processo.etapa.id}`, update)
 }
-async function nextEtapa (processo, props, options) {
+async function nextEtapa (processo, props = {}, options) {
     if (!options?.no_cooldown && Date.now() < last_request + interval) return console.log('too quick')
     last_request = Date.now()
     let meta_processos = await requestGet('/meta/processo/' + processo.Tag)
