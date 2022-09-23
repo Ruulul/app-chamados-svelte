@@ -18,6 +18,7 @@
         .title
             h2
                 i.fas.fa-thumbtack
+                | 
                 | Mural de avisos
                 FiltroProcessos(bind:clear processos!='{$processos.filter(filterPendente)}')
         .divider
@@ -35,7 +36,9 @@
                     data!='{$processos.sort((a, b)=>b.id-a.id).filter(p=>filterPendente(p)&&$filter.fn(p)&&notifications.isNotRead(p))}'
                     columns_count=6)
                     tr(slot='page' let:page)
-                        +const('{id, idUsuario, etapa: {Tag, campos}, log, Tag: process_tag} = page')
+                        +const('{id, idUsuario, log} = page')
+                        +const('process_tag = page.Tag')
+                        +const('{Tag, campos} = page.etapa')
                         +const('etapa_campos = Object.fromEntries(campos)')
                         a(href='/processos/{Tag}/{id}')
                             td {id} - {log[0]?.titulo.toUpperCase()}
@@ -43,15 +46,14 @@
                             td {formatTag(Tag)}
                             td {etapa_campos.status}
                             td {$user_names[idUsuario] || 'Carregando...'}
-                            td 
-                                i(
-                                    class!="{'mark-as-read fas ' \
-                                    + (loading[page.id] || false \
-                                        ? 'fa-spinner fa-spin' \
-                                        : 'fa-circle-dot')}"
-                                    on:click!='{()=>(loading[page.id]=true, \
-                                    notifications.markAsRead(page.id, \
-                                        page.log.sort((a, b)=>b.id - a.id).at(-1).id))}')
+                            td: i(
+                                class!=`{'mark-as-read fas ' 
+                                        +(loading[page.id] || false 
+                                            ? 'fa-spinner fa-spin'  
+                                            : 'fa-circle-dot')}
+                                    on:click!='{()=>(loading[page.id]=true, 
+                                    notifications.markAsRead(page.id, 
+                                        page.log.sort((a, b)=>b.id - a.id).at(-1).id))}`)
 </template>
 <style>
     .mark-as-read {
