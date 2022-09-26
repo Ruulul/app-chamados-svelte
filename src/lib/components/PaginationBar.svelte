@@ -3,6 +3,7 @@
     export let n_items;
     export let ellipsis_threshold = 3
     export let items_per_page = 10
+    export let height
 
     $: pages = Math.ceil(n_items/items_per_page)
 
@@ -45,7 +46,7 @@
     }
 </script>
 <template lang=pug>
-    .inner
+    .inner(bind:clientHeight!='{height}')
         i.fas.fa-chevron-left(on:click!='{()=>down ? page-- : undefined}' class:disabled!='{!down}')
         span.number(on:click!='{()=>page=1}' class:hidden!='{!(state === "no-right-ellipsis" || state === "all-ellipsis")}') 1
         +each('pages_index.slice(0, ellipsis_threshold + 2 > pages ? pages : ellipsis_threshold + 2) as index')
