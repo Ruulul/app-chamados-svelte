@@ -218,9 +218,11 @@ export async function notificaEnvolvidos(processo) {
   if (!status) return console.log('notificaEnvolvidos: sem status');
   const template = 
       status === 'fechado' ? 'closed' :
+      status === 'finalizado' ? 'closed' :
       status === 'rejeitado' ? 'rejected' : 
       status === 'pendente' ? 'taken' :
       status === 'em atendimento' ? 'started' :
+      status === 'em andamento' ? 'started' :
       status === 'aguardando solicitante' ? 'on_hold' :
       status === 'aguardando terceiro' ? 'on_hold' :
       null
