@@ -114,7 +114,7 @@ const auth = {
 		return requestPost('/logout').catch(console.error)
 	},
 	alteraSenha (auth) {
-		return requestPost(`/resetasenha/${auth.id}/${auth.token}`, auth).catch(console.error)
+		return requestPost('/alterasenha/', auth).catch(console.error);//return requestPost(`/resetasenha/${auth.id}/${auth.token}`, auth).catch(console.error)
 	},
 	resetaSenha (email) {
 		return requestPost('/resetasenha', { email }).catch(console.error)
