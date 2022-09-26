@@ -85,7 +85,7 @@ onMount(()=>{
 {/await}
 
 <style>
-dialog form, form label {
+form, form label {
 	display: flex;
 	flex-flow: column;
 	gap: 1em;

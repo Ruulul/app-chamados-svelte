@@ -44,16 +44,22 @@
         span Filtros:
         div
             label(class:hidden!='{tipos.length===1}') Processo
+                |
+                |
                 select(bind:value!='{$filter.tipo}')
                     option(value!='{undefined}')
                     +each('tipos as tipo')
                         option {tipo}
             label(class:hidden!='{true || etapas.length===1}') Etapa
+                |
+                |
                 select(bind:value!='{$filter.etapa}')
                     option(value!='{undefined}')
                     +each('etapas as etapa')
                         option {etapa}
             label(class:hidden!='{status.length===1}') Status
+                |
+                |
                 select(bind:value!='{$filter.status}')
                     option(value!='{undefined}')
                     +each('status.filter(s=>!$filter.tipo ? true : processos.filter(p=>p.Tag===$filter.tipo).map(p=>Object.fromEntries(p.etapa.campos).status).includes(s)) as stat')
@@ -66,7 +72,7 @@
         display: none;
     }
     form {
-        margin-top: 1em;
+        margin-top: 0.2em;
     }
     form span {
         margin: 1em;
