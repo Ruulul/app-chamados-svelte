@@ -33,15 +33,7 @@
     let row_height
     let pagination_height
     $: calc_height = (container_height - filter_height - caption_height - head_height - pagination_height)
-    $: items_per_page = container_height && filter_height && caption_height && head_height && row_height && pagination_height && Math.floor(calc_height/(row_height)) - 5 || 1
-    $: console.log({
-        container_height,
-        filter_height,
-        head_height,
-        row_height,
-        calc_height,
-        items_per_page,
-    })
+    $: items_per_page = Math.floor(calc_height/row_height) - 5 || 1
 </script>
 <template lang=pug>
     .filled.container(bind:clientHeight!='{container_height}')

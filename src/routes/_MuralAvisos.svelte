@@ -47,13 +47,7 @@
                             td {formatTag(process_tag)}
                             td {formatTag(Tag)}
                             td {etapa_campos.status}
-                            +if('$user_names[idUsuario]')
-                                td {$user_names[idUsuario]}
-                                +else()
-                                    +await('user_names.add(idUsuario)')
-                                        td Carregando...
-                                        +then('_')
-                                            td {$user_names[idUsuario]}
+                            ExibeNome(id!='{idUsuario}')
                             td: i(
                                 class!=`{'mark-as-read fas ' 
                                         +(loading[page.id] || false 
