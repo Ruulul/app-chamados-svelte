@@ -47,7 +47,6 @@
         .then(()=>history.back())
         .catch(console.error);
 	}
-    if(!$user.dept.includes("Compras")) $user.dept.push("Compras");
     $: departamento_id, is_opening_to_own_dept = $user.dept.includes(departamentos.find(dept=>dept.id===departamento_id)?.departamento);
 </script>
 <template lang="pug">
