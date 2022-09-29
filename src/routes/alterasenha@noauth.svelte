@@ -1,31 +1,40 @@
 <script>
     import { auth } from '$lib/utils/db';
 	import { goto } from '$app/navigation'
-	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 
 	let email;
 	let senha;
+
+	let loading = false;
 	let error;
 	let info;
+	
+	let token;
 
 	function alteraSenha () {
-        let args = {email, senha}
+        let args = {email, senha, token}
         auth.alteraSenha(args)
         .then(()=>auth.login(args))
         .then(()=>goto('/'))
 	}
-	function resetaSenha () {
-		auth.resetaSenha(email);
+	async function resetaSenha () {
+		loading = true;
+		info = ''
+		error = ''
+		await auth.resetaSenha(email)
+			.then(()=>info="Um email com o link de recuperação foi mandado ao seu email.")
+			.catch(()=>error="Algum erro ocorreu");
+		loading = false;
 	}
 
-	let token = undefined;
 	$: has_token = !!token;
 	onMount(getToken);
 
 	function getToken () {
 		let query_params = new URLSearchParams(location.search);
 		token = query_params.get('token');
+		return token;
 	}
 </script>
 <svelte:head>
@@ -43,9 +52,12 @@
 		<input id=email1 placeholder="Email" required bind:value={email} type="email"/>
 		<span class=error>{error || ''}</span>
 		<div>
-			<button class='action button' type=submit>Resetar senha</button>
+			<button class:disabled={loading} class='action button' type=submit>Resetar senha</button>
+			<i class:hidden={!loading} class="fas fa-2x fa-spinner fa-spin"/>
 		</div>
-		<span class=info>{info || ''}</span>
+		<div>
+			<span class=info>{info || ''}</span>
+		</div>
 	</form>
 </main>
 <main class:hidden={!has_token} class='filled container'>
@@ -73,6 +85,11 @@
 <style>
 	.hidden {
 		display: none;
+	}
+	.disabled {
+		opacity: 0.5;
+		pointer-events: none;
+		cursor: not-allowed;
 	}
 	span {
 		text-align: left;
@@ -124,5 +141,9 @@
         width: auto;
         margin: auto;
         text-align: center;
+	}
+	i {
+		width: fit-content;
+		margin: auto;
 	}
 </style>
