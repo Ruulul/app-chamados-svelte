@@ -34,9 +34,6 @@
 </Tabela>
 
 <style>
-    .hidden {
-        display: none;
-    }
     .loading {
         border-radius: 50%;
     }

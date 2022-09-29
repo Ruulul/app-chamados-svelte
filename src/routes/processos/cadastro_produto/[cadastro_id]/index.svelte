@@ -60,9 +60,6 @@
         text-decoration: underline;
         cursor: pointer;
     }
-    .hidden {
-        display: none;
-    }
     .close-button {
         position: absolute;
         right: 1em;
@@ -70,9 +67,6 @@
         padding: 3px;
         border-radius: 2em;
         cursor: pointer;
-    }
-    .hidden {
-        display: none;
     }
     .messages {
         max-height: 30em;

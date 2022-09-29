@@ -71,9 +71,6 @@
                 input(bind:checked!="{validate_only}"  type='checkbox')
 </template>
 <style>
-    .hidden {
-        display: none;
-    }
 	h1 {
 		text-align: center;
 		font-size: medium;

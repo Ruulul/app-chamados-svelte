@@ -112,9 +112,6 @@
         font-size: large;
         color: var(--warning-color, crimson);
     }
-    .hidden {
-        display: none;
-    }
     .placeholder {
         display: none;
     }

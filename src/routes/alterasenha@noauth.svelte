@@ -83,14 +83,6 @@
 	<div class="voltar"><a href='/login'>Eu tenho acesso</a></div>
 </main>
 <style>
-	.hidden {
-		display: none;
-	}
-	.disabled {
-		opacity: 0.5;
-		pointer-events: none;
-		cursor: not-allowed;
-	}
 	span {
 		text-align: left;
 	}

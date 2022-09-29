@@ -221,9 +221,6 @@
         border-right: var(--dark) solid;
         padding-right: 2em;
     }
-    .hidden {
-        display: none;
-    }
     .campo {
         font-size: small;
     }

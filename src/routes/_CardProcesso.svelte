@@ -60,9 +60,6 @@
 </template>
 
 <style>
-    .hidden {
-        display: none;
-    }
     .outlined.container {
         padding: 2em;
         padding-right: 1em;

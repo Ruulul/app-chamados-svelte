@@ -67,14 +67,6 @@
         text-decoration: underline;
         cursor: pointer;
     }
-    .hidden {
-        display: none;
-    }
-    .disabled {
-        opacity: 0.5;
-        pointer-events: none;
-        cursor: not-allowed;
-    }
     .messages {
         max-height: 30em;
         overflow-y: scroll;

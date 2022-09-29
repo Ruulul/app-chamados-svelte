@@ -123,9 +123,6 @@ import { notifications } from '$lib/stores/cadastros';
         text-decoration: underline;
         cursor: pointer;
     }
-    .hidden {
-        display: none;
-    }
     .messages {
         max-height: 30em;
         overflow-y: scroll;
