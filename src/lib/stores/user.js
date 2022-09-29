@@ -72,12 +72,13 @@ function createUserNames () {
 		getted: [],
 		lock: false,
 		async add(id) {
+			if (this.pool.includes[id] || this.getted.includes[id]) return;
 			if (this.lock) {
 				while(this.lock) await sleep(Math.random() * 1000);
 			}
 			this.lock = true;
-			if (this.pool.includes[id] || this.getted[id]) {
-				this.lock = false;
+			if (this.pool.includes[id] || this.getted.includes[id]) {
+				return this.lock = false;
 			}
 			this.pool.push(id)
 			await getUser(id)

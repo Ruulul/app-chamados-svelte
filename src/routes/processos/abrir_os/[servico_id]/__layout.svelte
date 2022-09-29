@@ -176,7 +176,7 @@
                                                 option(value=2) Média
                                                 option(value=3) Alta
                                                 option(value=4) Urgente
-                                        label Tipo
+                                        label Área de TI
                                             select(bind:value!='{$classificador.tipo}')
                                                 +each('$tipos_os as {tipo}')
                                                     option {tipo}
