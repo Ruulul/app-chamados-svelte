@@ -19,6 +19,7 @@
     let unidades = [];
     let is_opening_to_own_dept = false;
     let validate_only = false;
+    let loading = false;
     const validate_help_text = 
     '  Se você está vendo isso, significa que está abrindo em seu próprio departamento. \nMarque aqui se você quer que esse chamado seja apenas validado na próxima etapa.'
     getDepts('cadastro_produto', 'cadastro_produto').then(depts=>{
@@ -42,16 +43,17 @@
             dept: departamento_id,
             anexos,
 		};
-
+        loading = true;
 		await post('processo', 'cadastro_produto', os)
-        .then((os)=>sendEmail('open', [email, $user.email], { idOS: os.id, assunto: titulo, tag: os.Tag, nome: $user.nome }))
-        .then(()=>history.back())
-        .catch(console.error);
+            .then((os)=>sendEmail('open', [email, $user.email], { idOS: os.id, assunto: titulo, tag: os.Tag, nome: $user.nome }))
+            .then(()=>history.back())
+            .catch(console.error);
+        loading = false;
 	}
     $: departamento_id, is_opening_to_own_dept = $user.dept.includes(departamentos.find(dept=>dept.id===departamento_id)?.departamento);
 </script>
 <template lang="pug">
-    Novo('{onSubmit}' titulo_label='Produto' bind:anexos bind:titulo bind:descr)
+    Novo('{onSubmit}' titulo_label='Produto' bind:anexos bind:titulo bind:descr bind:loading)
         h1 Novo Cadastro
         table
             tr

@@ -12,6 +12,7 @@
     const processo = getContext('processo')
     const anexos = getContext('anexos')
     let value = ''
+    let loading = false;
     $: log = ($processo) ? [...$processo.log].reverse() : []
 
     $: mensagem = {
@@ -52,12 +53,14 @@
     {/each}
 </div>
 <textarea bind:value/>
-<button on:click={()=>
-    addMensagem($processo, mensagem)
-    .then(()=>getUnique('processo', $processo.Tag, $processo.id))
-    .then(processo.set)
-    .then(()=>value='')
-    } class='action button'>Nova mensagem</button>
+<button on:click={async ()=>{
+    loading = true;
+    await addMensagem($processo, mensagem)
+        .then(()=>getUnique('processo', $processo.Tag, $processo.id))
+        .then(processo.set)
+        .then(()=>value='')
+    loading = false;
+    }} class='action button' class:disabled={loading}>Nova mensagem</button>
 
 <style>
     .mark-as-read {
@@ -66,6 +69,11 @@
     }
     .hidden {
         display: none;
+    }
+    .disabled {
+        opacity: 0.5;
+        pointer-events: none;
+        cursor: not-allowed;
     }
     .messages {
         max-height: 30em;

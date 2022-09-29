@@ -51,10 +51,9 @@
 <textarea bind:value/>
 <button on:click={()=>
     addMensagem($cadastro, mensagem)
-    .then(()=>getUnique('processo', $cadastro.Tag, $cadastro.id))
-    .then(cadastro.set)
-    .then(()=>value='')
-    } class='action button'>Nova mensagem</button>
+        .then(getProcesso)
+        .then(()=>value='')
+        } class='action button'>Nova mensagem</button>
 
 <style>
     .mark-as-read {

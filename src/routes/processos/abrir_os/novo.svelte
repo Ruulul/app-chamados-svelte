@@ -17,6 +17,7 @@
     import { sendEmail } from '$lib/utils/email'
 	let titulo = '', descr = '';
 	let anexos, email = 'suporte.ti@ourobrancoagronegocios.com.br';
+    let loading = false;
 	async function onSubmit() {
 		let os = {
 			mensagem:
@@ -44,16 +45,18 @@
                 : undefined,
 		}
 
+        loading = true;
 		await post('processo', 'suporte_tecnico', os)
-        .then((os)=>sendEmail('open', [email, $user.email], { idOS: os.id, assunto: titulo, tag: os.Tag, nome: $user.nome }))
-        .then(()=>history.back())
-        .catch(console.error)
+            .then((os)=>sendEmail('open', [email, $user.email], { idOS: os.id, assunto: titulo, tag: os.Tag, nome: $user.nome }))
+            .then(()=>history.back())
+            .catch(console.error)
+        loading = false;
 	}
 </script>
 
 <h1>Abrir Chamado</h1>
 
-<Novo {onSubmit} bind:anexos bind:titulo bind:descr>
+<Novo {onSubmit} bind:anexos bind:titulo bind:descr bind:loading>
 <table> 
     <tr>
         <th>

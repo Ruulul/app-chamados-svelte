@@ -6,6 +6,7 @@
     export let descr_label = 'Descrição'
     export let anexos = []
     export let onSubmit
+    export let loading = false;
     let addFiles;
 </script>
 <template lang="pug">
@@ -22,7 +23,7 @@
             label {descr_label}
                 textarea.campo.filled.container.descr(required maxlength=1000 bind:value!='{descr}' on:paste!="{({clipboardData:{files}})=>addFiles(files)}")
             .buttons
-                input.action.button(type='submit' value='Abrir chamado')
+                input.action.button(class:disabled='{loading}' type='submit' value='Abrir chamado')
 </template>
 
 <style>

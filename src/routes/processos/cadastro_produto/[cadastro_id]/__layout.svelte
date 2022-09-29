@@ -21,11 +21,11 @@
     let cadastro = writable(), campos = {}, cliente, depts, status_opcoes = [], status = '', updating = false, anexos = {}
     setContext('cadastro', cadastro)
     const getProcesso = ()=>getUnique('processo', 'cadastro_produto', $page.params.cadastro_id)
-    .then(data=>{
-        $cadastro=data;
-        campos = data ? Object.fromEntries(data.etapa.campos) : {}
-        status = campos["status"]
-    })
+        .then(data=>{
+            $cadastro=data;
+            campos = data ? Object.fromEntries(data.etapa.campos) : {}
+            status = campos["status"]
+        })
     getProcesso()
     let handler = setTimeout(getProcesso, 1000);
     onDestroy(()=>clearInterval(handler))
