@@ -19,7 +19,8 @@
     let unidades = [];
     let is_opening_to_own_dept = false;
     let validate_only = false;
-    const validate_help_text = 'Se você está vendo isso, significa que está abrindo em seu próprio departamento. Marque aqui se você quer que esse chamado seja apenas validado na próxima etapa.';
+    const validate_help_text = 
+    '  Se você está vendo isso, significa que está abrindo em seu próprio departamento. \nMarque aqui se você quer que esse chamado seja apenas validado na próxima etapa.'
     getDepts('cadastro_produto', 'cadastro_produto').then(depts=>{
         departamentos=depts;
         departamento_id=departamentos[0].id;
