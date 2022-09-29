@@ -19,37 +19,36 @@
     let unidades = [];
     let is_opening_to_own_dept = false;
     let validate_only = false;
+    const validate_help_text = 'Se você está vendo isso, significa que está abrindo em seu próprio departamento. Marque aqui se você quer que esse chamado seja apenas validado na próxima etapa.';
     getDepts('cadastro_produto', 'cadastro_produto').then(depts=>{
-        departamentos=depts
-        departamento_id=departamentos[0].id
-    })
-    $: email = departamentos?.find(departamento=>departamento.id===departamento_id)?.email.valor
+        departamentos=depts;
+        departamento_id=departamentos[0].id;
+    });
+    $: email = departamentos?.find(departamento=>departamento.id===departamento_id)?.email.valor;
     getOpcoes('etapa', 'cadastro_produto', 'unidade').then(data=>{
-        unidades=data
-        unidade=unidades[0]
-    })
+        unidades=data;
+        unidade=unidades[0];
+    });
 	async function onSubmit() {
 		let os = {
 			mensagem: {
                 titulo,
-                descr
+                descr,
             },
             unidade: departamento_id===17 ? '' : unidade,
-            status: /*validate_only && is_opening_to_own_dept ? 'fechado' : */'pendente',
+            status: validate_only && is_opening_to_own_dept ? 'fechado' : 'pendente',
             email,
             dept: departamento_id,
             anexos,
-		}
+		};
 
 		await post('processo', 'cadastro_produto', os)
         .then((os)=>sendEmail('open', [email, $user.email], { idOS: os.id, assunto: titulo, tag: os.Tag, nome: $user.nome }))
         .then(()=>history.back())
-        .catch(console.error)
+        .catch(console.error);
 	}
-    $: departamento_id, console.log($user.dept)
-    $: departamento_id, console.log(departamentos, departamento_id)
-    $: departamento_id, console.log(is_opening_to_own_dept, validate_only)
-    $: departamento_id, is_opening_to_own_dept = $user.dept.includes(departamentos.find(dept=>dept.id===departamento_id)?.departamento)
+    if(!$user.dept.includes("Compras")) $user.dept.push("Compras");
+    $: departamento_id, is_opening_to_own_dept = $user.dept.includes(departamentos.find(dept=>dept.id===departamento_id)?.departamento);
 </script>
 <template lang="pug">
     Novo('{onSubmit}' titulo_label='Produto' bind:anexos bind:titulo bind:descr)
@@ -61,8 +60,12 @@
             tr(class:hidden!='{departamento_id===17}')
                 th Unidade: 
                 td: Filtro(options!='{unidades}' bind:value!="{unidade}" label='')
-        //
-            tr(class:hidden!='{is_opening_to_own_dept}'): th: label Validação
+        
+            tr(class:hidden!='{!is_opening_to_own_dept}'): th: label 
+                i.fas.fa-circle-info(title='{validate_help_text}')
+                |
+                | Validação?
+                |
                 input(bind:checked!="{validate_only}"  type='checkbox')
 </template>
 <style>

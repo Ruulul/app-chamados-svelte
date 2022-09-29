@@ -22,7 +22,7 @@ export {
 }
 
 let last_request = Date.now();
-let interval = 1000
+let interval = 5000
 
 async function post (model, tag, os) {
     if (Date.now() < last_request + interval ) return console.log('too quick')
@@ -31,12 +31,12 @@ async function post (model, tag, os) {
     delete os.anexos;
     let processo = await requestPost(`/${model}/${tag}`, os);
     if (anexos) {
-        let processoMeta = await requestGet(`/meta/processo/${tag}`)
-        let etapaMeta = processoMeta.etapas.find(etapa=>!etapa.prev)
-        let etapa = await requestGet(`/processo/${processo.Tag}/${processo.id}/etapa/${etapaMeta.Tag}/${processo.idEtapaAtual}`)
+        let etapa = await requestGet(`/etapa/${processo.idEtapaAtual}`)
         let msg = etapa.log[0]
-        let model = 'log'
-        await Promise.all(anexos.map(anexo=>requestPost(`/${model}/${msg.Tag}/${msg.id}/campo/anexo`, anexo))).catch(console.error);
+        await Promise.all(anexos.map(anexo=>requestPost(`/log/${msg.Tag}/${msg.id}/campo/anexo`, anexo))).catch(console.error);
+    }
+    if (['fechado', 'finalizado'].includes(os.status)) {
+        return await nextEtapa(processo, {}, { no_cooldown: true });
     }
     return processo
 }
@@ -89,8 +89,9 @@ async function nextEtapa (processo, props = {}, options) {
     if (!options?.no_cooldown && Date.now() < last_request + interval) return console.log('too quick')
     last_request = Date.now()
     let meta_processos = await requestGet('/meta/processo/' + processo.Tag)
-    let meta_etapa_atual = meta_processos.etapas.find(etapa=>etapa.Tag===processo.etapa.Tag)
-    let meta_etapa_next = meta_processos.etapas.find(etapa=>etapa.id===meta_etapa_atual.next)
+    let etapa = await requestGet('/etapa/' + processo.idEtapaAtual)
+    let meta_etapa_atual = meta_processos.etapas.find(etapa_meta=>etapa_meta.Tag===etapa.Tag)
+    let meta_etapa_next = meta_processos.etapas.find(etapa_meta=>etapa_meta.id===meta_etapa_atual.next)
     let dept = await getDept(props.dept ? props.dept : meta_etapa_next.dept)
     const initial_props = {
         finaliza: {
