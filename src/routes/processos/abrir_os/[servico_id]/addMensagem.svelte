@@ -34,15 +34,15 @@
         else enviando = false
     }
 </script>
-<form on:submit|preventDefault={onSubmit}>
-    <textarea class='outlined container' bind:value maxlength="1000" rows='20' cols='60' on:paste={({clipboardData:{files}})=>addFiles(files)}/>
-        <br>
-        <Anexos bind:files bind:addFiles/>
-    <div class='buttons'>
-        <button disabled={enviando} class='action button' type='submit'>Enviar mensagem</button>
-        <button class='action button' on:click={voltar}>Voltar</button>
-    </div>
-</form>
+<template lang=pug>
+    form(on:submit|preventDefault='{onSubmit}')
+        textarea.outlined.container(bind:value maxlength=1000 rows=20 cols=60 on:paste!='{({clipboardData:{files}})=>addFiles(files)}')
+        br
+        Anexos(bind:files bind:addFiles)
+        .buttons
+            button.action.button(disabled='{enviando}' type='submit') Enviar mensagem
+            button.action.button(on:click='{voltar}') Voltar
+</template>
 
 <style>
     button:disabled {
