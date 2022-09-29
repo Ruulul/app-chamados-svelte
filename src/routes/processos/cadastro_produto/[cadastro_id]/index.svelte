@@ -10,6 +10,7 @@
     const cadastro = getContext('cadastro')
     const getProcesso = getContext('getProcesso')
     let value = ''
+    let sending = false;
 
     $: mensagem = {
         titulo: 'mensagem',
@@ -49,11 +50,13 @@
     {/each}
 </div>
 <textarea bind:value/>
-<button on:click={()=>
-    addMensagem($cadastro, mensagem)
+<button on:click={async ()=>{
+    sending = true;
+    await addMensagem($cadastro, mensagem)
         .then(getProcesso)
         .then(()=>value='')
-        } class='action button'>Nova mensagem</button>
+    sending = false;
+    }} class='action button' class:disabled={sending}>Nova mensagem</button>
 
 <style>
     .mark-as-read {
