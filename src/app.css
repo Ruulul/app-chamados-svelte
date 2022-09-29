@@ -112,5 +112,5 @@ div div {
     cursor: not-allowed;
 }
 .hidden {
-    display: none;
+    display: none !important;
 }
