@@ -57,9 +57,6 @@
 </template>
 
 <style>
-    .hidden {
-        display: none;
-    }
     .inner {
         display: flex;
         width: 100%;
@@ -83,10 +80,6 @@
     }
     i.fa-ellipsis {
         cursor: auto;
-    }
-    i.disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
     }
     .selected {
         background-color: var(--dark);

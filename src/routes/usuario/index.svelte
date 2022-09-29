@@ -80,7 +80,7 @@
 			}}
 			bind:value={dept}
 		/>
-		<Dialog title='' class='filled container' bind:this={novo_departamento_dialog}>
+		<Dialog title='' bind:this={novo_departamento_dialog}>
 			<button class='close button' on:click={()=>novo_departamento_dialog.close()}>X</button>
 			<h2>Escreva a nova categoria e envie</h2>
 			<form on:submit|preventDefault={async ()=>{
@@ -123,14 +123,7 @@
 		border-radius: 1em;
 		border: thin var(--secondary-color) solid;
 	}
-	dialog {
-		padding: 2em;
-		justify-content: center;
-		align-items: center;
-		text-align: center;
-		flex-flow: column;
-	}
-	dialog > form {
+	form {
 		justify-content: center;
 	}
 	.close.button {

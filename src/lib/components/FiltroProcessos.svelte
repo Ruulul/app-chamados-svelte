@@ -68,9 +68,6 @@
 </template>
 
 <style>
-    .hidden {
-        display: none;
-    }
     form {
         margin-top: 0.2em;
     }

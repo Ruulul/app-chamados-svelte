@@ -60,10 +60,6 @@ import Dialog from "./Dialog.svelte";
 </template>
 
 <style>
-    .hidden {
-        display: none;
-    }
-
 	.file-wrapper {
 		display: grid;
 		border: none;
