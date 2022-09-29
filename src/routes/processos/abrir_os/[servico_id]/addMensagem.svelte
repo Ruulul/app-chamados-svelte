@@ -11,6 +11,7 @@
     $: parsed = parseMD(value)
     let enviando = false;
     const servico = getContext('servico')
+    const getServico = getContext('getServico')
 
     function voltar () {
         history.back()
@@ -26,10 +27,9 @@
         enviando = true
         if (value.length > 0)
         addMensagem($servico, mensagem)
-            .then(()=>getUnique('processo', 'suporte_tecnico', $servico.id))
-            .then(servico.set)
-            .then(()=>enviando=false)
+            .then(getServico)
             .then(voltar)
+            .then(()=>enviando=false)
             .catch(console.error)
         else enviando = false
     }
