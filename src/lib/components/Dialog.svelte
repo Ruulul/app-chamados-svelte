@@ -17,5 +17,7 @@
         position: absolute;
         right: 1em;
         top: 1em;
+        width: 2em;
+        height: 2em;
     }
 </style>
