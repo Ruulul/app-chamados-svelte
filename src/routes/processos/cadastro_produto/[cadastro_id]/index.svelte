@@ -1,102 +1,151 @@
+<script context='module'>
+
+	export async function load ({params}) {
+		return {
+			stuff: {
+				title: `Chamado ${params.cadastro_id}`
+			},
+		}
+	}
+
+</script>
 <script>
-    import { getContext } from 'svelte'
-    import { getUser } from '$lib/utils/db.js'
-    import { parseMD } from '$lib/utils/utils'
+    import { page } from '$app/stores'
+    import ExibeArquivo from '$lib/components/ExibeArquivo.svelte';
+    import ProcessoTemplate from '../../processo_template.svelte';
     import { user } from '$lib/stores/user';
-    import { addMensagem, deleteMensagem, getUnique } from '$lib/utils/cadastros';
+    import { getUnique, getCampo, getDepts, getOpcoes, updateProcesso, nextEtapa } from '$lib/utils/cadastros';
+    import { getUser } from '$lib/utils/db';
+    import { notificaEnvolvidos } from '$lib/utils/utils';
+    import { setContext, onDestroy } from 'svelte';
+    import { writable } from 'svelte/store';
+    let cadastro = writable(), campos = {}, cliente, depts, status_opcoes = [], status = '', updating = false, anexos = {}
+    setContext('cadastro', cadastro)
+    const getProcesso = ()=>getUnique('processo', 'cadastro_produto', $page.params.cadastro_id)
+        .then(data=>{
+            $cadastro=data;
+            campos = data ? Object.fromEntries(data.etapa.campos) : {}
+            status = campos["status"]
+        })
+    getProcesso()
+    let handler = setTimeout(getProcesso, 1000);
+    onDestroy(()=>clearInterval(handler))
+    setContext('getProcesso', getProcesso)
+    $: etapa = $cadastro?.etapa.Tag
+    $: if ($cadastro?.idEtapaAtual) 
+        getUnique('etapa', etapa, $cadastro?.idEtapaAtual)
+        .then(data=>data.log?.forEach(async log => !anexos[log.id] ? anexos[log.id] = await getCampo('log', log.Tag, log.id, 'anexo') : undefined))
+    getDepts('cadastro_produto', 'cadastro_produto').then(data=>depts=data)
+    $: getOpcoes('etapa', etapa, 'status').then(data=>status_opcoes=data)
+    $: getUser($cadastro?.idUsuario).then(user=>cliente=user)
 
-    import { notifications } from '$lib/stores/cadastros';
-
-    const cadastro = getContext('cadastro')
-    const getProcesso = getContext('getProcesso')
-    let value = ''
-    let sending = false;
-
-    $: mensagem = {
-        titulo: 'mensagem',
-        descr: value,
-    }
-
-    function deleteMsg (id) {
-        return async function () {
-            await deleteMensagem(id)
-            getProcesso()
+    let canEdit = false
+    $: canEdit = $user.dept.includes(depts?.find(dept=>dept.id===$cadastro?.etapa.dept)?.departamento) || $user.cargo == 'admin'
+    function onChange() {
+        updating = true
+        $cadastro.etapa.campos.find(campo=>campo[0]==='status')[1] = status;
+        if (status !== 'finalizado') notificaEnvolvidos($cadastro);
+        if (status === 'finalizado') {
+            if (confirm("Fechar chamado?")) { 
+                notificaEnvolvidos($cadastro);
+                return nextEtapa($cadastro)
+                    .then(()=>history.back())
+            }
         }
+        else return updateProcesso($cadastro, {status})
+            .then(getProcesso)
+            .then(()=>etapa==='finaliza' && status==='finalizado' ? history.back() : undefined)
     }
 </script>
-<div class='campo filled container assunto'>
-    Assunto:
-    {$cadastro?.log[0]?.titulo}
-</div>
-<div class='messages'>
-    {#each $cadastro?.log.sort((a, b)=>b.id-a.id) || [] as {idUsuario, titulo, descr, createdAt, id}, index}
-        {@const data_obj = new Date(createdAt)}
-        {@const data = data_obj?.toLocaleDateString() || '[??/??/??'}
-        {@const hora = data_obj?.toLocaleTimeString() || '[??:??:??]'}
-        <div class='campo filled container'>
-            <h3>
-                {#await getUser(idUsuario)}
-                    Carregando...
-                {:then {nome}}
-                {nome || 'Sem atendente'}
-                {/await}
-            </h3>
-            <h3 class:hidden={titulo==='mensagem'}>{titulo}</h3> <span class:hidden={idUsuario!==$user.id} class=close-button on:click={deleteMsg(id)}>X</span>
-            <dd class:hidden={$notifications[$cadastro.id] >= id} class=mark-as-read on:click={notifications.markAsRead($cadastro.id, id)}>Marcar como lido</dd>
-            <dd class:hidden={$notifications[$cadastro.id] <  id} class=mark-as-read on:click={notifications.markAsRead($cadastro.id, $cadastro.log.length > 1 ? $cadastro.log.at(index - 1).id : 0)}>Marcar como não lido</dd>
-            {@html parseMD(descr)}
-            <dd>{data + ' ' + hora}</dd>
+<div class='filled container'>
+    <div class='wrapper'>
+        <h1>Chamado {$cadastro?.id}</h1>
+        <table> 
+            <tr>
+                <th>
+                    Cliente:
+                </th>
+                <td>
+                    {cliente?.nome}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Produto:
+                </th>
+                <td>
+                    {$cadastro?.log[0].titulo}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Unidade:
+                </th>
+                <td>
+                    {campos["unidade"]}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Descrição:
+                </th>
+                <td>
+                    {$cadastro?.log[0].descr}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Status:
+                </th>
+                <td>
+                    <span class:hidden={canEdit}>
+                        {status}
+                    </span>
+                    <select class:updating class:hidden={!canEdit} bind:value={status} on:change={()=>onChange()}>
+                        {#each status_opcoes || [] as opcao}
+                            <option>{opcao}</option>
+                        {/each}
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <div class='campo'>
+        <h2>Anexo</h2>
+            {#each Object.values(anexos).flat() as anexo}
+                {#if anexo instanceof Object}
+                    {@const title = anexo.title}
+                    {@const data = anexo.data}
+                    <ExibeArquivo title={title?.split('-')[1]} {data}/>
+                {/if}
+            {/each}
         </div>
-    {/each}
+    </div>
+    <div class='container'>
+        <ProcessoTemplate {getProcesso} processo={$cadastro}/>
+    </div>
 </div>
-<textarea bind:value/>
-<button on:click={async ()=>{
-    sending = true;
-    await addMensagem($cadastro, mensagem)
-        .then(getProcesso)
-        .then(()=>value='')
-    sending = false;
-    }} class='action button' class:disabled={sending}>Nova mensagem</button>
-
 <style>
-    .mark-as-read {
-        text-decoration: underline;
-        cursor: pointer;
+    .updating::after {
+        content: '...',
+        
     }
-    .close-button {
-        position: absolute;
-        right: 1em;
-        border: solid var(--text-color) 1px;
-        padding: 3px;
-        border-radius: 2em;
-        cursor: pointer;
+    .filled.container {
+        margin: auto;
+        flex-flow: row;
     }
-    .messages {
-        max-height: 30em;
-        overflow-y: scroll;
-        width: 100%;
-    }
-    .messages .campo::before {
-        content: ' ';
-        position: absolute;
-        left: -1em;
-        border-top: 1em solid transparent;
-        border-left: 1em solid white;
-        border-bottom: 1em solid transparent;
-    }
-    .assunto {
-        width: 100%;
+    .wrapper {
+        justify-content: flex-start;
+        border-right: var(--dark) solid;
+        padding-right: 2em;
     }
     .campo {
         font-size: small;
-        --fill-color: white;
-        padding: 1em;
-        margin: 1em;
     }
-    .action.button {
-        text-transform: uppercase;
-        padding: 0.6em;
-        border-radius: 0.5em;
-        margin: 1em;
+    table {
+        display: grid;
+    }
+    tr {
+        padding: 0.5em;
+        border-bottom: 0.1em var(--dark) solid;
     }
 </style>
