@@ -110,10 +110,12 @@ async function addMensagem (processo, mensagem) {
     let new_message = await requestPost(`/processo/${processo.Tag}/${processo.id}/etapa/${processo.etapa.Tag}/${processo.etapa.id}/mensagem`, mensagem)
     if (anexos?.length > 0) return Promise.all(anexos.forEach(anexo=>requestPost(`/log/${new_message.Tag}/${new_message.id}/campo/anexo`, anexo)))
     let emails = await getEmailsEnvolvidos(processo);
+    let nomeAutor = (await getUser(mensagem.idUsuario).catch(()=>({nome: '[erro obtendo nome]'})))?.nome
     await sendEmail('message', emails, {
         idOS: processo.id,
-        nomeAutor: (await getUser(mensagem.idUsuario).catch(()=>({nome: '[erro obtendo nome]'})))?.nome,
+        nomeAutor,
         mensagem: mensagem.descr,
+        tag: processo.Tag,
     });
 }
 

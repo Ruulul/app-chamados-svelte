@@ -20,40 +20,26 @@
         }
     }
 </script>
-
-<div class='campo filled container assunto'>
-    Assunto:
-    {processo?.log?.at(0)?.titulo}
-</div>
-<div class='messages'>
-    {#each processo?.log?.sort((a, b)=>b.id-a.id) || [] as {idUsuario, titulo, descr, createdAt, id}, index}
-        {@const data_obj = new Date(createdAt)}
-        {@const data = data_obj?.toLocaleDateString() || '[??/??/??'}
-        {@const hora = data_obj?.toLocaleTimeString() || '[??:??:??]'}
-        <div class='campo filled container'>
-            <h3>
-                <ExibeNome id={idUsuario}/>
-            </h3>
-            <h3 class:hidden={titulo==='mensagem'}>{titulo}</h3> <span class:hidden={idUsuario!==$user.id} class=close-button on:click={deleteMsg(id)}>X</span>
-            <dd class:hidden={$notifications[processo.id] >= id} class=mark-as-read on:click={notifications.markAsRead(processo.id, id)}>Marcar como lido</dd>
-            <dd class:hidden={$notifications[processo.id] <  id} class=mark-as-read on:click={notifications.markAsRead(processo.id, processo.log.length > 1 ? processo.log.at(index - 1).id : 0)}>Marcar como não lido</dd>
-            {@html parseMD(descr)}
-            <dd>{data + ' ' + hora}</dd>
-        </div>
-    {/each}
-</div>
-<textarea bind:value/>
-<div class='buttons'>
-    <slot name='buttons'/>
-    <button on:click={async ()=>{
-        sending = true;
-        await addMensagem(processo, mensagem)
-            .then(getProcesso)
-            .then(()=>value='')
-        sending = false;
-        }} class='action button' class:disabled={sending}>Nova mensagem</button>
-</div>
-
+<template lang=pug>
+    .campo.filled.container.assunto Assunto: {processo?.log?.at(0)?.titulo}
+    .messages
+        +each('processo?.log?.sort((a, b)=>b.id-a.id) || [] as {idUsuario, titulo, descr, createdAt, id}, index')
+            +const('data_obj = new Date(createdAt)')
+            +const('data = data_obj?.toLocaleDateString() || "[??/??/??"')
+            +const("hora = data_obj?.toLocaleTimeString() || '[??:??:??]'")
+            .campo.filled.container
+                h3: ExibeNome(id='{idUsuario}')
+                h3(class:hidden!='{titulo==="mensagem"}') {titulo}
+                span.close-button(class:hidden!='{idUsuario!==$user.id}' on:click!='{deleteMsg(id)}') X
+                dd.mark-as-read(class:hidden!='{$notifications[processo.id] >= id}' on:click!='{notifications.markAsRead(processo.id, id)}') Marcar como lido
+                dd.mark-as-read(class:hidden!='{$notifications[processo.id] <  id}' on:click!='{notifications.markAsRead(processo.id, processo.log.length > 1 ? processo.log.at(index - 1).id : 0)}') Marcar como não lido
+                | {@html parseMD(descr)}
+                dd {data + ' ' + hora}
+    textarea(bind:value)
+    .buttons
+        slot(name='buttons')
+        button.action.button(class:disabled='{sending}' on:click!='{async ()=>{sending = true;await addMensagem(processo, mensagem).then(getProcesso).then(()=>value="");sending = false;}}') Nova Mensagem
+</template>
 <style>
     .mark-as-read {
         text-decoration: underline;
