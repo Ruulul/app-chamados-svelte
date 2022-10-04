@@ -151,8 +151,8 @@
 
     $: a_classificar = campos_etapa.categoria === 'A. D.'
     async function atualizaChamado () {
-        let novo_status = proximo_status[campos_etapa.status]
-        await update (novo_status)
+        campos_etapa.status = proximo_status[campos_etapa.status]
+        await onChange("status")
     }
 </script>
 <template lang="pug">
@@ -216,7 +216,7 @@
                                     ExibeArquivo(title!='{title?.slice(title?.indexOf("-") + 1 || 0)}' '{data}')
                 .container
                     ProcessoTemplate(getProcesso!='{getServico}' processo!='{$servico}')
-                        button.action.button(slot='buttons' on:click!='{a_classificar ? $classificador.dialog.showModal.bind($classificador.dialog) : atualizaChamado}') {a_classificar ? 'Classificar e Assumir' : label_por_status[campos_etapa.status]}
+                        button.action.button(slot='buttons' on:click!='{()=> a_classificar ? $classificador.dialog.showModal() : atualizaChamado()}') {a_classificar ? 'Classificar e Assumir' : label_por_status[campos_etapa.status]}
 
 </template>
 <style>
