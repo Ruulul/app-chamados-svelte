@@ -213,7 +213,7 @@
                                 +if('anexo instanceof Object')
                                     +const('title = anexo.title')
                                     +const('data = anexo.data')
-                                    ExibeArquivo(title!='{title?.split('-')[1]}' '{data}')
+                                    ExibeArquivo(title!='{title?.slice(title?.indexOf("-") + 1 || 0)}' '{data}')
                 .container
                     ProcessoTemplate(getProcesso!='{getServico}' processo!='{$servico}')
                         button.action.button(slot='buttons' on:click!='{a_classificar ? $classificador.dialog.showModal.bind($classificador.dialog) : atualizaChamado}') {a_classificar ? 'Classificar e Assumir' : label_por_status[campos_etapa.status]}

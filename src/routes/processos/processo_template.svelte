@@ -2,16 +2,19 @@
     import { notifications } from "$lib/stores/cadastros";
     import { user } from "$lib/stores/user";
     import ExibeNome from "$lib/components/ExibeNome.svelte";
+    import Anexos from "$lib/components/Anexos.svelte";
     import { parseMD } from "$lib/utils/utils";
     import { addMensagem } from "$lib/utils/cadastros";
     export let getProcesso
     export let processo
+    let anexos = []
     let value = ''
     let sending = false;
 
     $: mensagem = {
         titulo: 'mensagem',
         descr: value,
+        anexos: anexos,
     }
     function deleteMsg (id) {
         return async function () {
@@ -36,6 +39,7 @@
                 | {@html parseMD(descr)}
                 dd {data + ' ' + hora}
     textarea(bind:value)
+    Anexos(bind:files='{anexos}')
     .buttons
         slot(name='buttons')
         button.action.button(class:disabled='{sending}' on:click!='{async ()=>{sending = true;await addMensagem(processo, mensagem).then(getProcesso).then(()=>value="");sending = false;}}') Nova Mensagem
