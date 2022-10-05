@@ -1,6 +1,6 @@
 <template lang="pug">
     script.
-        export let dialog;
+        export let dialog = undefined;
         export let title_tag = 2;
         export let title;
     dialog.filled.container(bind:this!='{dialog}')

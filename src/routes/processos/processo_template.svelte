@@ -22,6 +22,12 @@
             getProcesso()
         }
     }
+    async function sendMsg () {
+        sending = true;
+        await addMensagem(processo, mensagem).then(getProcesso);
+        value="";
+        sending = false;
+    }
 </script>
 <template lang=pug>
     .campo.filled.container.assunto Assunto: {processo?.log?.at(0)?.titulo}
@@ -34,15 +40,15 @@
                 h3: ExibeNome(id='{idUsuario}')
                 h3(class:hidden!='{titulo==="mensagem"}') {titulo}
                 span.close-button(class:hidden!='{idUsuario!==$user.id}' on:click!='{deleteMsg(id)}') X
-                dd.mark-as-read(class:hidden!='{$notifications[processo.id] >= id}' on:click!='{notifications.markAsRead(processo.id, id)}') Marcar como lido
-                dd.mark-as-read(class:hidden!='{$notifications[processo.id] <  id}' on:click!='{notifications.markAsRead(processo.id, processo.log.length > 1 ? processo.log.at(index - 1).id : 0)}') Marcar como não lido
+                dd.mark-as-read(class:hidden!='{$notifications[processo.id] >= id}' on:click!='{()=>notifications.markAsRead(processo.id, id)}') Marcar como lido
+                dd.mark-as-read(class:hidden!='{$notifications[processo.id] <  id}' on:click!='{()=>notifications.markAsRead(processo.id, processo.log.length > 1 ? processo.log.at(index - 1).id : 0)}') Marcar como não lido
                 | {@html parseMD(descr)}
                 dd {data + ' ' + hora}
     textarea(bind:value)
     Anexos(bind:files='{anexos}')
     .buttons
         slot(name='buttons')
-        button.action.button(class:disabled='{sending}' on:click!='{async ()=>{sending = true;await addMensagem(processo, mensagem).then(getProcesso).then(()=>value="");sending = false;}}') Nova Mensagem
+        button.action.button(class:disabled!='{sending}' on:click!='{sendMsg}') Nova Mensagem
 </template>
 <style>
     .mark-as-read {
