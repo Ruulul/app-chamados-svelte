@@ -30,6 +30,7 @@ export { filial, filiais_validas, filiais_validas_por_id } from './filial.js'
 
 export {
 	auth,
+	handle_user,
 	config,
 	getFile,
 	getMonitoring,
@@ -158,6 +159,14 @@ const auth = {
 	}
 }
 
+/**
+ * Funções de perfil
+ */
+const handle_user = {
+	update (id, update) {
+		return requestPut('/perfil/' + id, update).catch(console.error)
+	}
+}
 
 async function getMonitoring () {
 	return requestGet('/monitoring')

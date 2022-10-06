@@ -30,7 +30,7 @@ function createUser() {
 	
 	return {
 		subscribe,
-		logout: async function(){
+		async logout () {
 			try {
 				await auth.logout()
 				set(null)
@@ -38,26 +38,28 @@ function createUser() {
 				console.error(e);
 			}
 		},
-		login: async function(user) {
+		async login (user) {
 			try { 
 				let res = await auth.login(user)
-				if (res.error){
+				if (res.error) {
 					set(null)
 					return res
 				}
-				else
-				return await auth.getPerfil()
-					.then(function(perfil){
-						set(
-							perfil === 'Não autorizado'
-								? null
-								: perfil)
-						return perfil
-					})
+				else return await this.update()
 			} catch(e) {
 				console.log(e);
 				return e
 			}
+		},
+		async update () {
+			return auth.getPerfil()
+			.then(function(perfil){
+				set(
+					perfil === 'Não autorizado'
+						? null
+						: perfil)
+				return perfil
+			})
 		}
 	}
 }

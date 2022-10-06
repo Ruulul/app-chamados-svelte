@@ -1,19 +1,49 @@
 <script>
     import { user } from "$lib/stores/user";
+    import { getFile, handle_user } from '$lib/utils/db';
+    import Dialog from '$lib/components/Dialog.svelte';
 
     let on_edit = false;
 
     let current_profile = $user;
 
-    $: if ($user && !on_edit) current_profile = $user;
+    $: if ($user && !on_edit) {
+        console.log($user)
+        current_profile = {...$user}; 
+        current_profile.contatos = emptyArrayOrContent($user.contatos);
+    }
 
+    function emptyArrayOrContent(array) {
+        try {
+            return JSON.parse(array)
+        }
+        catch {
+            return []
+        }
+    }
+
+    async function update() {
+        await handle_user($user.id, current_profile);
+        await user.update();
+    }
+
+    let change_pic_dialog = undefined;
 </script>
 <template lang=pug>
     .filled.container
         .profile-pic.full-width
             .container
-                i.fa-regular.fa-user.placeholder.fa-3x
-                button.switch Alterar
+                +if('$user.profile_icon')
+                    +await("getFile($user.profile_icon)")
+                        i.fas.fa-spinner.fa-spin.fa-2x
+                        +then('src')
+                            img(src='{src}')
+                        +catch('_')
+                            i.fas.fa-user.placeholder.fa-3x
+                    +else()
+                        i.fas.fa-user.placeholder.fa-3x
+                button.switch(on:click!='{()=>change_pic_dialog.showModal()}') Alterar
+                    Dialog(bind:dialog!='{change_pic_dialog}' title='Alterar foto de perfil')
         .full-width
             label Nome
                 span.field(class:hidden='{on_edit}') {$user.nome}
@@ -22,7 +52,7 @@
                 span.field(class:hidden='{on_edit}') {$user.sobrenome}
                 input.field(class:hidden='{!on_edit}' bind:value='{current_profile.sobrenome}')
         .full-width
-            label Usuário
+            label(class:hidden='{on_edit}') Usuário
                 span.field(class:hidden='{on_edit}') {$user.email}
                 input.field(class:hidden='{!on_edit}' bind:value='{current_profile.email}')
             div
@@ -32,27 +62,31 @@
                     | &nbsp; &nbsp;
                     label Confirma senha
                         input.field
-        .full-width
-            div(class:hidden='{!on_edit}')
-                +each("JSON.parse(current_profile.contatos) as contato")
-                    label {contato.nome}
-                        input.field(value='{contato.valor}')
-            div(class:hidden='{on_edit}')
+        .full-width Informações de Contato
+        div.full-width(class:hidden='{!on_edit}')
+            +each("current_profile.contatos as contato")
+                label {contato.nome}
+                    input.field(value='{contato.valor}')
+        div.full-width(class:hidden='{on_edit}')
             +each("JSON.parse($user.contatos) as contato")
                 label {contato.nome}
                     span.field {contato.valor}
         .full-width
-            label Departamento
+            label Departamentos
                 select.field
                     +each("$user.dept as dept")
                         option {dept}
-        .full-width
+        .full-width(class:hidden='{on_edit}')
             label Empresas
         .full-width.put-on-end
             button.action.button.edit(on:click!='{()=>on_edit=!on_edit}')
                 i.fas(class="{on_edit ? 'fa-x' : 'fa-pen-to-square'}")
-                |
+                | &nbsp;
                 | {!on_edit ? 'Editar' : 'Cancelar'}
+            button.action.button.edit(class:hidden='{!on_edit}' on:click='{update}') 
+                i.fas.fa-floppy-disk
+                | &nbsp;
+                | Salvar
 </template>
 
 <style>
@@ -82,6 +116,8 @@
         box-shadow: 0 0.1em var(--dark);
         border: none;
         padding: 0.3em;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
         background-color: white;
     }
     .profile-pic .container {
@@ -90,11 +126,22 @@
         border: solid var(--dark);
         border-radius: 5em;
         padding: 0;
+        position: relative;
     }
-    .profile-pic .placeholder {
+    .profile-pic .container * {
+        position: absolute;
+        width: 100%;
+        height: 100%;
         margin: auto;
+        overflow: hidden;
+        border-radius: 50%;
     }
     .profile-pic .switch {
+        position: absolute;
+        bottom: 0;
+        right: 20%;
+        width: 30%;
+        height: 30%;
         background-color: var(--dark);
         color: white;
         border: none;
