@@ -7,6 +7,13 @@
 
     let current_profile = $user;
 
+    let enviando = false;
+
+    let novo_contato = {
+        nome: '',
+        valor: '',
+    }
+
     $: if ($user && !on_edit) {
         console.log($user)
         current_profile = {...$user}; 
@@ -23,8 +30,13 @@
     }
 
     async function update() {
-        await handle_user($user.id, current_profile);
+        enviando = true;
+        let update = {...current_profile};
+        update.contatos = JSON.stringify(current_profile.contatos);
+        await handle_user.update($user.id, update);
         await user.update();
+        enviando = false;
+        on_edit = false;
     }
 
     let change_pic_dialog = undefined;
@@ -35,7 +47,8 @@
             .container
                 +if('$user.profile_icon')
                     +await("getFile($user.profile_icon)")
-                        i.fas.fa-spinner.fa-spin.fa-2x
+                        div
+                            i.fas.fa-spinner.fa-spin.fa-2x
                         +then('src')
                             img(src='{src}')
                         +catch('_')
@@ -44,6 +57,7 @@
                         i.fas.fa-user.placeholder.fa-3x
                 button.switch(on:click!='{()=>change_pic_dialog.showModal()}') Alterar
                     Dialog(bind:dialog!='{change_pic_dialog}' title='Alterar foto de perfil')
+                        | A ser implementado
         .full-width
             label Nome
                 span.field(class:hidden='{on_edit}') {$user.nome}
@@ -65,8 +79,24 @@
         .full-width Informações de Contato
         div.full-width(class:hidden='{!on_edit}')
             +each("current_profile.contatos as contato")
-                label {contato.nome}
+                label 
+                    div.row
+                        | {contato.nome}
+                        |
+                        i.fas.fa-x(on:click!='{()=>current_profile.contatos = current_profile.contatos.filter(cnt=>cnt!==contato)}')
                     input.field(value='{contato.valor}')
+            label Adicionar...
+                div
+                    input.row.field(bind:value='{novo_contato.nome}' placeholder='Whatsapp')
+                    | &nbsp; &nbsp;
+                    input.row.field(bind:value='{novo_contato.valor}' placeholder='(XX) XXXXX-XXXX')
+                    | &nbsp; &nbsp;
+                .row.put-on-end
+                    button.action.button(on:click!=`{()=>{
+                        current_profile.contatos = [...current_profile.contatos, {...novo_contato}]
+                        novo_contato.nome = '';
+                        novo_contato.valor = '';
+                    }}`) Adicionar
         div.full-width(class:hidden='{on_edit}')
             +each("JSON.parse($user.contatos) as contato")
                 label {contato.nome}
@@ -83,7 +113,7 @@
                 i.fas(class="{on_edit ? 'fa-x' : 'fa-pen-to-square'}")
                 | &nbsp;
                 | {!on_edit ? 'Editar' : 'Cancelar'}
-            button.action.button.edit(class:hidden='{!on_edit}' on:click='{update}') 
+            button.action.button.edit(class:disabled='{enviando}' class:hidden='{!on_edit}' on:click='{update}') 
                 i.fas.fa-floppy-disk
                 | &nbsp;
                 | Salvar
