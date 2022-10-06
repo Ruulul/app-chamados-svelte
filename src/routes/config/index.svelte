@@ -1,8 +1,5 @@
 <script>
-    import { user } from "$lib/stores/user";
-    import ResetaSenha from "./_ResetaSenha.svelte";
+    import { goto } from '$app/navigation'
 
+    goto('./suporte_tecnico')
 </script>
-{#if $user.cargo == "admin"}
-    <ResetaSenha/>
-{/if}

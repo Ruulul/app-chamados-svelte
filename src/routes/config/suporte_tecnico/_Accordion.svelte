@@ -2,39 +2,25 @@
     export let items
     export let title
 
-    export let content_element = 'ul'
-    export let wrap_element = 'div'
     export let wrap = true
 
     let visible = false;
 </script>
-{#if wrap}
-    <svelte:element this={wrap_element}>
-        <label class:selected={visible} class='tab'>
-            <input bind:checked={visible} type='checkbox'>
-            {title}
-        </label>
-        <svelte:element this={content_element} class:visible class='tab-content'>
-            <slot name='first-items'/>
-            {#each items as item}
-                <slot name='item' {item}/>
-            {/each}
-            <slot name='last-items'/>
-        </svelte:element>
-    </svelte:element>
-{:else}
-<label class:selected={visible} class='tab'>
-    <input bind:checked={visible} type='checkbox'>
-    {title}
-</label>
-    <svelte:element this={content_element} class:visible class='tab-content'>
-        <slot name='first-items'/>
-        {#each items as item}
-            <slot name='item' {item}/>
-        {/each}
-        <slot name='last-items'/>
-    </svelte:element>
-{/if}
+<template lang=pug>
+    mixin template
+        label.tab(class:selected!='{visible}')
+            input(bind:checked!='{visible}' type='checkbox')
+            | {title}
+        ul.tab-content(class:visible)
+            slot(name='first-items')
+            +each('items as item')
+                slot(name='item' '{item}')
+            slot(name='last-items')
+    +if('wrap')
+        div: +template
+        +else()
+            +template
+</template>
 <style>
     input {
         opacity: 0;
