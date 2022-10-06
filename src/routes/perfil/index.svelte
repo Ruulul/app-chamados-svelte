@@ -1,3 +1,12 @@
+<script context='module'>
+    export function load() {
+        return {
+            stuff: {
+                title: 'Perfil'
+            }
+        }
+    }
+</script>
 <script>
     import { user } from "$lib/stores/user";
     import { getFile, handle_user } from '$lib/utils/db';

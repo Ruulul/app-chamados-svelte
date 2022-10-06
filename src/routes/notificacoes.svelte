@@ -1,3 +1,12 @@
+<script context='module'>
+    export function load() {
+        return {
+            stuff: {
+                title: 'Notificações',
+            },
+        }
+    }
+</script>
 <script>
 import ListarProcessos from "$lib/components/ListarProcessos.svelte";
 import { notifications } from "$lib/stores/cadastros";
