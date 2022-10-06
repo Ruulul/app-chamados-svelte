@@ -1,5 +1,12 @@
 <script>
     import { user } from "$lib/stores/user";
+
+    let on_edit = false;
+
+    let current_profile = $user;
+
+    $: if ($user && !on_edit) current_profile = $user;
+
 </script>
 <template lang=pug>
     .filled.container
@@ -9,20 +16,31 @@
                 button.switch Alterar
         .full-width
             label Nome
-                input.field(value='{$user.nome}')
+                span.field(class:hidden='{on_edit}') {$user.nome}
+                input.field(class:hidden='{!on_edit}' bind:value='{current_profile.nome}')
             label Sobrenome
-                input.field(value='{$user.sobrenome}')
+                span.field(class:hidden='{on_edit}') {$user.sobrenome}
+                input.field(class:hidden='{!on_edit}' bind:value='{current_profile.sobrenome}')
         .full-width
             label Usuário
-                input.field(value='{$user.email}')
-            label Senha 
-                input.field
-            label Confirma senha
-                input.field
+                span.field(class:hidden='{on_edit}') {$user.email}
+                input.field(class:hidden='{!on_edit}' bind:value='{current_profile.email}')
+            div
+                .row(class:hidden='{!on_edit}')
+                    label Senha 
+                        input.field
+                    | &nbsp; &nbsp;
+                    label Confirma senha
+                        input.field
         .full-width
+            div(class:hidden='{!on_edit}')
+                +each("JSON.parse(current_profile.contatos) as contato")
+                    label {contato.nome}
+                        input.field(value='{contato.valor}')
+            div(class:hidden='{on_edit}')
             +each("JSON.parse($user.contatos) as contato")
                 label {contato.nome}
-                    input.field(value='{contato.valor}')
+                    span.field {contato.valor}
         .full-width
             label Departamento
                 select.field
@@ -31,10 +49,10 @@
         .full-width
             label Empresas
         .full-width.put-on-end
-            button.action.button.edit
-                i.fas.fa-pen-to-square
+            button.action.button.edit(on:click!='{()=>on_edit=!on_edit}')
+                i.fas(class="{on_edit ? 'fa-x' : 'fa-pen-to-square'}")
                 |
-                | Editar
+                | {!on_edit ? 'Editar' : 'Cancelar'}
 </template>
 
 <style>

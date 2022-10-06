@@ -109,7 +109,6 @@
         return async ()=>{
             let filial = Object.fromEntries($servico.campos)?.filial;
             let status = campos_etapa.status
-            let novo_status = proximo_status[status];
             let update = {};
             update[campo] = campos_etapa[campo];
             if (campo === 'status') {
@@ -142,6 +141,10 @@
                 .then(getServico)
                 .catch(console.error)
         }
+    }
+    function update () {
+        let novo_status = proximo_status[status];
+        onChange("status")();
     }
     const label_por_status = {
         'em analise': 'Adicionar à fila',
@@ -212,7 +215,7 @@
                                     ExibeArquivo(title!='{title?.slice(title?.indexOf("-") + 1 || 0)}' '{data}')
                 .container
                     ProcessoTemplate(getProcesso!='{getServico}' processo!='{$servico}')
-                        button.action.button(class:hidden!='{campos_etapa.status === "fechado"}' slot='buttons' on:click!='{()=> a_classificar ? $classificador.dialog.showModal() : onChange("status")()}') {a_classificar ? 'Classificar e Assumir' : label_por_status[campos_etapa.status]}
+                        button.action.button(class:hidden!='{campos_etapa.status === "fechado"}' slot='buttons' on:click!='{()=> a_classificar ? $classificador.dialog.showModal() : update()}') {a_classificar ? 'Classificar e Assumir' : label_por_status[campos_etapa.status]}
 
 </template>
 <style>
