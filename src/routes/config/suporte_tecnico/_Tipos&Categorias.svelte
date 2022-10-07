@@ -86,10 +86,6 @@
     Dialog(title='' bind:dialog='{dialog_categoria}')
         form(on:submit|preventDefault!='{()=>config.editarCategoria(item, item)}')
             | ID - {item.id}
-            label Filial -
-                select(bind:value='{$filial}')
-                    +each('$filiais_validas as filial')
-                        option {filial}
             label Tipo -
                 select(bind:value='{item.tipo}')
                     +each('$tipos_os as { tipo }')
