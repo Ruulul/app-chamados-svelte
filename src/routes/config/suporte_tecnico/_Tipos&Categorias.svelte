@@ -2,9 +2,10 @@
     import { tipos_os, categorias_os } from "$lib/stores/local_db";
     import Accordion from "./_Accordion.svelte";
     import { config, filiais_validas, filial } from "$lib/utils/db";
-import Dialog from "$lib/components/Dialog.svelte";
+    import Dialog from "$lib/components/Dialog.svelte";
 
     let item = {}
+    let item_ptr = item
     /** @type {HTMLDialogElement} */
     let dialog_tipo
     /** @type {HTMLDialogElement} */
@@ -51,95 +52,61 @@ import Dialog from "$lib/components/Dialog.svelte";
         };
     }
 </script>
-<Accordion title=Tipos items={$tipos_os}>
-    <li slot=first-items class=tab on:click={openEdit('new').on('tipo')}>Adicionar Tipo</li>
-    <li slot=item let:item class=tab>
-        <i on:click={config.deleteTipo(item)} class='fas fa-close'/>
-        <i on:click={openEdit('tipo').on(item)} class='fas fa-pen'/>
-        <Accordion wrap={false} title={item.tipo} items={$categorias_os.filter(categoria=>categoria.tipo===item.tipo)}>
-            <li slot=first-items class=tab on:click={openEdit('new').on('categoria').on(item.tipo)}>Adicionar Categoria</li>
-            <li slot=item let:item class=tab>
-                <i on:click={()=>config.deleteCategoria(item)} class='fas fa-close'/>
-                <i on:click={openEdit('categoria').on(item)} class='fas fa-pen'/>
-                {item.categoria}
-            </li>
-        </Accordion>
-    </li>
-</Accordion>
-<Dialog title='' bind:dialog={dialog_tipo}>
-    <form on:submit|preventDefault={()=>config.editarTipo(item, item)}>
-        ID - {item.id}
-        <label>
-            Filial -
-            <select bind:value={$filial}>
-                {#each $filiais_validas as filial}
-                    <option>{filial}</option>
-                {/each}
-            </select>
-        </label>
-        <label>
-            Tipo - <input bind:value={item.tipo}>
-        </label>
-        <input type=submit value=Atualizar>
-    </form>
-</Dialog>
-<Dialog title='' bind:dialog={dialog_categoria}>
-    <form on:submit|preventDefault={()=>config.editarCategoria(item, item)}>
-        ID - {item.id}
-        <label>
-            Filial -
-            <select bind:value={$filial}>
-                {#each $filiais_validas as filial}
-                    <option>{filial}</option>
-                {/each}
-            </select>
-        </label>
-        <label>
-            Tipo - 
-            <select bind:value={item.tipo}>
-                {#each $tipos_os as { tipo }}
-                    <option>{tipo}</option>
-                {/each}
-            </select>
-        </label>
-        <label>
-            Categoria - <input bind:value={item.categoria}>
-        </label>
-        <input type=submit value=Atualizar>
-    </form>
-</Dialog>
-<Dialog title='' bind:dialog={dialog_criar_tipo}>
-    <form on:submit|preventDefault={()=>config.addTipo(item)}>
-        <label>
-            Filial -
-            <select bind:value={$filial}>
-                {#each $filiais_validas as filial}
-                    <option>{filial}</option>
-                {/each}
-            </select>
-        </label>
-        <label>
-            Tipo - <input bind:value={item.categoria}>
-        </label>
-        <input type=submit value=Atualizar>
-    </form>
-</Dialog>
-<Dialog title='' bind:dialog={dialog_criar_categoria}>
-    <form on:submit|preventDefault={()=>config.addCategoria(item)}>
-        <label>
-            Tipo - 
-            <select bind:value={item.tipo}>
-                {#each $tipos_os as { tipo }}
-                    <option>{tipo}</option>
-                {/each}
-            </select>
-        </label>
-        <label>
-            Categoria - <input bind:value={item.categoria}>
-        </label>
-        <input type=submit value=Atualizar>
-    </form>
-</Dialog>
+<template lang="pug">
+    Accordion(title='Tipos' items='{$tipos_os}')
+        li.tab(slot='first-items' on:click="{openEdit('new').on('tipo')}") Adicionar Tipo
+        li.tab(slot='item' 'let:item')
+            i.fas.fa-close(on:click='{config.deleteTipo(item)}')
+            i.fas.fa-pen(  on:click="{openEdit('tipo').on(item)}")
+            Accordion(wrap='{false}' title='{item.tipo}' items!='{$categorias_os.filter(categoria=>categoria.tipo===item.tipo)}')
+                li.tab(slot='first-items' on:click="{openEdit('new').on('categoria').on(item.tipo)}") Adicionar Categoria
+                li.tab(slot='item' 'let:item')
+                    i.fas.fa-close(on:click='{config.deleteCategoria(item)}')
+                    i.fas.fa-pen(  on:click="{openEdit('categoria').on(item)}")
+                    | {item.categoria}
+    Dialog(title='' bind:dialog='{dialog_tipo}')
+        form(on:submit|preventDefault!='{()=>config.editarTipo(item, item)}')
+            | ID - {item.id}
+            label Filial -
+                select(bind:value='{$filial}')
+                    +each('$filiais_validas as filial')
+                        option {filial}
+            label Tipo -
+                input(bind:value='{item.tipo}')
+            input(type='submit' value='Atualizar')
+    Dialog(title='' bind:dialog='{dialog_categoria}')
+        form(on:submit|preventDefault!='{()=>config.editarCategoria(item, item)}')
+            | ID - {item.id}
+            label Filial -
+                select(bind:value='{$filial}')
+                    +each('$filiais_validas as filial')
+                        option {filial}
+            label Tipo -
+                select(bind:value='{item.tipo}')
+                    +each('$tipos_os as { tipo }')
+                        option {tipo}
+            label Categoria -
+                input(bind:value='{item.categoria}')
+            input(type='submit' value='Atualizar')
+    Dialog(title='' bind:dialog='{dialog_criar_tipo}')
+        form(on:submit|preventDefault!='{()=>config.addTipo(item)}')
+            label Filial -
+                select(bind:value='{$filial}')
+                    +each('$filiais_validas as filial')
+                        option {filial}
+            label Tipo -
+                input(bind:value='{item.tipo}')
+            input(type='submit' value='Atualizar')
+    Dialog(title='' bind:dialog='{dialog_criar_categoria}')
+        form(on:submit|preventDefault!='{()=>config.addCategoria(item)}')
+            label Tipo -
+                select(bind:value='{item.tipo}')
+                    +each('$tipos_os as { tipo }')
+                        option {tipo}
+            label Categoria -
+                input(bind:value='{item.categoria}')
+            input(type='submit' value='Atualizar')
+</template>
 <style>
     dialog {
         width: 20em;
