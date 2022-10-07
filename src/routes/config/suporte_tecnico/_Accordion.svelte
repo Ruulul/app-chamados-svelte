@@ -8,7 +8,7 @@
 </script>
 <template lang=pug>
     mixin template
-        label.tab(class:selected!='{visible}')
+        label.tab.button(class:action!='{visible}')
             input(bind:checked!='{visible}' type='checkbox')
             | {title}
         ul.tab-content(class:visible)
@@ -17,7 +17,8 @@
                 slot(name='item' '{item}')
             slot(name='last-items')
     +if('wrap')
-        div: +template
+        div
+            +template
         +else()
             +template
 </template>
@@ -31,6 +32,7 @@
         overflow: hidden;
         font-size: 1.3rem;
         border-radius: 1em;
+        border: var(--dark);
         padding: 0.5em;
         cursor: pointer;
     }
@@ -41,9 +43,5 @@
     }
     .visible {
         max-height: 100vh;
-    }
-    .selected {
-        background-color: var(--dark);
-        color: white;
     }
 </style>
