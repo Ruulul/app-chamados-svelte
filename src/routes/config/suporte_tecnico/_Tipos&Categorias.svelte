@@ -117,9 +117,6 @@
             input(type='submit' value='Atualizar')
 </template>
 <style>
-    dialog {
-        width: 20em;
-    }
     form {
         display: flex;
         flex-flow: column;
