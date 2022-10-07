@@ -10,8 +10,8 @@
     mixin template
         label.tab.button(class:action!='{visible}')
             input(bind:checked!='{visible}' type='checkbox')
-            | {title}
             slot(name='title')
+            | {title}
         ul.tab-content(class:visible)
             slot(name='first-items')
             +each('items as item')
