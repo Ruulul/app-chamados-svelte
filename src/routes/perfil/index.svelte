@@ -59,7 +59,7 @@
                         div
                             i.fas.fa-spinner.fa-spin.fa-2x
                         +then('src')
-                            img(src='{src}')
+                            img(src='{src}' alt='')
                         +catch('_')
                             i.fas.fa-user.placeholder.fa-3x
                     +else()
@@ -88,18 +88,18 @@
                         input.field
         .full-width Informações de Contato
         div.full-width(class:hidden='{!on_edit}')
-            +each("current_profile.contatos as contato")
-                label 
+            +each("current_profile.contatos as contato, index")
+                label(id='label-contato-{index}')
                     div.row
                         | {contato.nome}
                         |
                         i.fas.fa-x(on:click!='{()=>current_profile.contatos = current_profile.contatos.filter(cnt=>cnt!==contato)}')
-                    input.field(value='{contato.valor}')
-            label Adicionar...
+                    input.field(aria-labelledby='label-contato-{index}' value='{contato.valor}')
+            label#label-adiciona-contato Adicionar...
                 div
-                    input.row.field(bind:value='{novo_contato.nome}' placeholder='Whatsapp')
+                    input.row.field(aria-labelledby='label-adiciona-contato' bind:value='{novo_contato.nome}' placeholder='Whatsapp')
                     | &nbsp; &nbsp;
-                    input.row.field(bind:value='{novo_contato.valor}' placeholder='(XX) XXXXX-XXXX')
+                    input.row.field(aria-labelledby='label-adiciona-contato' bind:value='{novo_contato.valor}' placeholder='(XX) XXXXX-XXXX')
                     | &nbsp; &nbsp;
                 .row.put-on-end
                     button.action.button(on:click!=`{()=>{
