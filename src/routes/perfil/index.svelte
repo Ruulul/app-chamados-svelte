@@ -78,6 +78,7 @@
             label(class:hidden='{on_edit}') Usuário
                 span.field(class:hidden='{on_edit}') {$user.email}
                 input.field(class:hidden='{!on_edit}' bind:value='{current_profile.email}')
+        //
             div
                 .row(class:hidden='{!on_edit}')
                     label Senha 
