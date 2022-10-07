@@ -1,6 +1,6 @@
 <script>
     export let items
-    export let title
+    export let title = ''
 
     export let wrap = true
 
@@ -11,6 +11,7 @@
         label.tab.button(class:action!='{visible}')
             input(bind:checked!='{visible}' type='checkbox')
             | {title}
+            slot(name='title')
         ul.tab-content(class:visible)
             slot(name='first-items')
             +each('items as item')
@@ -28,7 +29,8 @@
     }
     .tab {
         display: inline-block;
-        width: 10em;
+        min-width: 10em;
+        max-width: fit-content;
         overflow: hidden;
         font-size: 1.3rem;
         border-radius: 1em;

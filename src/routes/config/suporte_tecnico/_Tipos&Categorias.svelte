@@ -5,7 +5,6 @@
     import Dialog from "$lib/components/Dialog.svelte";
 
     let item = {}
-    let item_ptr = item
     /** @type {HTMLDialogElement} */
     let dialog_tipo
     /** @type {HTMLDialogElement} */
@@ -14,6 +13,8 @@
     let dialog_criar_tipo
     /** @type {HTMLDialogElement} */
     let dialog_criar_categoria
+    let dialog_criar_tipo_is_open = false
+    let dialog_criar_categoria_is_open = false
 
     function openEdit(type) {
         switch (type) {
@@ -51,15 +52,23 @@
                 };
         };
     }
+
+    function checkDialogs () {
+        dialog_criar_tipo_is_open = dialog_criar_tipo?.open
+        dialog_criar_categoria_is_open = dialog_criar_categoria?.open
+    }
 </script>
 <template lang="pug">
+    svelte:body(on:click='{checkDialogs}')
     Accordion(title='Tipos' items='{$tipos_os}')
-        li.tab(slot='first-items' on:click="{openEdit('new').on('tipo')}") Adicionar Tipo
+        li.tab.button(slot='first-items' on:click="{openEdit('new').on('tipo')}" class:action!='{dialog_criar_tipo_is_open}') Adicionar Tipo
         li.tab(slot='item' 'let:item')
-            i.fas.fa-close(on:click='{config.deleteTipo(item)}')
-            i.fas.fa-pen(  on:click="{openEdit('tipo').on(item)}")
-            Accordion(wrap='{false}' title='{item.tipo}' items!='{$categorias_os.filter(categoria=>categoria.tipo===item.tipo)}')
-                li.tab(slot='first-items' on:click="{openEdit('new').on('categoria').on(item.tipo)}") Adicionar Categoria
+            Accordion(wrap='{false}' items!='{$categorias_os.filter(categoria=>categoria.tipo===item.tipo)}')
+                svelte:fragment(slot='title')
+                    i.fas.fa-close(on:click='{config.deleteTipo(item)}')
+                    i.fas.fa-pen(  on:click="{openEdit('tipo').on(item)}")
+                    | {item.tipo}
+                li.tab.button(slot='first-items' on:click="{openEdit('new').on('categoria').on(item)}" class:action!='{dialog_criar_categoria_is_open}') Adicionar Categoria
                 li.tab(slot='item' 'let:item')
                     i.fas.fa-close(on:click='{config.deleteCategoria(item)}')
                     i.fas.fa-pen(  on:click="{openEdit('categoria').on(item)}")
