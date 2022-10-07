@@ -112,8 +112,8 @@
             let update = {};
             update[campo] = campos_etapa[campo];
             if (campo === 'status') {
-                $servico.etapa.campos.find(campo=>campo[0]==='status')[1] = novo_status;
-                update[metadado_hora[novo_status]] = (new Date()).toISOString();
+                $servico.etapa.campos.find(campo=>campo[0]==='status')[1] = status;
+                update[metadado_hora[status]] = (new Date()).toISOString();
                 await notificaEnvolvidos($servico)
                     .then(getServico)
                     .catch(console.error);
